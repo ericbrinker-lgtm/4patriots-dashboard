@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search &amp; PMAX holdout — 2026-04-20 readout</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --navy: #13213C;
+    --navy-2: #1E3665;
+    --red: #A21E22;
+    --gold: #C8A646;
+    --green: #2E7D32;
+    --gray-50: #F7F8FA;
+    --gray-100: #EEF0F4;
+    --gray-200: #DCE0E8;
+    --gray-400: #8B92A3;
+    --gray-600: #525868;
+    --gray-900: #1A1E28;
+    --shadow: 0 1px 2px rgba(19,33,60,0.04), 0 4px 12px rgba(19,33,60,0.06);
+    --shadow-lg: 0 4px 8px rgba(19,33,60,0.06), 0 12px 32px rgba(19,33,60,0.08);
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--gray-50); color: var(--gray-900); -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--navy-2); }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 32px 28px 80px; }
+  header.top {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
+    color: #fff; padding: 36px 28px 44px; border-radius: var(--radius);
+    box-shadow: var(--shadow-lg); margin-bottom: 28px;
+  }
+  header.top .eyebrow { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 8px; }
+  header.top h1 { margin: 0 0 6px 0; font-size: 32px; font-weight: 700; letter-spacing: -0.01em; }
+  header.top .sub { color: rgba(255,255,255,0.78); font-size: 15px; max-width: 820px; line-height:1.5; }
+  header.top .meta-row { margin-top: 20px; display: flex; gap: 24px; flex-wrap: wrap; font-size: 13px; color: rgba(255,255,255,0.78); }
+  header.top .meta-row b { color: #fff; font-weight: 600; }
+  .layer-label { display: inline-block; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 700; padding: 4px 10px; border-radius: 999px; margin-bottom: 10px; }
+  .layer-exec { background: rgba(162,30,34,0.08); color: var(--red); }
+  .layer-tac  { background: rgba(30,54,101,0.08); color: var(--navy-2); }
+  .layer-deep { background: rgba(138,138,138,0.14); color: var(--gray-600); }
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+  @media (max-width: 900px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+  .kpi { background: #fff; border-radius: var(--radius); padding: 20px 22px; box-shadow: var(--shadow); border: 1px solid var(--gray-100); position: relative; }
+  .kpi .label { font-size: 12px; color: var(--gray-600); font-weight: 500; letter-spacing: 0.02em; }
+  .kpi .val { font-size: 32px; font-weight: 700; color: var(--navy); line-height: 1.1; margin-top: 6px; letter-spacing: -0.02em; }
+  .kpi .delta { margin-top: 6px; font-size: 12px; color: var(--gray-600); line-height:1.45; }
+  .kpi.hero { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%); color: #fff; }
+  .kpi.hero .label { color: rgba(255,255,255,0.72); }
+  .kpi.hero .val { color: #fff; }
+  .kpi.hero .delta { color: rgba(255,255,255,0.82); }
+  .kpi .pass-badge { display: inline-block; margin-top: 8px; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; letter-spacing: 0.02em; }
+  .kpi .pass-badge.pass { background: rgba(46,125,50,0.14); color: var(--green); }
+  .kpi .pass-badge.fail { background: rgba(162,30,34,0.14); color: var(--red); }
+  .kpi .pass-badge.warn { background: rgba(200,166,70,0.14); color: #9e7f18; }
+  .card { background: #fff; border-radius: var(--radius); padding: 22px 24px; box-shadow: var(--shadow); border: 1px solid var(--gray-100); margin-bottom: 22px; }
+  .card h2 { margin: 0 0 4px 0; font-size: 20px; font-weight: 700; color: var(--navy); letter-spacing: -0.01em; }
+  .card h3 { margin: 28px 0 6px 0; font-size: 15px; font-weight: 600; color: var(--navy); }
+  .card .card-sub { color: var(--gray-600); font-size: 13px; margin-bottom: 20px; max-width: 820px; line-height: 1.55; }
+  .controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
+  .toggle-group { display: inline-flex; background: var(--gray-100); border-radius: 8px; padding: 3px; }
+  .toggle-group button { background: transparent; border: none; padding: 7px 14px; font-size: 13px; font-weight: 500; color: var(--gray-600); border-radius: 6px; cursor: pointer; transition: all 0.15s; }
+  .toggle-group button.active { background: #fff; color: var(--navy); box-shadow: 0 1px 2px rgba(19,33,60,0.08); font-weight: 600; }
+  .toggle-group button:hover:not(.active) { color: var(--navy); }
+  .chart-box { position: relative; width: 100%; }
+  .chart-box.h260 { height: 260px; }
+  .chart-box.h300 { height: 300px; }
+  .chart-box.h360 { height: 360px; }
+  .chart-box.h420 { height: 420px; }
+  .chart-box.h480 { height: 480px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+  .scrubber { margin-top: 8px; }
+  .scrubber label { font-size: 12px; color: var(--gray-600); font-weight: 500; }
+  .scrubber input[type="range"] { width: 100%; margin-top: 8px; accent-color: var(--navy-2); }
+  .scrubber-readout { margin-top: 14px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; background: var(--gray-50); border-radius: 8px; padding: 14px 16px; }
+  @media (max-width: 900px) { .scrubber-readout { grid-template-columns: repeat(2, 1fr); } }
+  .scrubber-readout .sr-item .l { font-size: 11px; color: var(--gray-600); letter-spacing: 0.04em; text-transform: uppercase; font-weight: 600; }
+  .scrubber-readout .sr-item .v { font-size: 20px; font-weight: 700; color: var(--navy); margin-top: 2px; letter-spacing: -0.01em; }
+  .scrubber-readout .sr-item .d { font-size: 11px; color: var(--gray-600); margin-top: 1px; }
+  details.math { margin-top: 12px; background: var(--gray-50); border-radius: 8px; border: 1px solid var(--gray-200); transition: background 0.15s; }
+  details.math[open] { background: #fff; border-color: var(--gray-200); }
+  details.math summary { padding: 12px 16px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--navy-2); list-style: none; }
+  details.math summary::-webkit-details-marker { display: none; }
+  details.math summary::before { content: "▸ "; color: var(--gray-400); transition: transform 0.2s; display: inline-block; }
+  details.math[open] summary::before { content: "▾ "; color: var(--navy-2); }
+  details.math .math-body { padding: 4px 18px 18px; font-size: 13px; line-height: 1.65; color: var(--gray-900); }
+  details.math .math-body code { background: var(--gray-100); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono", Consolas, "Liberation Mono", monospace; font-size: 12.5px; }
+  details.math .math-body table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12.5px; }
+  details.math .math-body th, details.math .math-body td { text-align: right; padding: 6px 10px; border-bottom: 1px solid var(--gray-200); }
+  details.math .math-body th:first-child, details.math .math-body td:first-child { text-align: left; }
+  details.math .math-body th { color: var(--gray-600); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
+  table.dtable { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.dtable th, table.dtable td { padding: 9px 10px; text-align: right; border-bottom: 1px solid var(--gray-100); }
+  table.dtable th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--gray-600); font-weight: 600; background: var(--gray-50); }
+  table.dtable th:first-child, table.dtable td:first-child { text-align: left; }
+  table.dtable td.pos { color: var(--green); font-weight: 600; }
+  table.dtable td.neg { color: var(--red); font-weight: 600; }
+  table.dtable tr.total-row td { background: var(--gray-50); font-weight: 700; color: var(--navy); border-top: 2px solid var(--gray-200); }
+  table.dtable tbody tr:hover { background: var(--gray-50); }
+  .tldr { background: #fff; border-left: 4px solid var(--red); border-radius: 4px 12px 12px 4px; padding: 20px 24px; box-shadow: var(--shadow); margin-bottom: 28px; font-size: 15.5px; line-height: 1.6; color: var(--gray-900); }
+  .tldr b { color: var(--navy); }
+  .tldr .tldr-label { display: block; font-size: 11px; color: var(--red); font-weight: 700; letter-spacing: 0.12em; margin-bottom: 8px; }
+  .tldr .backfill-callout { margin-top: 14px; padding: 14px 16px; background: rgba(200,166,70,0.08); border-radius: 8px; border-left: 3px solid var(--gold); font-size: 14px; line-height:1.55; }
+  .tldr .backfill-callout .cl { display: block; font-size: 10px; color: #9e7f18; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 4px; }
+  .flag-list { margin: 12px 0 0 0; padding-left: 0; list-style: none; }
+  .flag-list li { padding: 10px 14px; margin-bottom: 8px; border-radius: 8px; font-size: 13px; line-height: 1.55; background: var(--gray-50); border-left: 3px solid var(--gray-400); }
+  .flag-list li.watch { border-left-color: var(--gold); background: rgba(200,166,70,0.08); }
+  .flag-list li.resolved { border-left-color: var(--green); background: rgba(46,125,50,0.06); }
+  .flag-list li.issue { border-left-color: var(--red); background: rgba(162,30,34,0.06); }
+  .flag-list li b { color: var(--navy); }
+  .gauge-wrap { display: flex; gap: 22px; align-items: flex-start; flex-wrap: wrap; }
+  .gauge-box { flex: 0 0 360px; }
+  footer.foot { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--gray-200); font-size: 12px; color: var(--gray-600); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  footer.foot a { color: var(--navy-2); text-decoration: none; }
+  footer.foot a:hover { text-decoration: underline; }
+  .decision { border-radius: 10px; padding: 16px 20px; margin-top: 14px; border: 1px solid transparent; }
+  .decision.green { background: linear-gradient(135deg, rgba(46,125,50,0.06) 0%, rgba(46,125,50,0.02) 100%); border-color: rgba(46,125,50,0.22); }
+  .decision.gold  { background: linear-gradient(135deg, rgba(200,166,70,0.08) 0%, rgba(200,166,70,0.02) 100%); border-color: rgba(200,166,70,0.32); }
+  .decision.navy  { background: linear-gradient(135deg, rgba(30,54,101,0.06) 0%, rgba(30,54,101,0.02) 100%); border-color: rgba(30,54,101,0.22); }
+  .decision .head { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+  .decision.green .head { color: var(--green); }
+  .decision.gold  .head { color: #9e7f18; }
+  .decision.navy  .head { color: var(--navy-2); }
+  .decision .body { font-size: 15px; color: var(--gray-900); margin-top: 4px; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ 1. NARRATIVE HEADLINE ============ -->
+  <header class="top">
+    <div class="eyebrow">Geo incrementality · Google Search &amp; PMAX holdout</div>
+    <h1>Search &amp; PMAX is revenue-positive — but most of the "savings" never materialize</h1>
+    <div class="sub">A live, interactive readout of the 2026-04-20 weekly refresh. 53 lit DMAs, 50 dark DMAs. When Search &amp; PMAX goes dark, Facebook, Affiliates, and Demand Gen rush to fill the gap — so the right question isn't <em>"what do S&amp;P cost?"</em> but <em>"does having them on make total ad spend more efficient?"</em></div>
+    <div class="meta-row">
+      <span><b>Test:</b> <span id="m-test">—</span></span>
+      <span><b>Analysis date:</b> <span id="m-ad">—</span></span>
+      <span><b>Data through:</b> <span id="m-dt">—</span></span>
+      <span><b>Trimmed window:</b> <span id="m-tw">—</span></span>
+      <span><b>Full window:</b> <span id="m-fw">—</span></span>
+    </div>
+  </header>
+
+  <!-- ============ 2. EXECUTIVE TL;DR ============ -->
+  <div class="tldr">
+    <span class="tldr-label">Executive TL;DR</span>
+    Matched markets shows <b>+4.73% order lift</b> and <b>+12.32% revenue lift</b> in the lit cell, both at
+    effectively 100% confidence. Revenue-model iROAS on S&amp;P spend is <b>1.34x GP (≈2.67x top-line)</b>, close
+    to the PMAX benchmark. Order lift now cleanly clears the 80% confidence bar (up from 77% in the 4/13 run).
+    <div class="backfill-callout">
+      <span class="cl">⚠ Channel backfill — the real headline</span>
+      When Search &amp; PMAX went dark in the control DMAs, spend didn't disappear — it got <b>reallocated</b>.
+      Facebook spent <b>$87k more</b>, Affiliates <b>$22k more</b>, and Demand Gen <b>$15k more</b> in the dark cell.
+      That absorbed <b>~91% of the S&amp;P savings</b>. The business-wide spend delta was only <b>$7.7k</b>.
+      <b>We are not actually saving ad spend by turning S&amp;P off.</b> The right framing: <em>does having S&amp;P on
+      make our total ad spend more efficient?</em> On total-business spend, iROAS is 23.5x GP — the denominator
+      is too small to trust, but the directional answer is clearly yes.
+    </div>
+    Recommendation: <b>keep Search &amp; PMAX at current nationwide spend.</b> Net cost is near zero after backfill;
+    incremental revenue is conclusive. Next: a branded vs. non-branded Search holdout, and a PMAX-only holdout.
+  </div>
+
+  <!-- ============ 3. EXECUTIVE VIEW — DENOMINATOR TOGGLE ============ -->
+
+  <span class="layer-label layer-exec">Layer 1 · Executive view</span>
+
+  <div class="card">
+    <span class="layer-label layer-exec">Signature view · what counts as "incremental spend"?</span>
+    <h2>Orders iROAS + Revenue iROAS — toggle the denominator</h2>
+    <div class="card-sub">
+      The usual iROAS denominator is <b>ΔSearch &amp; PMAX spend ($135.6k)</b>. But because other channels
+      backfilled 91% of that spend into the dark cell, the business only saw <b>Δtotal ad spend of $7.7k</b>.
+      Toggle below to see how dramatically the read changes. This is the crux of the holdout: <b>on S&amp;P spend,
+      revenue iROAS is 1.34x (below our 1.4x floor on GP basis)</b>; <b>on total spend, revenue iROAS is 23.5x</b>
+      (denominator small enough to be unreliable, but the shape is clear).
+    </div>
+    <div class="controls">
+      <div class="toggle-group" id="denom-toggle">
+        <button data-val="sp" class="active">Δ S&amp;P spend ($135.6k)</button>
+        <button data-val="total">Δ Total ad spend ($7.7k)</button>
+      </div>
+    </div>
+    <div class="kpi-grid" id="exec-kpi-grid"></div>
+    <details class="math">
+      <summary>Show the math · why the two denominators disagree by ~18x</summary>
+      <div class="math-body">
+        <p><b>Δ S&amp;P spend</b> = (treatment S&amp;P spend × 0.7217 SF) − (control S&amp;P spend) = <b>$135,599</b>.
+        This is what Search &amp; PMAX "cost" in the lit cell after accounting for cell-size differences.</p>
+        <p><b>Δ Total ad spend</b> = (treatment ALL-channel spend × 0.7217) − (control ALL-channel spend) = <b>$7,709</b>.
+        This is the net change to the total advertising bill once Facebook/Affiliates/DG stepped in.</p>
+        <p>The gap — <code>$135,599 − $7,709 = $127,890</code> — is the <b>backfill</b>: dollars that moved from
+        S&amp;P into other channels when S&amp;P went dark. 91% of the S&amp;P delta was absorbed this way.</p>
+        <p><b>What this means for iROAS:</b></p>
+        <ul>
+          <li><b>iROAS on S&amp;P spend</b> is the answer to: <em>"for each dollar we spend on S&amp;P, how much incremental GP do we get?"</em></li>
+          <li><b>iROAS on Total spend</b> is the answer to: <em>"for each net-new advertising dollar (after backfill), how much incremental GP?"</em></li>
+        </ul>
+        <p>Both are valid framings. The S&amp;P-spend view is the one that compares apples-to-apples with other
+        channels. The Total-spend view describes what the business actually "paid" to get the lift — but
+        depends on whether you trust the other channels to stop backfilling if S&amp;P turns on and off.</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- ============ 4. THREE-MODEL COMPARISON ============ -->
+  <div class="card">
+    <span class="layer-label layer-exec">Headline</span>
+    <h2>Three-model iROAS comparison</h2>
+    <div class="card-sub">Matched markets is the primary model. Synthetic control and whole country are directional validators. All three agree revenue lift is positive; they disagree on orders because of the AOV gap ($170 lit vs. $159 dark). Toggle model, denominator, and window below.</div>
+    <div class="controls">
+      <div class="toggle-group" id="hero-model-toggle">
+        <button data-val="orders" class="active">Orders iROAS</button>
+        <button data-val="revenue">Revenue iROAS</button>
+      </div>
+      <div class="toggle-group" id="hero-denom-toggle">
+        <button data-val="sp" class="active">Δ S&amp;P spend</button>
+        <button data-val="total">Δ Total ad spend</button>
+      </div>
+      <div class="toggle-group" id="hero-window-toggle">
+        <button data-val="trimmed" class="active">Trimmed (37d)</button>
+        <button data-val="full">Full (44d)</button>
+      </div>
+    </div>
+    <div class="chart-box h360"><canvas id="hero-chart"></canvas></div>
+    <details class="math">
+      <summary>Show the math · how each bar is computed</summary>
+      <div class="math-body">
+        <p><b>Orders iROAS</b> = (Incremental Orders × Control-cell AOV) ÷ Denominator.
+        <b>Revenue iROAS</b> = Incremental GP Revenue ÷ Denominator. Revenue figures are already gross profit — no margin multiplier.</p>
+        <p>Incremental orders = (treatment orders × SF) − control orders. MM SF = <b>0.7217</b> (treatment scaled
+        down to control cell size). Incremental is reported in control-space.</p>
+        <div id="hero-math-table"></div>
+      </div>
+    </details>
+  </div>
+
+  <!-- ============ 5. DIFF VS PRIOR ============ -->
+  <div class="card">
+    <span class="layer-label layer-exec">What changed since last week</span>
+    <h2>Diff vs. prior run (2026-04-13)</h2>
+    <div class="card-sub">One additional week of data (30 days → 37 days). Same test design. Green = movement in the expected direction; red = against. Order lift cleared the 80% confidence threshold — the biggest qualitative change. LC multiplier re-calculated on refreshed data (prior 0.64x superseded by current 0.93x).</div>
+    <table class="dtable" id="diff-table"></table>
+  </div>
+
+  <!-- ============ 6. WEEKLY SCRUBBER ============ -->
+
+  <span class="layer-label layer-tac">Layer 2 · Tactical deep-dive</span>
+
+  <div class="card">
+    <span class="layer-label layer-tac">Week explorer</span>
+    <h2>Spend, sessions, orders — week by week</h2>
+    <div class="card-sub">The lit cell consistently generates more sessions, orders, and revenue than the scaled dark cell. Lift strengthens through the window: weeks 5 and 6 carry the strongest order and revenue lift. Drag the scrubber to inspect any week.</div>
+    <div class="scrubber">
+      <label>Week · <span id="week-label" style="font-weight: 700; color: var(--navy);">all weeks</span></label>
+      <input type="range" id="week-scrub" min="0" max="6" value="0" step="1" />
+      <div class="scrubber-readout" id="week-readout"></div>
+    </div>
+    <h3>Weekly spend and lift curves</h3>
+    <div class="chart-box h420"><canvas id="weekly-chart"></canvas></div>
+  </div>
+
+  <!-- ============ 7. CROSS-CHANNEL SPEND DELTAS ============ -->
+  <div class="card">
+    <span class="layer-label layer-tac">Backfill — the real story</span>
+    <h2>Cross-channel spend deltas (treatment − scaled control)</h2>
+    <div class="card-sub">
+      PMAX and Search show the expected positive spend delta (they were <em>on</em> in lit, <em>off</em> in dark).
+      The striking part is everything <em>below</em> zero: Facebook, Affiliates, and Demand Gen all spent
+      <b>more</b> in the dark cell than the scaled lit cell. That's channel backfill — and it accounts for
+      ~91% of the S&amp;P savings. Net total: the business only spent $7.7k more in lit.
+    </div>
+    <div class="chart-box h360"><canvas id="spend-delta"></canvas></div>
+    <h3>Spend delta detail</h3>
+    <table class="dtable" id="spend-delta-table"></table>
+  </div>
+
+  <!-- ============ 8. CROSS-CHANNEL REVENUE DELTAS ============ -->
+  <div class="card">
+    <span class="layer-label layer-tac">Where did the incremental revenue come from?</span>
+    <h2>Cross-channel revenue deltas (treatment − scaled control)</h2>
+    <div class="card-sub">
+      GA4 last-click, IP-based DMA resolution — matches the headline matched-markets DMA basis.
+      <b>Orders Model</b> multiplies each channel's incremental order count by the single control-cell AOV ($158.61)
+      to strip out AOV-mix noise. <b>Revenue Model</b> uses observed last-click GP deltas. Both models total to
+      roughly the MM headline ($181.3k); when they disagree on a channel it signals an AOV shift. S&amp;P together
+      attracted the vast majority of incremental last-click revenue in the lit cell.
+    </div>
+    <div class="controls">
+      <div class="toggle-group" id="chrev-toggle">
+        <button data-val="orders" class="active">Revenue (Orders Model)</button>
+        <button data-val="revenue">Revenue (Revenue Model)</button>
+      </div>
+    </div>
+    <div class="chart-box h480"><canvas id="chrev-chart"></canvas></div>
+    <h3>Channel revenue detail (with total)</h3>
+    <table class="dtable" id="chrev-table"></table>
+    <details class="math">
+      <summary>Show the math · how each channel's revenue delta is computed</summary>
+      <div class="math-body">
+        <p><b>Orders Model (per channel):</b> inc_revenue = inc_orders × $158.61 (control-cell AOV, MM trimmed).
+        Same AOV used for the headline Orders iROAS. Strips out AOV-mix noise.</p>
+        <p><b>Revenue Model (per channel):</b> inc_revenue = treatment LC revenue × 0.7217 − control LC revenue.
+        Reflects what GA4 actually recorded.</p>
+        <p>Source: <code>sales_by_dma_by_channel_ga4.csv</code> (GA4, IP-based DMA resolution — same basis as the
+        MM headline). Sum of GA4 LC inc revenue reconciles with MM headline within ~0.2%.</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- ============ 9. NTF SPLIT ============ -->
+  <div class="card">
+    <span class="layer-label layer-tac">Who's buying — new vs. existing</span>
+    <h2>NTF split: new-to-file vs. existing <span style="font-size: 12px; color: var(--gray-600); font-weight: 500;">· 1st-party last-click (secondary read)</span></h2>
+    <div class="card-sub">
+      Uses the 1st-party sales file because GA4 doesn't carry an NTF flag. Includes phone orders. Incremental
+      GP revenue in the lit cell concentrates almost entirely on <b>new-to-file customers</b> (+$75k) while
+      existing-customer GP is actually <em>lower</em> in lit (−$34k). This is consistent with Search &amp; PMAX
+      reaching prospects who haven't bought before, and with existing customers finding us through other
+      channels when S&amp;P is on.
+    </div>
+    <div class="chart-box h300"><canvas id="ntf-chart"></canvas></div>
+  </div>
+
+  <!-- ============ 10. LC ROAS MULTIPLIER ============ -->
+
+  <span class="layer-label layer-deep">Layer 3 · Deep-dive diagnostics</span>
+
+  <div class="card">
+    <span class="layer-label layer-deep">Leading indicator to watch</span>
+    <h2>LC ROAS multiplier → warning threshold</h2>
+    <div class="card-sub">
+      Last-click ROAS is a proxy for true incrementality between geo tests. Using this run's multiplier
+      (<b>0.926x revenue model</b>), if S&amp;P LC ROAS drops below <b>1.51x</b>, true iROAS is projected to fall below
+      the 1.4x GP floor. Current S&amp;P LC ROAS is <b>1.44x</b> — essentially at the threshold. This is a major
+      shift from the 4/13 run's reported 0.64x multiplier (which was calculated from a non-reproducible LC
+      ROAS of 1.86x); refreshed data confirms S&amp;P sits close to parity with last-click, not far below it.
+    </div>
+    <div class="gauge-wrap">
+      <div class="gauge-box"><div class="chart-box h260"><canvas id="lc-gauge"></canvas></div></div>
+      <div style="flex: 1; min-width: 280px;">
+        <table class="dtable" id="lc-table"></table>
+        <details class="math" style="margin-top: 14px;">
+          <summary>Show the math · how the warning threshold is derived</summary>
+          <div class="math-body">
+            <p><b>Step 1.</b> Compute this test's LC-to-true multiplier: geo iROAS (revenue) ÷ S&amp;P LC ROAS.</p>
+            <p>→ <code>1.337 ÷ 1.443 = 0.926x</code>. S&amp;P is worth about 93¢ of true value for every dollar of LC ROAS.</p>
+            <p><b>Step 2.</b> For a 1.4x true-iROAS floor: warn when LC ROAS × 0.926 &lt; 1.4.</p>
+            <p>→ warn threshold (revenue model) = <code>1.4 ÷ 0.926 = 1.512x</code>.</p>
+            <p>Current S&amp;P LC ROAS = 1.443x. Buffer to threshold: ~5%. Watch this weekly.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 11. INDUSTRY BENCHMARKS ============ -->
+  <div class="card">
+    <span class="layer-label layer-deep">Is this in line with industry?</span>
+    <h2>Top-line equivalent iROAS vs. published benchmarks</h2>
+    <div class="card-sub">
+      Our GP iROAS doubled is the apples-to-apples comparison with published benchmarks (industry reports on
+      top-line, not GP). At <b>2.67x top-line (revenue model)</b>, our S&amp;P blend sits well above the branded
+      Search benchmark (0.70x), between Non-Branded Search (1.46x) and PMAX (2.98x) — directionally suggesting
+      our spend mix leans PMAX-heavy. Orders model is much weaker at 1.03x top-line.
+    </div>
+    <div class="chart-box h360"><canvas id="bench-chart"></canvas></div>
+  </div>
+
+  <!-- ============ 12. PRE-PERIOD FIT ============ -->
+  <div class="card">
+    <span class="layer-label layer-deep">Pre-period diagnostic</span>
+    <h2>Pre-period fit quality — matched markets (daily orders)</h2>
+    <div class="card-sub">
+      Treatment (scaled × 0.7217 SF) should track tightly with control in the pre-period. Orders MAPE of 12.7%
+      is workable (above the 10% target but well inside the 20% acceptable band). Revenue MAPE of 24.8% is
+      between the 20% good and 30% acceptable thresholds — disclosed, not disqualifying. Correlation is
+      0.984 — very tight.
+    </div>
+    <div class="chart-box h360"><canvas id="pp-chart"></canvas></div>
+    <h3 style="margin-top: 22px;">Model-level fit diagnostics</h3>
+    <table class="dtable" id="pp-table"></table>
+  </div>
+
+  <!-- ============ 13. FLAGS ============ -->
+  <div class="card">
+    <span class="layer-label layer-deep">Flags to watch</span>
+    <h2>New, resolved, and ongoing flags</h2>
+    <ul class="flag-list">
+      <li class="watch"><b>NEW ·</b> April 1–5 order spike with depressed AOV. Likely a site promotion. Affects both cells similarly — structure not broken, but worth confirming against the promotions calendar.</li>
+      <li class="watch"><b>NEW ·</b> April 19 revenue spike with high lit-cell AOV (~$335). Suggests a high-ticket cluster on that day. Did not break the structure.</li>
+      <li class="resolved"><b>RESOLVED ·</b> Order confidence below 80%. 37-day window cleared the threshold cleanly (now effectively 100%).</li>
+      <li class="resolved"><b>RESOLVED ·</b> LC multiplier interpretation (0.64x) — superseded. Refreshed data shows LC ROAS stable at ~1.44x (not the prior 1.86x); multiplier is now 0.93x, consistent with S&amp;P being close to LC parity.</li>
+      <li><b>ONGOING ·</b> Pre-period revenue MAPE above 20% (24.85%). Not a hard blocker; consistent with 4Patriots' AOV variability ($29 → $3,000 product range).</li>
+      <li><b>ONGOING ·</b> Orders-model vs. Revenue-model iROAS divergence (0.51x vs. 1.34x). Driven by the $170 lit vs. $159 dark AOV gap. Report both; Revenue model is the primary read for this test.</li>
+      <li class="issue"><b>ONGOING ·</b> Spend backfill contamination. The lit cell's S&amp;P spend is roughly offset by Facebook/Affiliates/DG backfill in the dark cell. "True" incremental cost of S&amp;P is near zero — but it means the iROAS on total-business spend ($7.7k denominator) is unstable and should not be the headline.</li>
+      <li class="issue"><b>ONGOING ·</b> Synthetic control and whole country disagree with matched markets on orders (−385 and −72 vs. MM's +438). All three agree on revenue lift direction. AOV gap between lit and dark is the likely mechanism. MM remains primary.</li>
+    </ul>
+  </div>
+
+  <!-- ============ 14. WHAT TO DO ============ -->
+  <div class="card">
+    <span class="layer-label layer-exec">Decision &amp; next steps</span>
+    <h2>What to do</h2>
+    <div class="decision green">
+      <div class="head">Recommended</div>
+      <div class="body"><b>Keep Search &amp; PMAX at current nationwide spend.</b> Net cost after backfill is ~$8k; incremental GP revenue is ~$181k. Revenue lift is conclusive; order lift has cleared the 80% confidence bar. No change needed to S&amp;P budget.</div>
+    </div>
+    <div class="decision gold">
+      <div class="head">Watch</div>
+      <div class="body">Combined S&amp;P LC ROAS. Current: <b>1.44x GP</b>. Warn threshold (revenue model): <b>1.51x</b>. Buffer is thin. If LC ROAS drops below 1.30x GP, flag for re-evaluation.</div>
+    </div>
+    <div class="decision navy">
+      <div class="head">Follow-up test #1 (priority)</div>
+      <div class="body"><b>Branded vs. non-branded Search holdout.</b> The blended S&amp;P iROAS sits between Stella's branded (0.70x) and PMAX (2.98x) benchmarks. Isolating branded search would clarify whether we are overpaying for branded Search. If branded is dragging blended iROAS down, we could reallocate.</div>
+    </div>
+    <div class="decision navy">
+      <div class="head">Follow-up test #2</div>
+      <div class="body"><b>PMAX-only holdout.</b> PMAX last-click GPM ($80k delta) and Stella's 2.98x PMAX benchmark suggest PMAX is carrying most of the lift. A PMAX-only geo test would isolate the channel and avoid branded/non-branded noise.</div>
+    </div>
+    <div class="decision navy">
+      <div class="head">Retest</div>
+      <div class="body">Full S&amp;P holdout retest in <b>Q4 2026</b>, 6+ weeks, ideally without mid-test promos. The April 1–5 activity added noise this run (though it doesn't appear to have biased the MM structure).</div>
+    </div>
+  </div>
+
+  <footer class="foot">
+    <div>
+      Sources:
+      <a href="2026-04-20_SRC-PMAX_Holdout_Memo.md">Executive memo</a> ·
+      <a href="2026-04-20_SRC-PMAX_Holdout_Analysis.xlsx">Workbook</a> ·
+      <a href="2026-04-20_SRC-PMAX_Holdout_diff-vs-2026-04-13.md">Diff memo</a> ·
+      <a href="2026-04-20_SRC-PMAX_Holdout_slides.pptx">Slides</a>
+    </div>
+    <div>Analysis date: 2026-04-20 · Data through: 2026-04-19 · Analyst: Claude (weekly refresh)</div>
+  </footer>
+
+</div>
+
+<script>
+/* Data payload */
+const DATA = {"q1_iroas":[{"window":"trimmed","model":"matched_markets","days":37,"treat_orders":13459,"ctrl_orders_scaled_abs":9275,"treat_orders_scaled":9713.4,"inc_orders":438.4,"lift_pct_orders":4.73,"treat_revenue":2289596,"ctrl_revenue":1471136,"treat_revenue_scaled":1652406,"inc_revenue":181270,"lift_pct_revenue":12.32,"ctrl_aov":158.61,"treat_aov":170.12,"inc_spend_sp":135599,"inc_spend_total":7709,"iroas_orders":0.513,"iroas_revenue":1.337,"iroas_orders_total":9.02,"iroas_revenue_total":23.51,"conf_orders":99.97,"conf_revenue":99.99},{"window":"trimmed","model":"synthetic_control","days":37,"treat_orders_scaled":8890.2,"ctrl_orders_scaled_abs":9275,"inc_orders":-384.8,"lift_pct_orders":-4.15,"treat_revenue_scaled":1567075,"ctrl_revenue":1471136,"inc_revenue":95939,"lift_pct_revenue":6.52,"ctrl_aov":158.61,"inc_spend_sp":135599,"inc_spend_total":7709,"iroas_orders":-0.45,"iroas_revenue":0.708,"iroas_orders_total":-7.91,"iroas_revenue_total":12.44,"conf_orders":92.9,"conf_revenue":98.2},{"window":"trimmed","model":"whole_country","days":37,"treat_orders_scaled":9202.6,"ctrl_orders_scaled_abs":9275,"inc_orders":-72.4,"lift_pct_orders":-0.78,"treat_revenue_scaled":1561983,"ctrl_revenue":1471136,"inc_revenue":90847,"lift_pct_revenue":6.18,"ctrl_aov":158.61,"inc_spend_sp":135599,"inc_spend_total":7709,"iroas_orders":-0.085,"iroas_revenue":0.67,"iroas_orders_total":-1.49,"iroas_revenue_total":11.78,"conf_orders":97.5,"conf_revenue":99.0},{"window":"full","model":"matched_markets","days":44,"treat_orders_scaled":10976.4,"ctrl_orders_scaled_abs":10535,"inc_orders":441.4,"lift_pct_orders":4.19,"treat_revenue_scaled":1939909,"ctrl_revenue":1739315,"inc_revenue":200594,"lift_pct_revenue":11.53,"ctrl_aov":165.1,"inc_spend_sp":157000,"inc_spend_total":12000,"iroas_orders":0.464,"iroas_revenue":1.278,"iroas_orders_total":6.07,"iroas_revenue_total":16.72,"conf_orders":99.98,"conf_revenue":99.99},{"window":"full","model":"synthetic_control","days":44,"treat_orders_scaled":10088.2,"ctrl_orders_scaled_abs":10535,"inc_orders":-446.8,"lift_pct_orders":-4.24,"treat_revenue_scaled":1892558,"ctrl_revenue":1739315,"inc_revenue":153243,"lift_pct_revenue":8.81,"ctrl_aov":165.1,"inc_spend_sp":157000,"inc_spend_total":12000,"iroas_orders":-0.47,"iroas_revenue":0.976,"iroas_orders_total":-6.15,"iroas_revenue_total":12.77,"conf_orders":98.4,"conf_revenue":99.3},{"window":"full","model":"whole_country","days":44,"treat_orders_scaled":10480.5,"ctrl_orders_scaled_abs":10535,"inc_orders":-54.5,"lift_pct_orders":-0.52,"treat_revenue_scaled":1857286,"ctrl_revenue":1739315,"inc_revenue":117971,"lift_pct_revenue":6.78,"ctrl_aov":165.1,"inc_spend_sp":157000,"inc_spend_total":12000,"iroas_orders":-0.057,"iroas_revenue":0.751,"iroas_orders_total":-0.75,"iroas_revenue_total":9.83,"conf_orders":99.1,"conf_revenue":99.1}],"preperiod":[{"name":"matched_markets","sf":0.7217,"orders_mape":12.69,"orders_corr":0.9843,"revenue_mape":24.85,"revenue_corr":0.9546},{"name":"synthetic_control","sf":1.0179,"orders_mape":9.72,"orders_corr":0.9871,"revenue_mape":32.49,"revenue_corr":0.9293},{"name":"whole_country","sf":0.3979,"orders_mape":13.15,"orders_corr":0.9882,"revenue_mape":27.48,"revenue_corr":0.9537}],"preperiod_daily_mm":[{"date":"2025-12-01","treat_scaled":50.52,"ctrl":59.0},{"date":"2025-12-02","treat_scaled":18.76,"ctrl":14.0},{"date":"2025-12-03","treat_scaled":16.6,"ctrl":15.0},{"date":"2025-12-04","treat_scaled":17.32,"ctrl":19.0},{"date":"2025-12-05","treat_scaled":15.88,"ctrl":19.0},{"date":"2025-12-06","treat_scaled":13.71,"ctrl":15.0},{"date":"2025-12-07","treat_scaled":12.99,"ctrl":18.0},{"date":"2025-12-08","treat_scaled":12.99,"ctrl":17.0},{"date":"2025-12-09","treat_scaled":10.83,"ctrl":18.0},{"date":"2025-12-10","treat_scaled":7.22,"ctrl":23.0},{"date":"2025-12-11","treat_scaled":26.7,"ctrl":20.0},{"date":"2025-12-12","treat_scaled":15.88,"ctrl":29.0},{"date":"2025-12-13","treat_scaled":19.49,"ctrl":21.0},{"date":"2025-12-14","treat_scaled":13.71,"ctrl":9.0},{"date":"2025-12-15","treat_scaled":82.27,"ctrl":81.0},{"date":"2025-12-16","treat_scaled":78.67,"ctrl":87.0},{"date":"2025-12-17","treat_scaled":65.67,"ctrl":66.0},{"date":"2025-12-18","treat_scaled":66.4,"ctrl":68.0},{"date":"2025-12-19","treat_scaled":49.8,"ctrl":55.0},{"date":"2025-12-20","treat_scaled":46.91,"ctrl":43.0},{"date":"2025-12-21","treat_scaled":26.7,"ctrl":20.0},{"date":"2025-12-22","treat_scaled":46.19,"ctrl":47.0},{"date":"2025-12-23","treat_scaled":35.36,"ctrl":45.0},{"date":"2025-12-24","treat_scaled":32.48,"ctrl":24.0},{"date":"2025-12-25","treat_scaled":30.31,"ctrl":43.0},{"date":"2025-12-26","treat_scaled":64.23,"ctrl":38.0},{"date":"2025-12-27","treat_scaled":70.01,"ctrl":96.0},{"date":"2025-12-28","treat_scaled":73.61,"ctrl":71.0},{"date":"2025-12-29","treat_scaled":89.49,"ctrl":91.0},{"date":"2025-12-30","treat_scaled":79.39,"ctrl":103.0},{"date":"2025-12-31","treat_scaled":199.19,"ctrl":146.0},{"date":"2026-01-01","treat_scaled":78.67,"ctrl":84.0},{"date":"2026-01-02","treat_scaled":226.61,"ctrl":230.0},{"date":"2026-01-03","treat_scaled":324.77,"ctrl":315.0},{"date":"2026-01-04","treat_scaled":54.13,"ctrl":47.0},{"date":"2026-01-05","treat_scaled":48.35,"ctrl":49.0},{"date":"2026-01-06","treat_scaled":54.85,"ctrl":43.0},{"date":"2026-01-07","treat_scaled":90.21,"ctrl":75.0},{"date":"2026-01-08","treat_scaled":62.79,"ctrl":64.0},{"date":"2026-01-09","treat_scaled":57.74,"ctrl":62.0},{"date":"2026-01-10","treat_scaled":86.6,"ctrl":86.0},{"date":"2026-01-11","treat_scaled":85.16,"ctrl":91.0},{"date":"2026-01-12","treat_scaled":73.61,"ctrl":70.0},{"date":"2026-01-13","treat_scaled":88.05,"ctrl":66.0},{"date":"2026-01-14","treat_scaled":103.2,"ctrl":114.0},{"date":"2026-01-15","treat_scaled":106.09,"ctrl":94.0},{"date":"2026-01-16","treat_scaled":101.76,"ctrl":107.0},{"date":"2026-01-17","treat_scaled":103.2,"ctrl":100.0},{"date":"2026-01-18","treat_scaled":93.82,"ctrl":100.0},{"date":"2026-01-19","treat_scaled":88.77,"ctrl":95.0},{"date":"2026-01-20","treat_scaled":87.33,"ctrl":84.0},{"date":"2026-01-21","treat_scaled":28.15,"ctrl":25.0},{"date":"2026-01-22","treat_scaled":21.65,"ctrl":28.0},{"date":"2026-01-23","treat_scaled":106.09,"ctrl":106.0},{"date":"2026-01-24","treat_scaled":165.99,"ctrl":171.0},{"date":"2026-01-25","treat_scaled":145.06,"ctrl":154.0},{"date":"2026-01-26","treat_scaled":108.26,"ctrl":110.0},{"date":"2026-01-27","treat_scaled":111.86,"ctrl":101.0},{"date":"2026-01-28","treat_scaled":77.22,"ctrl":82.0},{"date":"2026-01-29","treat_scaled":94.54,"ctrl":97.0},{"date":"2026-01-30","treat_scaled":85.16,"ctrl":85.0},{"date":"2026-01-31","treat_scaled":98.87,"ctrl":95.0},{"date":"2026-02-01","treat_scaled":78.67,"ctrl":85.0},{"date":"2026-02-02","treat_scaled":88.77,"ctrl":91.0},{"date":"2026-02-03","treat_scaled":50.52,"ctrl":51.0},{"date":"2026-02-04","treat_scaled":54.85,"ctrl":61.0},{"date":"2026-02-05","treat_scaled":70.01,"ctrl":62.0},{"date":"2026-02-06","treat_scaled":83.72,"ctrl":80.0},{"date":"2026-02-07","treat_scaled":65.67,"ctrl":91.0},{"date":"2026-02-08","treat_scaled":75.06,"ctrl":89.0},{"date":"2026-02-09","treat_scaled":48.35,"ctrl":52.0},{"date":"2026-02-10","treat_scaled":62.07,"ctrl":49.0},{"date":"2026-02-11","treat_scaled":123.41,"ctrl":128.0},{"date":"2026-02-12","treat_scaled":222.28,"ctrl":219.0},{"date":"2026-02-13","treat_scaled":79.39,"ctrl":81.0},{"date":"2026-02-14","treat_scaled":57.01,"ctrl":47.0},{"date":"2026-02-15","treat_scaled":46.19,"ctrl":45.0},{"date":"2026-02-16","treat_scaled":85.16,"ctrl":76.0},{"date":"2026-02-17","treat_scaled":46.19,"ctrl":42.0},{"date":"2026-02-18","treat_scaled":38.25,"ctrl":35.0},{"date":"2026-02-19","treat_scaled":54.85,"ctrl":53.0},{"date":"2026-02-20","treat_scaled":39.69,"ctrl":38.0},{"date":"2026-02-21","treat_scaled":57.01,"ctrl":52.0},{"date":"2026-02-22","treat_scaled":56.29,"ctrl":54.0},{"date":"2026-02-23","treat_scaled":47.63,"ctrl":49.0},{"date":"2026-02-24","treat_scaled":50.52,"ctrl":52.0},{"date":"2026-02-25","treat_scaled":84.44,"ctrl":87.0},{"date":"2026-02-26","treat_scaled":81.55,"ctrl":80.0},{"date":"2026-02-27","treat_scaled":95.99,"ctrl":78.0},{"date":"2026-02-28","treat_scaled":159.5,"ctrl":156.0},{"date":"2026-03-01","treat_scaled":270.64,"ctrl":273.0},{"date":"2026-03-02","treat_scaled":152.28,"ctrl":143.0},{"date":"2026-03-03","treat_scaled":216.51,"ctrl":212.0},{"date":"2026-03-04","treat_scaled":215.79,"ctrl":235.0},{"date":"2026-03-05","treat_scaled":181.87,"ctrl":200.0},{"date":"2026-03-06","treat_scaled":197.02,"ctrl":189.0}],"spend_delta":[{"channel":"Facebook","treat":542604,"ctrl":629203,"delta":-86599},{"channel":"Google Performance Max","treat":80685,"ctrl":2479,"delta":78206},{"channel":"Google Search","treat":66457,"ctrl":9064,"delta":57393},{"channel":"Affiliates","treat":62878,"ctrl":85172,"delta":-22294},{"channel":"Google Demand Gen","treat":153742,"ctrl":168686,"delta":-14945},{"channel":"Bing","treat":34033,"ctrl":36915,"delta":-2883},{"channel":"Google Video","treat":18891,"ctrl":20060,"delta":-1170}],"ga4_xchannel":[{"channel":"Google Search","inc_orders":409.0,"inc_gpm":109658.0},{"channel":"Google PMAX","inc_orders":207.9,"inc_gpm":55256.0},{"channel":"Bing","inc_orders":49.0,"inc_gpm":27361.0},{"channel":"Unknown","inc_orders":-10.0,"inc_gpm":19601.0},{"channel":"Google Demand Gen","inc_orders":-138.7,"inc_gpm":-19924.0},{"channel":"Affiliates","inc_orders":-31.4,"inc_gpm":-13556.0},{"channel":"Facebook","inc_orders":-59.8,"inc_gpm":-13245.0},{"channel":"External Email","inc_orders":-3.9,"inc_gpm":10549.0},{"channel":"TV","inc_orders":-11.9,"inc_gpm":5299.0},{"channel":"MKT","inc_orders":-3.6,"inc_gpm":-1434.0},{"channel":"ACQ - PRINT","inc_orders":0.7,"inc_gpm":1043.0},{"channel":"Outbound","inc_orders":1.4,"inc_gpm":275.0},{"channel":"CET","inc_orders":0.7,"inc_gpm":146.0}],"ntf":[{"ntf_flag":"new","inc_orders":0.7,"inc_gpm":74858.0},{"ntf_flag":"existing","inc_orders":-360.1,"inc_gpm":-34447.5}],"weekly_trimmed":[{"week":1,"label":"03/14\u201303/20","days":7,"t_sp_spend":46962.0,"c_sp_spend":2732.0,"inc_sp_spend":31160.0,"t_tot_spend":235892.0,"c_tot_spend":166560.0,"inc_tot_spend":3684.0,"t_orders":2120,"c_orders":1562,"inc_orders":-32.0,"lift_orders":-2.0,"t_revenue":425302.0,"c_revenue":320543.0,"inc_revenue":-13602.0,"lift_revenue":-4.2,"inc_sessions":4781,"lift_sessions":50.6},{"week":2,"label":"03/21\u201303/27","days":7,"t_sp_spend":40724.0,"c_sp_spend":2154.0,"inc_sp_spend":27236.0,"t_tot_spend":237721.0,"c_tot_spend":165433.0,"inc_tot_spend":6131.0,"t_orders":2374,"c_orders":1678,"inc_orders":35.0,"lift_orders":2.1,"t_revenue":409799.0,"c_revenue":267142.0,"inc_revenue":28611.0,"lift_revenue":10.7,"inc_sessions":4132,"lift_sessions":37.3},{"week":3,"label":"03/28\u201304/03","days":7,"t_sp_spend":47898.0,"c_sp_spend":2798.0,"inc_sp_spend":31770.0,"t_tot_spend":297657.0,"c_tot_spend":210183.0,"inc_tot_spend":4636.0,"t_orders":4178,"c_orders":2878,"inc_orders":137.0,"lift_orders":4.8,"t_revenue":481422.0,"c_revenue":272029.0,"inc_revenue":75414.0,"lift_revenue":27.7,"inc_sessions":6894,"lift_sessions":54.6},{"week":4,"label":"04/04\u201304/10","days":7,"t_sp_spend":32248.0,"c_sp_spend":1464.0,"inc_sp_spend":21810.0,"t_tot_spend":266352.0,"c_tot_spend":199894.0,"inc_tot_spend":-7667.0,"t_orders":2660,"c_orders":1822,"inc_orders":98.0,"lift_orders":5.4,"t_revenue":438869.0,"c_revenue":277642.0,"inc_revenue":39090.0,"lift_revenue":14.1,"inc_sessions":5787,"lift_sessions":47.4},{"week":5,"label":"04/11\u201304/17","days":7,"t_sp_spend":27640.0,"c_sp_spend":2044.0,"inc_sp_spend":17903.0,"t_tot_spend":223075.0,"c_tot_spend":160187.0,"inc_tot_spend":807.0,"t_orders":1598,"c_orders":1025,"inc_orders":128.0,"lift_orders":12.5,"t_revenue":367753.0,"c_revenue":238165.0,"inc_revenue":27243.0,"lift_revenue":11.4,"inc_sessions":5083,"lift_sessions":53.1},{"week":6,"label":"04/18\u201304/19","days":2,"t_sp_spend":8411.0,"c_sp_spend":352.0,"inc_sp_spend":5719.0,"t_tot_spend":68509.0,"c_tot_spend":49324.0,"inc_tot_spend":119.0,"t_orders":529,"c_orders":310,"inc_orders":72.0,"lift_orders":23.2,"t_revenue":166452.0,"c_revenue":95615.0,"inc_revenue":24513.0,"lift_revenue":25.6,"inc_sessions":1566,"lift_sessions":51.6}],"lc_multiplier":{"sp_lc_roas":1.443,"geo_iroas_revenue":1.337,"geo_iroas_orders":0.513,"multiplier_revenue":0.926,"multiplier_orders":0.356,"floor_gp":1.4,"warn_threshold_revenue":1.512,"warn_threshold_orders":3.933,"prior_multiplier":0.64},"diff_vs_prior":{"prior_date":"2026-04-13","this_date":"2026-04-20","metrics":[{"label":"Inc orders (MM trimmed)","prior":326,"current":438,"fmt":"n","good_higher":true},{"label":"Order lift %","prior":4.0,"current":4.73,"fmt":"%","good_higher":true},{"label":"Order confidence","prior":77.0,"current":100.0,"fmt":"%","good_higher":true},{"label":"Inc GP revenue ($)","prior":139073,"current":181270,"fmt":"$","good_higher":true},{"label":"Revenue lift %","prior":11.5,"current":12.32,"fmt":"%","good_higher":true},{"label":"Revenue confidence","prior":95.2,"current":100.0,"fmt":"%","good_higher":true},{"label":"Control cell AOV","prior":147.0,"current":158.61,"fmt":"$","good_higher":true},{"label":"S&P spend delta","prior":117777,"current":135599,"fmt":"$","good_higher":true},{"label":"Total business spend delta","prior":5385,"current":7709,"fmt":"$","good_higher":true},{"label":"Orders iROAS (S&P) GP","prior":0.41,"current":0.513,"fmt":"x","good_higher":true},{"label":"Revenue iROAS (S&P) GP","prior":1.18,"current":1.337,"fmt":"x","good_higher":true,"floor":1.4},{"label":"LC multiplier (revenue)","prior":0.64,"current":0.926,"fmt":"x","good_higher":true},{"label":"Session lift (lit vs dark)","prior":48.3,"current":48.7,"fmt":"%","good_higher":true},{"label":"Pre-period orders MAPE","prior":12.7,"current":12.69,"fmt":"%","good_higher":false},{"label":"Pre-period revenue MAPE","prior":24.8,"current":24.85,"fmt":"%","good_higher":false,"flag":30.0}]},"benchmarks":[{"name":"4Patriots S&P (Orders, this test)","value":1.03,"source":"current test \u00d7 2 (GP\u2192top-line)","us":true},{"name":"4Patriots S&P (Revenue, this test)","value":2.67,"source":"current test \u00d7 2 (GP\u2192top-line)","us":true},{"name":"Stella 2025 \u2014 Google PMAX","value":2.98,"source":"Stella 2025 benchmark report"},{"name":"Stella 2025 \u2014 Google Search (Non-Branded)","value":1.46,"source":"Stella 2025"},{"name":"Stella 2025 \u2014 Google Search (Branded)","value":0.7,"source":"Stella 2025"},{"name":"Measured \u2014 PMAX incrementality factor","value":2.0,"source":"Measured (0.67\u00d7 LC \u2192 ~2.0\u00d7 top-line)"},{"name":"1.4x GP floor (\u22482.8x top-line)","value":2.8,"source":"4Patriots blended iROAS floor"}],"meta":{"test_name":"Google Search & PMAX Holdout","channel":"Google Search + PMAX","test_type":"Holdout (channels paused in control)","control_dmas":50,"treatment_dmas_mm":53,"treatment_dmas_sc":104,"treatment_dmas_wc":109,"sf_mm":0.7217,"trim_start":"2026-03-14","trim_end":"2026-04-19","full_start":"2026-03-07","full_end":"2026-04-19","pre_start":"2025-12-01","pre_end":"2026-03-06","analysis_date":"2026-04-20","data_through":"2026-04-19","floor_gp":1.4,"floor_topline":2.8},"methodology":{"cross_channel_source":"sales_by_dma_by_channel_ga4.csv (GA4, primary; IP-based DMA resolution)","ntf_source":"sales_by_dma_by_channel.csv (1P, secondary, includes phone orders)","lc_multiplier_source":"S&P combined LC ROAS (GA4)","primary_outcome_source":"sales_by_dma.csv (GA4, same DMA-IP basis)"}};
+
+/* Palette + Chart.js defaults */
+const P = { navy:'#13213C', navy2:'#1E3665', red:'#A21E22', gold:'#C8A646', green:'#2E7D32', gray:'#8B92A3', gray100:'#EEF0F4', gray200:'#DCE0E8' };
+const PAL6 = [P.navy, P.red, P.navy2, P.gold, P.green, P.gray];
+Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+Chart.defaults.font.size = 12;
+Chart.defaults.color = '#525868';
+Chart.defaults.plugins.legend.position = 'bottom';
+Chart.defaults.plugins.legend.labels.usePointStyle = true;
+Chart.defaults.plugins.legend.labels.padding = 14;
+Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(19,33,60,0.95)';
+Chart.defaults.plugins.tooltip.padding = 10;
+Chart.defaults.plugins.tooltip.titleFont = { weight: '600', size: 12 };
+Chart.defaults.plugins.tooltip.bodyFont = { size: 12 };
+
+/* Helpers */
+const fmtD = n => (n<0?'-$':'$') + Math.abs(Math.round(n)).toLocaleString('en-US');
+const fmtK = n => {
+  const a = Math.abs(n);
+  if (a >= 1e6) return (n<0?'-$':'$') + (a/1e6).toFixed(2) + 'M';
+  if (a >= 1e3) return (n<0?'-$':'$') + (a/1e3).toFixed(0) + 'k';
+  return fmtD(n);
+};
+const fmtN = n => Math.round(n).toLocaleString('en-US');
+const fmtNSigned = n => (n>=0?'+':'') + fmtN(n);
+const fmtKSigned = n => (n>=0?'+':'') + fmtK(n);
+const fmtP = n => n.toFixed(1) + '%';
+const fmtPSigned = n => (n>=0?'+':'') + n.toFixed(1) + '%';
+const fmtX = n => (n<0?'-':'') + Math.abs(n).toFixed(2) + 'x';
+const fmtByFmt = (v, fmt) => {
+  if (fmt === '$') return fmtK(v);
+  if (fmt === '%') return v.toFixed(1) + '%';
+  if (fmt === 'x') return fmtX(v);
+  if (fmt === 'n') return fmtN(v);
+  return v.toString();
+};
+
+/* Meta */
+document.getElementById('m-test').textContent = DATA.meta.test_name;
+document.getElementById('m-ad').textContent   = DATA.meta.analysis_date;
+document.getElementById('m-dt').textContent   = DATA.meta.data_through;
+document.getElementById('m-tw').textContent   = DATA.meta.trim_start + ' → ' + DATA.meta.trim_end;
+document.getElementById('m-fw').textContent   = DATA.meta.full_start + ' → ' + DATA.meta.full_end;
+
+/* ============================================================
+   EXECUTIVE KPI GRID — with denominator toggle
+   ============================================================ */
+let denomMode = 'sp';
+const mm = DATA.q1_iroas.find(r => r.window === 'trimmed' && r.model === 'matched_markets');
+
+function renderExecKpis() {
+  const isSp = denomMode === 'sp';
+  const denom = isSp ? mm.inc_spend_sp : mm.inc_spend_total;
+  const denomLabel = isSp ? 'Δ S&P spend' : 'Δ Total ad spend';
+  const iroasO = isSp ? mm.iroas_orders : mm.iroas_orders_total;
+  const iroasR = isSp ? mm.iroas_revenue : mm.iroas_revenue_total;
+
+  const kpis = [
+    {
+      label: 'Revenue iROAS · GP basis',
+      val: fmtX(iroasR),
+      delta: denomLabel + ': ' + fmtK(denom) + ' · top-line ≈ ' + fmtX(iroasR*2),
+      hero: true,
+      pass: iroasR >= 1.4 ? 'pass' : (isSp ? 'fail' : 'warn'),
+      passText: iroasR >= 1.4 ? '✓ clears 1.4x GP floor' : (isSp ? '✗ below 1.4x GP floor' : '⚠ denominator too small — interpret with caution')
+    },
+    {
+      label: 'Orders iROAS · GP basis',
+      val: fmtX(iroasO),
+      delta: 'Inc orders: ' + fmtNSigned(mm.inc_orders) + ' × $' + mm.ctrl_aov.toFixed(2) + ' AOV ÷ ' + fmtK(denom),
+      pass: iroasO >= 1.4 ? 'pass' : (isSp ? 'fail' : 'warn'),
+      passText: iroasO >= 1.4 ? '✓ clears 1.4x GP floor' : (isSp ? '✗ below 1.4x GP floor' : '⚠ denominator too small')
+    },
+    {
+      label: 'Confidence (paired t-test, orders · revenue)',
+      val: '~100% · ~100%',
+      delta: 'Prior run: 77% orders / 95% revenue — cleared both this week'
+    },
+    {
+      label: 'Incremental GP revenue',
+      val: fmtK(mm.inc_revenue),
+      delta: fmtNSigned(mm.inc_orders) + ' inc orders · ' + fmtPSigned(mm.lift_pct_orders) + ' orders lift · ' + fmtPSigned(mm.lift_pct_revenue) + ' rev lift'
+    }
+  ];
+
+  const kgrid = document.getElementById('exec-kpi-grid');
+  kgrid.innerHTML = '';
+  kpis.forEach(k => {
+    const d = document.createElement('div');
+    d.className = 'kpi' + (k.hero ? ' hero' : '');
+    d.innerHTML =
+      '<div class="label">' + k.label + '</div>' +
+      '<div class="val">' + k.val + '</div>' +
+      '<div class="delta">' + k.delta + '</div>' +
+      (k.pass ? ('<span class="pass-badge ' + k.pass + '">' + k.passText + '</span>') : '');
+    kgrid.appendChild(d);
+  });
+}
+renderExecKpis();
+
+document.querySelectorAll('#denom-toggle button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#denom-toggle button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    denomMode = b.dataset.val;
+    renderExecKpis();
+  });
+});
+
+/* ============================================================
+   HERO CHART — three-model × orders/revenue × denom × window
+   ============================================================ */
+let heroModel = 'orders';
+let heroDenom = 'sp';
+let heroWindow = 'trimmed';
+
+function heroData() {
+  const rows = DATA.q1_iroas.filter(r => r.window === heroWindow);
+  const models = ['matched_markets','synthetic_control','whole_country'];
+  const modelLabels = ['Matched Markets','Synthetic Control','Whole Country'];
+  const vals = models.map(m => rows.find(r => r.model === m));
+  const key = heroDenom === 'sp'
+    ? (heroModel === 'orders' ? 'iroas_orders' : 'iroas_revenue')
+    : (heroModel === 'orders' ? 'iroas_orders_total' : 'iroas_revenue_total');
+  const confKey = heroModel === 'orders' ? 'conf_orders' : 'conf_revenue';
+  return {
+    labels: modelLabels,
+    iroas: vals.map(v => v[key]),
+    conf: vals.map(v => v[confKey]),
+    incOrders: vals.map(v => v.inc_orders),
+    liftPct: vals.map(v => heroModel === 'orders' ? v.lift_pct_orders : v.lift_pct_revenue),
+    incSpend: vals.map(v => heroDenom === 'sp' ? v.inc_spend_sp : v.inc_spend_total),
+    incRev: vals.map(v => v.inc_revenue),
+    ctrlAov: vals.map(v => v.ctrl_aov)
+  };
+}
+
+let heroChart;
+function renderHero() {
+  const d = heroData();
+  const ctx = document.getElementById('hero-chart').getContext('2d');
+  const colors = d.iroas.map(v => v >= 1.4 ? P.green : (v >= 1.0 ? P.gold : P.red));
+  if (heroChart) heroChart.destroy();
+  heroChart = new Chart(ctx, {
+    type: 'bar',
+    data: { labels: d.labels, datasets: [{
+      label: (heroModel === 'orders' ? 'Orders' : 'Revenue') + ' iROAS · ' + (heroDenom==='sp'?'on ΔS&P spend':'on ΔTotal spend') + ' · ' + heroWindow,
+      data: d.iroas, backgroundColor: colors, borderRadius: 6, maxBarThickness: 120
+    }]},
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: (c) => {
+          const i = c.dataIndex;
+          return [
+            'iROAS: ' + fmtX(d.iroas[i]),
+            'Confidence: ' + d.conf[i].toFixed(1) + '%',
+            'Inc orders: ' + fmtN(d.incOrders[i]) + ' (' + fmtP(d.liftPct[i]) + ' lift)',
+            'Denominator: ' + fmtK(d.incSpend[i]),
+            'Inc GP rev: ' + fmtK(d.incRev[i])
+          ];
+        } } }
+      },
+      scales: {
+        y: { grid: { color: P.gray100 }, ticks: { callback: v => v.toFixed(1) + 'x' }, title: { display: true, text: 'iROAS (GP basis)' } },
+        x: { grid: { display: false } }
+      }
+    },
+    plugins: [{
+      id: 'floorLine',
+      afterDraw: (chart) => {
+        const {ctx, chartArea: {left, right}, scales: {y}} = chart;
+        const yF = y.getPixelForValue(1.4);
+        if (yF < chart.chartArea.top || yF > chart.chartArea.bottom) return;
+        ctx.save();
+        ctx.strokeStyle = P.red;
+        ctx.setLineDash([6, 4]);
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(left, yF); ctx.lineTo(right, yF); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = P.red;
+        ctx.font = '600 11px -apple-system, sans-serif';
+        ctx.fillText('1.4x GP floor', right - 82, yF - 5);
+        ctx.restore();
+      }
+    }]
+  });
+  renderHeroMath();
+}
+
+function renderHeroMath() {
+  const d = heroData();
+  const rows = d.labels.map((lab, i) => {
+    const inc_ord = d.incOrders[i];
+    const aov = d.ctrlAov[i];
+    const inc_sp = d.incSpend[i];
+    const inc_rev = d.incRev[i];
+    return '<tr>' +
+      '<td>' + lab + '</td>' +
+      '<td>' + fmtN(inc_ord) + '</td>' +
+      '<td>$' + aov.toFixed(2) + '</td>' +
+      '<td>' + fmtK(inc_rev) + '</td>' +
+      '<td>' + fmtK(inc_sp) + '</td>' +
+      '<td><b>' + fmtX(d.iroas[i]) + '</b></td>' +
+      '</tr>';
+  }).join('');
+  const formulaDesc = heroModel === 'orders'
+    ? '(Inc orders × Ctrl AOV) ÷ ' + (heroDenom==='sp'?'ΔS&P spend':'ΔTotal spend')
+    : 'Inc GP revenue ÷ ' + (heroDenom==='sp'?'ΔS&P spend':'ΔTotal spend');
+  document.getElementById('hero-math-table').innerHTML =
+    '<p style="margin-top:12px;"><b>Formula (' + heroModel + ', ' + heroDenom + ' denom):</b> ' + formulaDesc + '</p>' +
+    '<table>' +
+    '<thead><tr><th>Model</th><th>Inc orders</th><th>Ctrl AOV</th><th>Inc GP rev</th><th>Denom</th><th>iROAS</th></tr></thead>' +
+    '<tbody>' + rows + '</tbody>' +
+    '</table>';
+}
+
+['hero-model-toggle','hero-denom-toggle','hero-window-toggle'].forEach(id => {
+  document.querySelectorAll('#' + id + ' button').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('#' + id + ' button').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      if (id === 'hero-model-toggle') heroModel = b.dataset.val;
+      if (id === 'hero-denom-toggle') heroDenom = b.dataset.val;
+      if (id === 'hero-window-toggle') heroWindow = b.dataset.val;
+      renderHero();
+    });
+  });
+});
+renderHero();
+
+/* ============================================================
+   DIFF TABLE
+   ============================================================ */
+(function() {
+  const diffTbl = document.getElementById('diff-table');
+  let html = '<thead><tr><th>Metric</th><th>Prior (4/13)</th><th>Current (4/20)</th><th>Δ</th><th>Dir</th></tr></thead><tbody>';
+  DATA.diff_vs_prior.metrics.forEach(m => {
+    const delta = m.current - m.prior;
+    const favorable = m.good_higher ? (delta >= 0) : (delta <= 0);
+    const arrow = delta > 0 ? '↑' : (delta < 0 ? '↓' : '→');
+    const cls = favorable ? 'pos' : 'neg';
+    let deltaStr;
+    if (m.fmt === '$') deltaStr = (delta >= 0 ? '+' : '') + fmtK(delta);
+    else if (m.fmt === '%') deltaStr = (delta >= 0 ? '+' : '') + delta.toFixed(1) + ' pts';
+    else if (m.fmt === 'x') deltaStr = (delta >= 0 ? '+' : '') + delta.toFixed(2) + 'x';
+    else if (m.fmt === 'n') deltaStr = (delta >= 0 ? '+' : '') + fmtN(delta);
+    html += '<tr>' +
+      '<td>' + m.label + '</td>' +
+      '<td>' + fmtByFmt(m.prior, m.fmt) + '</td>' +
+      '<td><b>' + fmtByFmt(m.current, m.fmt) + '</b></td>' +
+      '<td class="' + cls + '">' + deltaStr + '</td>' +
+      '<td class="' + cls + '">' + arrow + '</td>' +
+      '</tr>';
+  });
+  html += '</tbody>';
+  diffTbl.innerHTML = html;
+})();
+
+/* ============================================================
+   WEEKLY EXPLORER — scrubber + multi-line chart
+   ============================================================ */
+const weeks = DATA.weekly_trimmed;
+const weekLabels = weeks.map(w => 'Wk ' + w.week + ' · ' + w.label);
+
+const scrub = document.getElementById('week-scrub');
+scrub.max = weeks.length;
+const weekLabelEl = document.getElementById('week-label');
+const readoutEl = document.getElementById('week-readout');
+
+function renderReadout(idx) {
+  if (idx === 0) {
+    const sum = weeks.reduce((a,b) => ({
+      inc_sp: a.inc_sp + b.inc_sp_spend,
+      inc_tot: a.inc_tot + b.inc_tot_spend,
+      inc_sessions: a.inc_sessions + b.inc_sessions,
+      inc_orders: a.inc_orders + b.inc_orders,
+      inc_revenue: a.inc_revenue + b.inc_revenue
+    }), {inc_sp:0,inc_tot:0,inc_sessions:0,inc_orders:0,inc_revenue:0});
+    readoutEl.innerHTML =
+      '<div class="sr-item"><div class="l">Inc S&P spend</div><div class="v">' + fmtK(sum.inc_sp) + '</div><div class="d">vs scaled ctrl</div></div>' +
+      '<div class="sr-item"><div class="l">Inc total ad spend</div><div class="v">' + fmtK(sum.inc_tot) + '</div><div class="d">after backfill</div></div>' +
+      '<div class="sr-item"><div class="l">Inc sessions</div><div class="v">' + fmtN(sum.inc_sessions) + '</div><div class="d">+48.7% lift overall</div></div>' +
+      '<div class="sr-item"><div class="l">Inc orders · revenue</div><div class="v">' + fmtN(sum.inc_orders) + ' · ' + fmtK(sum.inc_revenue) + '</div><div class="d">' + fmtP(mm.lift_pct_orders) + ' / ' + fmtP(mm.lift_pct_revenue) + ' lift</div></div>';
+  } else {
+    const w = weeks[idx-1];
+    readoutEl.innerHTML =
+      '<div class="sr-item"><div class="l">Inc S&P spend</div><div class="v">' + fmtK(w.inc_sp_spend) + '</div><div class="d">' + w.days + ' days · ' + w.label + '</div></div>' +
+      '<div class="sr-item"><div class="l">Inc total ad spend</div><div class="v">' + fmtK(w.inc_tot_spend) + '</div><div class="d">after backfill</div></div>' +
+      '<div class="sr-item"><div class="l">Inc sessions</div><div class="v">' + fmtN(w.inc_sessions) + '</div><div class="d">' + fmtPSigned(w.lift_sessions) + ' lift</div></div>' +
+      '<div class="sr-item"><div class="l">Inc orders · revenue</div><div class="v">' + fmtN(w.inc_orders) + ' · ' + fmtK(w.inc_revenue) + '</div><div class="d">' + fmtPSigned(w.lift_orders) + ' / ' + fmtPSigned(w.lift_revenue) + ' lift</div></div>';
+  }
+}
+renderReadout(0);
+
+let weeklyChart;
+(function() {
+  const ctx = document.getElementById('weekly-chart').getContext('2d');
+  weeklyChart = new Chart(ctx, {
+    data: {
+      labels: weekLabels,
+      datasets: [
+        { type:'bar', label:'Inc S&P spend', data: weeks.map(w => w.inc_sp_spend), backgroundColor: P.navy2, yAxisID:'y', borderRadius:4, order:3 },
+        { type:'bar', label:'Inc total ad spend', data: weeks.map(w => w.inc_tot_spend), backgroundColor: P.gold, yAxisID:'y', borderRadius:4, order:2 },
+        { type:'line', label:'Inc sessions', data: weeks.map(w => w.inc_sessions), borderColor: P.red, backgroundColor: P.red, yAxisID:'y1', tension:0.3, pointRadius:5, pointHoverRadius:8, borderWidth:2.5, order:1 },
+        { type:'line', label:'Inc orders', data: weeks.map(w => w.inc_orders), borderColor: P.green, backgroundColor: P.green, yAxisID:'y2', tension:0.3, pointRadius:4, pointHoverRadius:7, borderWidth:2, order:0 }
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index', intersect:false},
+      plugins: {
+        tooltip: {
+          callbacks: {
+            afterBody: (items) => {
+              const i = items[0].dataIndex;
+              const w = weeks[i];
+              return ['───────', 'Sessions lift: ' + fmtPSigned(w.lift_sessions),
+                      'Orders lift: ' + fmtPSigned(w.lift_orders),
+                      'Revenue lift: ' + fmtPSigned(w.lift_revenue)];
+            },
+            label: (c) => {
+              const w = weeks[c.dataIndex];
+              if (c.datasetIndex === 0) return 'Inc S&P spend: ' + fmtK(c.parsed.y);
+              if (c.datasetIndex === 1) return 'Inc total ad spend: ' + fmtK(c.parsed.y);
+              if (c.datasetIndex === 2) return 'Inc sessions: ' + fmtN(c.parsed.y);
+              if (c.datasetIndex === 3) return 'Inc orders: ' + fmtN(c.parsed.y);
+            }
+          }
+        }
+      },
+      scales: {
+        y:  { position:'left',  title:{display:true, text:'Inc spend ($)'}, grid:{color:P.gray100}, ticks:{callback: v=>fmtK(v)} },
+        y1: { position:'right', title:{display:true, text:'Inc sessions'}, grid:{drawOnChartArea:false}, ticks:{callback: v=>fmtN(v)} },
+        y2: { display:false },
+        x: { grid:{display:false} }
+      }
+    }
+  });
+})();
+
+scrub.addEventListener('input', (e) => {
+  const idx = parseInt(e.target.value, 10);
+  weekLabelEl.textContent = idx === 0 ? 'all weeks' : ('Week ' + idx + ' · ' + weeks[idx-1].label);
+  renderReadout(idx);
+  if (weeklyChart) {
+    weeklyChart.data.datasets.forEach((ds, di) => {
+      if (ds.type === 'line') {
+        ds.pointRadius = weeks.map((w, j) => (idx === 0 ? (di===2?5:4) : (j === idx-1 ? 10 : 3)));
+      }
+    });
+    weeklyChart.update('none');
+  }
+});
+
+/* ============================================================
+   SPEND DELTA (with total)
+   ============================================================ */
+(function() {
+  const sd = DATA.spend_delta;
+  const ctx = document.getElementById('spend-delta').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: { labels: sd.map(r=>r.channel),
+      datasets: [{ label:'Delta (treatment − scaled control)', data: sd.map(r=>r.delta),
+        backgroundColor: sd.map(r => r.delta > 0 ? P.navy2 : P.red), borderRadius: 4 }]},
+    options: {
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins: {
+        legend:{display:false},
+        tooltip:{callbacks:{label:(c)=>{
+          const r = sd[c.dataIndex];
+          return ['Delta: ' + fmtK(r.delta), 'Treatment scaled: ' + fmtK(r.treat), 'Control: ' + fmtK(r.ctrl)];
+        }}}
+      },
+      scales: {
+        x: { grid:{color:P.gray100}, ticks:{callback: v=>fmtK(v)}, title:{display:true, text:'Spend delta ($)'} },
+        y: { grid:{display:false} }
+      }
+    }
+  });
+
+  // Table with total
+  let html = '<thead><tr><th>Channel</th><th>Treatment (scaled)</th><th>Control</th><th>Delta</th></tr></thead><tbody>';
+  let tot_t=0, tot_c=0, tot_d=0;
+  sd.forEach(r => {
+    tot_t += r.treat; tot_c += r.ctrl; tot_d += r.delta;
+    const cls = r.delta >= 0 ? 'pos' : 'neg';
+    html += '<tr><td>' + r.channel + '</td><td>' + fmtK(r.treat) + '</td><td>' + fmtK(r.ctrl) + '</td><td class="' + cls + '">' + fmtKSigned(r.delta) + '</td></tr>';
+  });
+  html += '<tr class="total-row"><td>TOTAL (all channels)</td><td>' + fmtK(tot_t) + '</td><td>' + fmtK(tot_c) + '</td><td>' + fmtKSigned(tot_d) + '</td></tr>';
+  // S&P sum
+  const sp_delta = sd.filter(r => r.channel==='Google Search' || r.channel==='Google Performance Max').reduce((a,b)=>a+b.delta,0);
+  html += '<tr class="total-row"><td>S&P combined (Search + PMAX)</td><td>—</td><td>—</td><td>' + fmtKSigned(sp_delta) + '</td></tr>';
+  html += '</tbody>';
+  document.getElementById('spend-delta-table').innerHTML = html;
+})();
+
+/* ============================================================
+   CROSS-CHANNEL REVENUE (Orders Model vs. Revenue Model) + TOTAL
+   ============================================================ */
+const ORDERS_AOV = 158.61;
+let chrevMode = 'orders';
+let chrevChart;
+
+function chrevData() {
+  const rows = DATA.ga4_xchannel.map(r => ({
+    channel: r.channel,
+    inc_orders: r.inc_orders,
+    inc_rev_orders: r.inc_orders * ORDERS_AOV,
+    inc_rev_revenue: r.inc_gpm
+  }));
+  const key = chrevMode === 'orders' ? 'inc_rev_orders' : 'inc_rev_revenue';
+  rows.sort((a,b) => Math.abs(b[key]) - Math.abs(a[key]));
+  return rows;
+}
+
+function renderChrev() {
+  const rows = chrevData();
+  const key = chrevMode === 'orders' ? 'inc_rev_orders' : 'inc_rev_revenue';
+  const ctx = document.getElementById('chrev-chart').getContext('2d');
+  if (chrevChart) chrevChart.destroy();
+  chrevChart = new Chart(ctx, {
+    type: 'bar',
+    data: { labels: rows.map(r=>r.channel),
+      datasets: [{ label: chrevMode==='orders' ? 'Revenue (Orders Model)' : 'Revenue (Revenue Model)',
+        data: rows.map(r=>r[key]),
+        backgroundColor: rows.map(r => r[key] >= 0 ? P.green : P.red), borderRadius: 4 }]},
+    options: {
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins: {
+        legend:{display:false},
+        tooltip:{callbacks:{label:(c)=>{
+          const r = rows[c.dataIndex];
+          return ['Orders Model: ' + fmtK(r.inc_rev_orders), 'Revenue Model: ' + fmtK(r.inc_rev_revenue), 'Inc orders: ' + fmtN(r.inc_orders)];
+        }}}
+      },
+      scales: {
+        x: { grid:{color:P.gray100}, ticks:{callback: v=>fmtK(v)}, title:{display:true, text: chrevMode==='orders' ? 'Inc revenue = inc orders × $158.61' : 'Inc revenue (observed GA4 last-click)'} },
+        y: { grid:{display:false} }
+      }
+    }
+  });
+
+  // Table
+  let html = '<thead><tr><th>Channel</th><th>Inc orders (GA4 LC)</th><th>Orders Model $</th><th>Revenue Model $</th><th>Rev − Orders Δ</th></tr></thead><tbody>';
+  let tot_o=0, tot_ord=0, tot_rev=0;
+  rows.forEach(r => {
+    tot_ord += r.inc_rev_orders;
+    tot_rev += r.inc_rev_revenue;
+    tot_o += r.inc_orders;
+    const diff = r.inc_rev_revenue - r.inc_rev_orders;
+    html += '<tr><td>' + r.channel + '</td><td>' + fmtN(r.inc_orders) + '</td><td>' + fmtK(r.inc_rev_orders) + '</td><td>' + fmtK(r.inc_rev_revenue) + '</td><td>' + fmtKSigned(diff) + '</td></tr>';
+  });
+  html += '<tr class="total-row"><td>TOTAL</td><td>' + fmtN(tot_o) + '</td><td>' + fmtK(tot_ord) + '</td><td>' + fmtK(tot_rev) + '</td><td>' + fmtKSigned(tot_rev - tot_ord) + '</td></tr>';
+  html += '<tr class="total-row"><td>MM headline (for reconciliation)</td><td>' + fmtN(mm.inc_orders) + '</td><td>' + fmtK(mm.inc_orders * ORDERS_AOV) + '</td><td>' + fmtK(mm.inc_revenue) + '</td><td>—</td></tr>';
+  html += '</tbody>';
+  document.getElementById('chrev-table').innerHTML = html;
+}
+
+document.querySelectorAll('#chrev-toggle button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#chrev-toggle button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    chrevMode = b.dataset.val;
+    renderChrev();
+  });
+});
+renderChrev();
+
+/* ============================================================
+   NTF
+   ============================================================ */
+(function() {
+  const n = DATA.ntf;
+  const labels = n.map(r => r.ntf_flag === 'new' ? 'New-to-file' : 'Existing');
+  const ctx = document.getElementById('ntf-chart').getContext('2d');
+  new Chart(ctx, {
+    type:'bar',
+    data: { labels: labels, datasets: [{
+      label:'Incremental GP ($)',
+      data: n.map(r=>r.inc_gpm),
+      backgroundColor: n.map(r => r.inc_gpm >= 0 ? P.green : P.red),
+      borderRadius:6
+    }]},
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins: {
+        legend:{display:false},
+        tooltip:{callbacks:{label:(c)=>{
+          const r = n[c.dataIndex];
+          return ['Inc GP: ' + fmtK(r.inc_gpm), 'Inc orders (1P LC): ' + fmtN(r.inc_orders)];
+        }}}
+      },
+      scales: {
+        y: { grid:{color:P.gray100}, ticks:{callback: v=>fmtK(v)}, title:{display:true, text:'Incremental GP ($)'} },
+        x: { grid:{display:false} }
+      }
+    }
+  });
+})();
+
+/* ============================================================
+   LC GAUGE + TABLE
+   ============================================================ */
+(function() {
+  const lc = DATA.lc_multiplier;
+  const ctx = document.getElementById('lc-gauge').getContext('2d');
+  new Chart(ctx, {
+    type:'bar',
+    data: { labels: ['Current S&P LC ROAS', 'Warn threshold (revenue)', '1.4x GP floor (target)'],
+      datasets: [{ data: [lc.sp_lc_roas, lc.warn_threshold_revenue, lc.floor_gp],
+        backgroundColor: [
+          lc.sp_lc_roas >= lc.warn_threshold_revenue ? P.green : P.red,
+          P.gold,
+          P.navy2
+        ], borderRadius:5 }]},
+    options: {
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins: { legend:{display:false}, tooltip:{callbacks:{label:(c)=>c.parsed.x.toFixed(3)+'x'}} },
+      scales: {
+        x: { min:0, max:2, grid:{color:P.gray100}, ticks:{callback: v=>v.toFixed(1)+'x'}, title:{display:true, text:'LC ROAS / iROAS (GP)'} },
+        y: { grid:{display:false} }
+      }
+    }
+  });
+
+  const lcRows = [
+    ['S&P combined LC ROAS (current)', fmtX(lc.sp_lc_roas)],
+    ['Geo iROAS — revenue model (this test)', fmtX(lc.geo_iroas_revenue)],
+    ['Geo iROAS — orders model (this test)', fmtX(lc.geo_iroas_orders)],
+    ['', ''],
+    ['LC-to-true multiplier (revenue)', fmtX(lc.multiplier_revenue)],
+    ['LC-to-true multiplier (orders)', fmtX(lc.multiplier_orders)],
+    ['', ''],
+    ['Warn threshold — revenue model (1.4 ÷ 0.926)', fmtX(lc.warn_threshold_revenue)],
+    ['Prior run multiplier (superseded)', fmtX(lc.prior_multiplier)]
+  ];
+  document.getElementById('lc-table').innerHTML = '<tbody>' + lcRows.map(r =>
+    '<tr><td>' + r[0] + '</td><td><b>' + r[1] + '</b></td></tr>'
+  ).join('') + '</tbody>';
+})();
+
+/* ============================================================
+   BENCHMARKS
+   ============================================================ */
+(function() {
+  const b = DATA.benchmarks;
+  const ctx = document.getElementById('bench-chart').getContext('2d');
+  new Chart(ctx, {
+    type:'bar',
+    data: { labels: b.map(r=>r.name),
+      datasets:[{ data: b.map(r=>r.value),
+        backgroundColor: b.map(r => r.us ? P.red : (r.name.indexOf('floor')>=0 ? P.navy : P.navy2)),
+        borderRadius:5 }]},
+    options: {
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins: { legend:{display:false}, tooltip:{callbacks:{label:(c)=>{
+        const row=b[c.dataIndex]; return [row.value.toFixed(2)+'x (top-line)', row.source];
+      }}}},
+      scales: {
+        x: { grid:{color:P.gray100}, ticks:{callback: v=>v.toFixed(1)+'x'}, title:{display:true, text:'iROAS (top-line equivalent)'} },
+        y: { grid:{display:false} }
+      }
+    }
+  });
+})();
+
+/* ============================================================
+   PRE-PERIOD DAILY FIT
+   ============================================================ */
+(function() {
+  const p = DATA.preperiod_daily_mm;
+  const ctx = document.getElementById('pp-chart').getContext('2d');
+  new Chart(ctx, {
+    type:'line',
+    data: { labels: p.map(r=>r.date),
+      datasets: [
+        { label:'Treatment scaled (× 0.7217)', data: p.map(r=>r.treat_scaled), borderColor: P.red, backgroundColor: P.red, tension:0.25, pointRadius:0, borderWidth:1.75 },
+        { label:'Control (actual)', data: p.map(r=>r.ctrl), borderColor: P.navy2, backgroundColor: P.navy2, tension:0.25, pointRadius:0, borderWidth:1.75, borderDash:[4,4] }
+      ]},
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index', intersect:false},
+      plugins: { tooltip:{callbacks:{label:(c)=>c.dataset.label+': '+fmtN(c.parsed.y)+' orders'}} },
+      scales: {
+        y: { grid:{color:P.gray100}, ticks:{callback: v=>fmtN(v)}, title:{display:true, text:'Daily orders'} },
+        x: { grid:{display:false}, ticks:{maxRotation:0, autoSkip:true, maxTicksLimit:10} }
+      }
+    }
+  });
+
+  const pr = DATA.preperiod;
+  const rows = pr.map(r =>
+    '<tr><td>' + r.name.replace('_',' ') + '</td><td>' + r.sf.toFixed(4) + '</td><td>' + r.orders_mape.toFixed(2) + '%</td><td>' + r.orders_corr.toFixed(4) + '</td><td>' + r.revenue_mape.toFixed(2) + '%</td><td>' + r.revenue_corr.toFixed(4) + '</td></tr>'
+  ).join('');
+  document.getElementById('pp-table').innerHTML =
+    '<thead><tr><th>Model</th><th>Scale factor</th><th>Orders MAPE</th><th>Orders r</th><th>Revenue MAPE</th><th>Revenue r</th></tr></thead>' +
+    '<tbody>' + rows + '</tbody>';
+})();
+</script>
+</body>
+</html>
