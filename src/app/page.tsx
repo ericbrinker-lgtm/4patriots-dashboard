@@ -1,6 +1,8 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { jwtVerify } from 'jose';
+import { readFile } from 'fs/promises';
+import { join } from 'path';
 
 const secret = new TextEncoder().encode(
   process.env.SESSION_SECRET || 'your-secret-key-change-this-in-vercel'
@@ -11,32 +13,27 @@ export default async function Home() {
   const token = cookieStore.get('session')?.value;
 
   if (!token) {
-    // No session, redirect to Google login
     redirect('/api/auth/google');
   }
 
   try {
-    // Verify session token
     const verified = await jwtVerify(token, secret);
     const email = verified.payload.email as string;
 
-    // Verify email domain
     if (!email.endsWith('@4patriots.com')) {
       redirect('/api/auth/google');
     }
 
-    // Session is valid, show the dashboard
+    // Serve the menu page
+    const filePath = join(process.cwd(), 'public', 'index.html');
+    const content = await readFile(filePath, 'utf-8');
+
     return (
-      <div>
-        <p>Authenticated as: {email}</p>
-        <iframe
-          src="/dashboard"
-          style={{ width: '100%', height: '100vh', border: 'none' }}
-        />
-      </div>
+      <html>
+        <body dangerouslySetInnerHTML={{ __html: content }} />
+      </html>
     );
   } catch (error) {
-    // Invalid token, redirect to login
     console.error('Token verification failed:', error);
     redirect('/api/auth/google');
   }
