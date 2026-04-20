@@ -74,8 +74,8 @@ export async function GET(request: NextRequest) {
       .setProtectedHeader({ alg: 'HS256' })
       .sign(secret);
 
-    // Create response redirecting to dashboard
-    const response = NextResponse.redirect(new URL('/dashboard.html', baseUrl));
+    // Create response redirecting to menu
+    const response = NextResponse.redirect(new URL('/index.html', baseUrl));
 
     // Set secure session cookie
     response.cookies.set('session', sessionToken, {
