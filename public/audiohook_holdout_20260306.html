@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audiohook podcast holdout — 2026-04-21 readout (GA4)</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --navy: #13213C;
+    --navy-2: #1E3665;
+    --red: #A21E22;
+    --gold: #C8A646;
+    --green: #2E7D32;
+    --gray-50: #F7F8FA;
+    --gray-100: #EEF0F4;
+    --gray-200: #DCE0E8;
+    --gray-400: #8B92A3;
+    --gray-600: #525868;
+    --gray-900: #1A1E28;
+    --shadow: 0 1px 2px rgba(19,33,60,0.04), 0 4px 12px rgba(19,33,60,0.06);
+    --shadow-lg: 0 4px 8px rgba(19,33,60,0.06), 0 12px 32px rgba(19,33,60,0.08);
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-900);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--navy-2); }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 32px 28px 80px; }
+
+  /* Header */
+  header.top {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
+    color: #fff;
+    padding: 36px 28px 44px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    margin-bottom: 28px;
+  }
+  header.top .eyebrow {
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--gold); font-weight: 600; margin-bottom: 8px;
+  }
+  header.top h1 {
+    margin: 0 0 6px 0; font-size: 32px; font-weight: 700; letter-spacing: -0.01em;
+  }
+  header.top .sub {
+    color: rgba(255,255,255,0.78); font-size: 15px; max-width: 780px;
+  }
+  header.top .meta-row {
+    margin-top: 20px; display: flex; gap: 24px; flex-wrap: wrap;
+    font-size: 13px; color: rgba(255,255,255,0.78);
+  }
+  header.top .meta-row b { color: #fff; font-weight: 600; }
+
+  /* Layered section labels */
+  .layer-label {
+    display: inline-block;
+    font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+    font-weight: 700; padding: 4px 10px; border-radius: 999px;
+    margin-bottom: 10px;
+  }
+  .layer-exec { background: rgba(162,30,34,0.08); color: var(--red); }
+  .layer-tac  { background: rgba(30,54,101,0.08); color: var(--navy-2); }
+  .layer-deep { background: rgba(138,138,138,0.14); color: var(--gray-600); }
+
+  /* KPI grid */
+  .kpi-grid {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;
+    margin-bottom: 28px;
+  }
+  @media (max-width: 1100px) { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 700px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+  .kpi {
+    background: #fff; border-radius: var(--radius); padding: 20px 22px;
+    box-shadow: var(--shadow); border: 1px solid var(--gray-100);
+    position: relative;
+  }
+  .kpi .label { font-size: 12px; color: var(--gray-600); font-weight: 500; letter-spacing: 0.02em; }
+  .kpi .val { font-size: 34px; font-weight: 700; color: var(--navy); line-height: 1.1; margin-top: 6px; letter-spacing: -0.02em; }
+  .kpi .delta { margin-top: 6px; font-size: 12px; color: var(--gray-600); }
+  .kpi .delta.up { color: var(--green); }
+  .kpi .delta.down { color: var(--red); }
+  .kpi.hero { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%); color: #fff; }
+  .kpi.hero .label { color: rgba(255,255,255,0.72); }
+  .kpi.hero .val { color: #fff; }
+  .kpi.hero .delta { color: rgba(255,255,255,0.82); }
+  .kpi .pass-badge {
+    display: inline-block; margin-top: 8px; padding: 2px 8px; border-radius: 4px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.02em;
+  }
+  .kpi .pass-badge.pass { background: rgba(46,125,50,0.14); color: var(--green); }
+  .kpi .pass-badge.fail { background: rgba(162,30,34,0.14); color: var(--red); }
+
+  /* Cards */
+  .card {
+    background: #fff; border-radius: var(--radius); padding: 22px 24px;
+    box-shadow: var(--shadow); border: 1px solid var(--gray-100);
+    margin-bottom: 22px;
+  }
+  .card h2 {
+    margin: 0 0 4px 0; font-size: 20px; font-weight: 700; color: var(--navy);
+    letter-spacing: -0.01em;
+  }
+  .card h3 {
+    margin: 28px 0 6px 0; font-size: 15px; font-weight: 600; color: var(--navy);
+  }
+  .card .card-sub {
+    color: var(--gray-600); font-size: 13px; margin-bottom: 20px;
+    max-width: 780px; line-height: 1.5;
+  }
+
+  /* Controls */
+  .controls {
+    display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .toggle-group {
+    display: inline-flex; background: var(--gray-100); border-radius: 8px; padding: 3px;
+  }
+  .toggle-group button {
+    background: transparent; border: none; padding: 7px 14px; font-size: 13px;
+    font-weight: 500; color: var(--gray-600); border-radius: 6px;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .toggle-group button.active { background: #fff; color: var(--navy); box-shadow: 0 1px 2px rgba(19,33,60,0.08); font-weight: 600; }
+  .toggle-group button:hover:not(.active) { color: var(--navy); }
+
+  /* Chart containers */
+  .chart-box { position: relative; width: 100%; }
+  .chart-box.h300 { height: 300px; }
+  .chart-box.h360 { height: 360px; }
+  .chart-box.h420 { height: 420px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* Week scrubber */
+  .scrubber { margin-top: 8px; }
+  .scrubber label { font-size: 12px; color: var(--gray-600); font-weight: 500; }
+  .scrubber input[type="range"] {
+    width: 100%; margin-top: 8px; accent-color: var(--navy-2);
+  }
+  .scrubber-readout {
+    margin-top: 14px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;
+    background: var(--gray-50); border-radius: 8px; padding: 14px 16px;
+  }
+  @media (max-width: 700px) { .scrubber-readout { grid-template-columns: repeat(2, 1fr); } }
+  .scrubber-readout .sr-item .l { font-size: 11px; color: var(--gray-600); letter-spacing: 0.04em; text-transform: uppercase; font-weight: 600; }
+  .scrubber-readout .sr-item .v { font-size: 20px; font-weight: 700; color: var(--navy); margin-top: 2px; letter-spacing: -0.01em; }
+  .scrubber-readout .sr-item .d { font-size: 11px; color: var(--gray-600); margin-top: 1px; }
+
+  /* Click-to-reveal math */
+  details.math {
+    margin-top: 12px; background: var(--gray-50); border-radius: 8px;
+    border: 1px solid var(--gray-200);
+    transition: background 0.15s;
+  }
+  details.math[open] { background: #fff; border-color: var(--gray-200); }
+  details.math summary {
+    padding: 12px 16px; cursor: pointer; font-size: 13px; font-weight: 600;
+    color: var(--navy-2); list-style: none;
+  }
+  details.math summary::-webkit-details-marker { display: none; }
+  details.math summary::before { content: "▸ "; color: var(--gray-400); transition: transform 0.2s; display: inline-block; }
+  details.math[open] summary::before { content: "▾ "; color: var(--navy-2); }
+  details.math .math-body {
+    padding: 4px 18px 18px; font-size: 13px; line-height: 1.65; color: var(--gray-900);
+  }
+  details.math .math-body code {
+    background: var(--gray-100); padding: 2px 6px; border-radius: 4px;
+    font-family: "SF Mono", Consolas, "Liberation Mono", monospace; font-size: 12.5px;
+  }
+  details.math .math-body table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12.5px; }
+  details.math .math-body th, details.math .math-body td { text-align: right; padding: 6px 10px; border-bottom: 1px solid var(--gray-200); }
+  details.math .math-body th:first-child, details.math .math-body td:first-child { text-align: left; }
+  details.math .math-body th { color: var(--gray-600); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
+
+  /* Tables */
+  table.dtable { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.dtable th, table.dtable td {
+    padding: 9px 10px; text-align: right; border-bottom: 1px solid var(--gray-100);
+  }
+  table.dtable th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--gray-600); font-weight: 600; background: var(--gray-50); }
+  table.dtable th:first-child, table.dtable td:first-child { text-align: left; }
+  table.dtable td.pos { color: var(--green); font-weight: 600; }
+  table.dtable td.neg { color: var(--red); font-weight: 600; }
+  table.dtable tbody tr:hover { background: var(--gray-50); }
+
+  /* TL;DR callout */
+  .tldr {
+    background: #fff; border-left: 4px solid var(--red);
+    border-radius: 4px 12px 12px 4px; padding: 20px 24px;
+    box-shadow: var(--shadow); margin-bottom: 28px;
+    font-size: 15.5px; line-height: 1.6; color: var(--gray-900);
+  }
+  .tldr b { color: var(--navy); }
+  .tldr .tldr-label { display: block; font-size: 11px; color: var(--red); font-weight: 700; letter-spacing: 0.12em; margin-bottom: 8px; }
+
+  /* Flags */
+  .flag-list { margin: 12px 0 0 0; padding-left: 0; list-style: none; }
+  .flag-list li {
+    padding: 10px 14px; margin-bottom: 8px; border-radius: 8px;
+    font-size: 13px; line-height: 1.55;
+    background: var(--gray-50); border-left: 3px solid var(--gray-400);
+  }
+  .flag-list li.watch { border-left-color: var(--gold); background: rgba(200,166,70,0.08); }
+  .flag-list li.resolved { border-left-color: var(--green); background: rgba(46,125,50,0.06); }
+  .flag-list li.issue { border-left-color: var(--red); background: rgba(162,30,34,0.06); }
+  .flag-list li b { color: var(--navy); }
+
+  /* Gauge */
+  .gauge-wrap {
+    display: flex; gap: 22px; align-items: center; flex-wrap: wrap;
+  }
+  .gauge-box { flex: 0 0 280px; }
+
+  /* Footer */
+  footer.foot {
+    margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--gray-200);
+    font-size: 12px; color: var(--gray-600);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  footer.foot a { color: var(--navy-2); text-decoration: none; }
+  footer.foot a:hover { text-decoration: underline; }
+
+  /* Decision card */
+  .decision {
+    background: linear-gradient(135deg, rgba(46,125,50,0.06) 0%, rgba(46,125,50,0.02) 100%);
+    border: 1px solid rgba(46,125,50,0.22);
+    border-radius: 10px; padding: 16px 20px; margin-top: 14px;
+  }
+  .decision .head { font-size: 11px; color: var(--green); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+  .decision .body { font-size: 15px; color: var(--gray-900); margin-top: 4px; line-height: 1.5; }
+
+  /* Smaller hint text */
+  .hint { font-size: 12px; color: var(--gray-600); margin-top: 6px; }
+
+  /* Sensitivity comparison cards */
+  .sensitivity-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 16px;
+  }
+  @media (max-width: 700px) { .sensitivity-grid { grid-template-columns: 1fr; } }
+  .sens-card {
+    border-radius: 10px; padding: 20px 22px;
+    border: 2px solid var(--gray-200);
+  }
+  .sens-card.positive { border-color: var(--green); background: rgba(46,125,50,0.03); }
+  .sens-card.negative { border-color: var(--red); background: rgba(162,30,34,0.03); }
+  .sens-card .sens-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+  .sens-card.positive .sens-label { color: var(--green); }
+  .sens-card.negative .sens-label { color: var(--red); }
+  .sens-card .sens-dates { font-size: 12px; color: var(--gray-600); margin-bottom: 12px; }
+  .sens-card .sens-metric { margin-bottom: 8px; }
+  .sens-card .sens-metric .sm-label { font-size: 12px; color: var(--gray-600); }
+  .sens-card .sens-metric .sm-val { font-size: 26px; font-weight: 700; color: var(--navy); letter-spacing: -0.02em; }
+  .sens-card.negative .sens-metric .sm-val { color: var(--red); }
+  .sens-card.total {
+    border-color: var(--navy-2); background: rgba(30,54,101,0.05);
+    grid-column: 1 / -1;
+  }
+  .sens-card.total .sens-label { color: var(--navy-2); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header class="top">
+    <div class="eyebrow">Geo incrementality test · Audiohook podcast holdout</div>
+    <h1>Podcast ads drove real lift — GA4 reanalysis confirms 1.93x iROAS</h1>
+    <div class="sub">Audiohook runs 60-second non-clickable audio ads in podcasts. This holdout test measures what share of their pixel-tracked "assisted conversions" represent actual incremental orders. Data source: GA4 (IP-based DMA resolution). Scale factor: 0.7719. Spend denominator: Audiohook pixel-reported payouts ($55,468), not actual IO ($45,500). iROAS calculated against pixel payouts to model ongoing performance. Actual IO was $45,500.</div>
+    <div class="meta-row">
+      <span><b>Test:</b> Jan 24 – Mar 6, 2026</span>
+      <span><b>Cooldown:</b> Mar 7 – Apr 4, 2026</span>
+      <span><b>Pre-period:</b> Nov 30, 2025 – Jan 23, 2026</span>
+      <span><b>Analysis date:</b> Apr 21, 2026</span>
+      <span><b>DMAs:</b> 59 treatment / 59 control</span>
+      <span><b>SF:</b> 0.7719</span>
+      <span><b>Source:</b> GA4</span>
+    </div>
+  </header>
+
+  <!-- TL;DR -->
+  <div class="tldr">
+    <span class="tldr-label">Executive TL;DR</span>
+    Blended incrementality factor: <b>55.6%</b> (replaces Audiohook's default 65%). Matched markets Orders iROAS <b>1.93x</b> (pixel spend) / <b>2.35x</b> (IO cap) on a blended basis (test + 30-day cooldown), clearing the 1.4x GP floor at 83% confidence. GA4 data shows positive post-offer lift (+6.5%, 84 orders), unlike the prior 1P analysis. Recommendation: <b>continue with adjusted billing</b> — apply the 55.6% factor and peg CPA to trailing AOV.
+  </div>
+
+  <span class="layer-label layer-exec">Layer 1 · Executive view</span>
+
+  <!-- KPI GRID -->
+  <div class="kpi-grid" id="kpi-grid"></div>
+
+  <!-- INCREMENTALITY FACTOR CARD -->
+  <div class="card">
+    <span class="layer-label layer-exec">Primary output</span>
+    <h2>Incrementality factor — what share of Audiohook conversions are real?</h2>
+    <div class="card-sub">Audiohook tracks "assisted conversions" via their pixel. Their default billing assumes 65% of those are incremental. This geo test measures the actual number. The incrementality factor (IF) = incremental orders from the geo test / Audiohook-reported assisted conversions over the same window. Source: GA4 (IP-based DMA), 59 treatment / 59 control DMAs.</div>
+    <div class="chart-box h300"><canvas id="if-chart"></canvas></div>
+    <details class="math">
+      <summary>Show the math · incrementality factor derivation</summary>
+      <div class="math-body">
+        <table>
+          <thead><tr><th>Window</th><th>Inc orders (geo)</th><th>AH assisted conv</th><th>IF</th></tr></thead>
+          <tbody>
+            <tr><td>Test period</td><td>272</td><td>493</td><td><b>55.2%</b></td></tr>
+            <tr><td>Cooldown</td><td>202</td><td>360</td><td><b>56.1%</b></td></tr>
+            <tr><td>Blended (test + cooldown)</td><td>474</td><td>853</td><td><b>55.6%</b></td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:14px;">At <b>55.6% IF</b>, effective payout per assisted conversion drops ~14% vs Audiohook's default 65%. For every 100 conversions Audiohook reports, ~56 represent real incremental orders the geo test can confirm — the rest are orders that would have happened anyway.</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- TWO-MODEL iROAS COMPARISON -->
+  <div class="card">
+    <span class="layer-label layer-exec">Headline</span>
+    <h2>Two-model iROAS comparison</h2>
+    <div class="card-sub">Matched markets is the primary model. Whole country is the directional validator. Synthetic control collapsed to a single DMA (Raleigh-Durham NC) and was excluded. Toggle between test period, cooldown, and blended windows, and between orders and revenue models. iROAS shown against pixel-reported payouts ($55,468). IO cap iROAS shown in KPI grid.</div>
+    <div class="controls">
+      <div class="toggle-group" id="hero-model-toggle">
+        <button data-val="orders" class="active">Orders iROAS</button>
+        <button data-val="revenue">Revenue iROAS</button>
+      </div>
+      <div class="toggle-group" id="hero-window-toggle">
+        <button data-val="test" class="active">Test period</button>
+        <button data-val="cooldown">Cooldown</button>
+        <button data-val="blended">Blended</button>
+      </div>
+    </div>
+    <div class="chart-box h360"><canvas id="hero-chart"></canvas></div>
+    <details class="math">
+      <summary>Show the math · how each bar is computed</summary>
+      <div class="math-body">
+        <p><b>Orders iROAS</b> = (Incremental Orders x Control-cell AOV) / Incremental Spend ($55,468 pixel payouts).
+        <b>Revenue iROAS</b> = Incremental GP Revenue / Incremental Spend. Revenue figures are already gross profit — no margin multiplier applied.</p>
+        <p>MM scale factor: <b>0.7719</b> (GA4 aggregate, pre-period). Applied universally to orders, revenue, spend, and sessions — no per-metric SFs. IO cap: $45,500 (iROAS at IO shown in KPI grid).</p>
+        <p style="color: var(--red);"><b>Note:</b> Synthetic control failed — it collapsed to a single DMA (Raleigh-Durham NC) with 95.1% orders MAPE. Excluded from all analysis.</p>
+        <div id="hero-math-table"></div>
+      </div>
+    </details>
+  </div>
+
+  <!-- SENSITIVITY: PRE-OFFER vs POST-OFFER -->
+  <div class="card" style="border: 2px solid var(--gold);">
+    <span class="layer-label layer-exec">Critical context</span>
+    <h2>Sensitivity: pre-offer vs. post-offer split</h2>
+    <div class="card-sub" id="sens-sub">Around Feb 15, 4Patriots launched a $29 offer that compressed AOV from ~$398 to ~$291. Most test-period lift concentrated in the 22 days before that offer (+188 orders, +14.0%). GA4 data shows the post-offer window still produced positive lift (+84 orders, +6.5%), unlike the 1P analysis which showed ~zero. This suggests GA4's IP-based DMA resolution captures post-offer lift that billing-zip DMA assignment missed.</div>
+    <div class="controls">
+      <div class="toggle-group" id="sens-toggle">
+        <button data-val="orders" class="active">Orders Model</button>
+        <button data-val="revenue">Revenue Model</button>
+      </div>
+    </div>
+    <div class="sensitivity-grid" id="sens-grid"></div>
+    <details class="math">
+      <summary>Show the math · what the offer change did</summary>
+      <div class="math-body">
+        <p>The $29 offer launched ~Feb 15 and dominated the product mix for the remainder of the test. Treatment AOV dropped from $398 pre-offer to $291 post-offer. Control AOV showed a similar drop ($392 to $291), so the shift was business-wide — not Audiohook-driven.</p>
+        <p>Unlike the 1P analysis (which showed ~zero post-offer lift), GA4 data shows +84 incremental orders (+6.5%) in the post-offer window. This suggests GA4's IP-based DMA resolution captures lift that billing-zip DMA assignment missed. Podcast audio ads still drove consideration even after the offer shift, though at a lower rate than pre-offer (+14.0%).</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- ============ LAYER 2: TACTICAL ============ -->
+
+  <span class="layer-label layer-tac">Layer 2 · Tactical deep-dive</span>
+
+  <!-- WEEKLY SCRUBBER -->
+  <div class="card">
+    <span class="layer-label layer-tac">Week explorer</span>
+    <h2>Weekly order delta and Audiohook assisted conversions</h2>
+    <div class="card-sub" id="weekly-sub">Drag the scrubber to inspect any week. The chart overlays the weekly order delta (treatment minus counterfactual) and Audiohook's self-reported assisted conversions. Vertical lines mark the Feb 15 offer launch and Mar 6 media stop. Weeks 1–4 are the test period before the offer; weeks 4–6 overlap with the offer; weeks 7–11 are cooldown.</div>
+    <div class="controls">
+      <div class="toggle-group" id="weekly-model-toggle">
+        <button data-val="orders" class="active">Orders Model</button>
+        <button data-val="revenue">Revenue Model</button>
+      </div>
+    </div>
+    <div class="scrubber">
+      <label>Week · <span id="week-label" style="font-weight: 700; color: var(--navy);">all weeks</span></label>
+      <input type="range" id="week-scrub" min="0" max="11" value="0" step="1" />
+      <div class="scrubber-readout" id="week-readout"></div>
+    </div>
+    <div class="chart-box h420"><canvas id="weekly-chart"></canvas></div>
+  </div>
+
+  <!-- CROSS-CHANNEL LAST-CLICK DELTAS -->
+  <div class="card">
+    <span class="layer-label layer-tac">Where did the incremental orders come from?</span>
+    <h2>Cross-channel last-click deltas (treatment - scaled control)</h2>
+    <div class="card-sub" id="cc-sub">Channel-by-channel, last-click attribution (GA4 taxonomy). Toggle between orders and revenue models. Sorted by absolute value descending. Source: <code>sales_by_dma_by_channel_ga4.csv</code> (GA4, IP-based DMA). MKT and Facebook show the largest positive halos — consistent with podcast audio priming brand consideration that converts through owned and paid channels.</div>
+    <div class="controls">
+      <div class="toggle-group" id="cc-toggle">
+        <button data-val="orders" class="active">Orders Model</button>
+        <button data-val="revenue">Revenue Model</button>
+      </div>
+    </div>
+    <div class="chart-box h420"><canvas id="cc-chart"></canvas></div>
+  </div>
+
+  <!-- CROSS-CHANNEL SPEND DELTAS -->
+  <div class="card">
+    <span class="layer-label layer-tac">Cross-channel spend behavior</span>
+    <h2>Cross-channel spend deltas (treatment - scaled control)</h2>
+    <div class="card-sub">Validates the test: spend behavior during the test period. Audiohook is not shown here — they front their own media cost ($55,468 pixel payouts / $45,500 IO cap). Note: with SF=0.7719, the scaled control spend is lower than treatment, producing positive deltas. This reflects cell-size imbalance, not spend manipulation.</div>
+    <div class="chart-box h300"><canvas id="spend-chart"></canvas></div>
+  </div>
+
+  <!-- ============ LAYER 3: DEEP DIVE ============ -->
+
+  <span class="layer-label layer-deep">Layer 3 · Deep-dive diagnostics</span>
+
+  <!-- INDUSTRY BENCHMARKS -->
+  <div class="card">
+    <span class="layer-label layer-deep">Is this in line with industry?</span>
+    <h2>Top-line equivalent iROAS vs. published benchmarks</h2>
+    <div class="card-sub">Our GP iROAS doubled is the apples-to-apples comparison to published benchmarks (industry reports on top-line revenue, not GP). Our blended 1.93x GP (pixel) ≈ <b>3.86x top-line</b>; at IO cap 2.35x GP ≈ <b>4.70x top-line</b> — well above the Stella 2025 all-channel and YouTube medians, and in line with CTV/audio channels.</div>
+    <div class="chart-box h360"><canvas id="bench-chart"></canvas></div>
+  </div>
+
+  <!-- PRE-PERIOD FIT -->
+  <div class="card">
+    <span class="layer-label layer-deep">Pre-period diagnostic</span>
+    <h2>Pre-period fit quality</h2>
+    <div class="card-sub">How well treatment and scaled control tracked before the test began. MAPE is the mean absolute percentage error. MM orders MAPE at 19.0% is above the 10% target — flagged as a watch item. GA4 DMA resolution produces a structural cell-size imbalance (SF=0.7719), resulting in higher MAPE than the 1P baseline. Revenue MAPE at 44.5% means revenue comparisons are directional only. Whole country fit is tighter. Synthetic control collapsed entirely.</div>
+    <table class="dtable" id="pp-table"></table>
+  </div>
+
+  <!-- METHODOLOGY PROVENANCE -->
+  <div class="card">
+    <span class="layer-label layer-deep">Data provenance</span>
+    <h2>Methodology and data sources</h2>
+    <ul class="flag-list">
+      <li class="resolved"><b>Orders and revenue:</b> <code>sales_by_dma_by_channel_ga4.csv</code> (GA4, IP-based DMA resolution). This is the primary source for all cross-channel and headline metrics.</li>
+      <li class="resolved"><b>Scale factor:</b> 0.7719, derived from <code>sales_by_dma.csv</code> (GA4 aggregate) pre-period (Nov 30, 2025 – Jan 23, 2026). Applied universally to all metrics.</li>
+      <li class="watch"><b>Spend denominator:</b> Audiohook pixel payouts ($55,468). The pixel calculates payouts as CPA x assisted conversions x 65% default IF. This is the spend figure used in the primary iROAS calculation.</li>
+      <li class="watch"><b>IO cap:</b> $45,500 (billable amount per finance). After reaching this cap, the pixel continued recording payouts that were not charged. We use the full pixel payout total to model what ongoing performance would look like at pixel-reported rates, regardless of the IO cap.</li>
+      <li class="resolved"><b>iROAS at IO cap:</b> Shown as secondary comparison. Blended Orders iROAS at IO = 2.35x (vs. 1.93x at pixel payouts).</li>
+    </ul>
+  </div>
+
+  <!-- FLAGS -->
+  <div class="card">
+    <span class="layer-label layer-deep">Flags to watch</span>
+    <h2>Methodological flags</h2>
+    <ul class="flag-list">
+      <li class="issue"><b>ISSUE ·</b> Pre-period MAPE: 19.0% (above 15% cutoff). GA4 DMA resolution produces a structural cell-size imbalance (SF=0.77), resulting in higher MAPE than the 1P baseline. Results are somewhat directional as a consequence.</li>
+      <li class="issue"><b>ISSUE ·</b> Revenue MAPE: 44.5%. Revenue comparisons are directional only.</li>
+      <li class="watch"><b>WATCH ·</b> Revenue model divergence: blended 1.71x (pixel) vs orders 1.93x (pixel). Revenue model is lower in GA4 due to negative cooldown revenue delta.</li>
+      <li class="issue"><b>ISSUE ·</b> Synthetic control collapsed to a single DMA (Raleigh-Durham NC). Excluded from all analysis.</li>
+      <li class="watch"><b>WATCH ·</b> AOV collapse mid-test: $29 offer launched ~Feb 15, compressing AOV from ~$398 to ~$291. GA4 data still shows positive post-offer lift (+6.5%, 84 orders), unlike the 1P data which showed ~zero. This is a notable divergence between the two data sources.</li>
+      <li class="watch"><b>WATCH ·</b> Iran news spike (Feb 27 – Mar 6) overlapped the highest assisted conversion week (196 AH conversions). May have inflated both treatment and control equally.</li>
+      <li class="watch"><b>WATCH ·</b> Pixel continued recording payouts beyond the $45,500 IO cap. iROAS at IO cap ($45,500) is 2.35x — well above the 1.4x floor. Pixel payout total ($55,468) used for ongoing performance modeling.</li>
+    </ul>
+  </div>
+
+  <!-- DECISION -->
+  <div class="card">
+    <span class="layer-label layer-exec">Decision & next steps</span>
+    <h2>What to do</h2>
+    <div class="decision">
+      <div class="head">Billing — adjusted IF</div>
+      <div class="body"><b>Apply the 55.6% incrementality factor</b> (replaces Audiohook's default 65%). Recalculate CPA using: CPA = trailing AOV / 1.4x iROAS floor. Two scenarios:<br>
+      &bull; <b>Pre-offer AOV ($392):</b> CPA = $280<br>
+      &bull; <b>Blended AOV ($226):</b> CPA = $161<br>
+      Recommend adjusting payout terms for renewal: test-derived IF (55.6%) + CPA based on trailing AOV / 1.4x target.</div>
+    </div>
+    <div class="decision">
+      <div class="head">IO cap vs. pixel spend</div>
+      <div class="body">The pixel continued recording beyond the $45,500 IO cap. iROAS using the IO cap ($45,500) is <b>2.35x</b> — well above the 1.4x floor. iROAS at full pixel payouts ($55,468) is <b>1.93x</b> — still clears. Use the pixel payout figure to model what ongoing performance looks like at pixel-reported rates, regardless of the IO cap.</div>
+    </div>
+    <div class="decision" style="background: linear-gradient(135deg, rgba(200,166,70,0.08) 0%, rgba(200,166,70,0.02) 100%); border-color: rgba(200,166,70,0.32);">
+      <div class="head" style="color: #9e7f18;">AOV risk</div>
+      <div class="body">CPA must track AOV. At <b>$150 AOV</b> → target CPA drops to <b>$107</b>. At <b>$116 AOV</b> → target CPA drops to <b>$83</b>. If the $29 offer stays dominant, podcast ads may not clear the 1.4x floor at lower AOVs. Monitor trailing 30-day AOV monthly.</div>
+    </div>
+    <div class="decision" style="background: linear-gradient(135deg, rgba(30,54,101,0.06) 0%, rgba(30,54,101,0.02) 100%); border-color: rgba(30,54,101,0.22);">
+      <div class="head" style="color: var(--navy-2);">Retest Q3 2026</div>
+      <div class="body"><b>Run a clean retest once AOV stabilizes.</b> The $29 offer confounded the back half of this test. A Q3 2026 retest — after the offer either sunsets or becomes the new baseline — will confirm whether the 55.6% factor holds at steady-state AOV.</div>
+    </div>
+  </div>
+
+  <footer class="foot">
+    <div>
+      Sources:
+      <a href="#">Executive memo</a> ·
+      <a href="#">Workbook</a> ·
+      <a href="#">Slides</a>
+    </div>
+    <div>Analysis date: 2026-04-21 · Audiohook podcast holdout (GA4 reanalysis) · Analyst: Claude</div>
+  </footer>
+
+</div>
+
+<script>
+/* ============================================================
+   Data payload
+   ============================================================ */
+const DATA = {
+  "meta": {
+    "test_name": "Audiohook podcast holdout",
+    "channel": "Audiohook (podcast audio ads)",
+    "test_type": "TOF holdout",
+    "test_start": "2026-01-24",
+    "test_end": "2026-03-06",
+    "cooldown_end": "2026-04-04",
+    "treatment_dmas": 59,
+    "control_dmas": 59,
+    "treatment_dmas_with_data": 59,
+    "control_dmas_with_data": 59,
+    "audiohook_pixel_spend": 55468.0,
+    "io_cap": 45500,
+    "scale_factor": 0.7719,
+    "data_source": "sales_by_dma_by_channel_ga4.csv (GA4, IP-based DMA resolution)",
+    "sf_source": "sales_by_dma.csv (GA4 aggregate, pre-period Nov 30 2025 - Jan 23 2026)"
+  },
+  "headline": {
+    "test": {
+      "inc_orders": 272, "lift_pct": 10.3,
+      "iroas_orders_pixel": 1.68, "iroas_revenue_pixel": 1.92,
+      "iroas_orders_io": 2.05, "iroas_revenue_io": 2.34,
+      "confidence": 94,
+      "inc_revenue": 106375.02, "ctrl_aov": 342.64,
+      "treat_orders": 2912, "cf_orders": 2640,
+      "assisted_conv": 493, "inc_factor": 55.2
+    },
+    "cooldown": {
+      "inc_orders": 202, "lift_pct": 4.0,
+      "confidence": 70,
+      "inc_revenue": -11454.51, "ctrl_aov": 163.85,
+      "treat_orders": 5207, "cf_orders": 5005,
+      "assisted_conv": 360, "inc_factor": 56.1
+    },
+    "blended": {
+      "inc_orders": 474, "lift_pct": 6.2,
+      "iroas_orders_pixel": 1.93, "iroas_revenue_pixel": 1.71,
+      "iroas_orders_io": 2.35, "iroas_revenue_io": 2.09,
+      "confidence": 83,
+      "inc_revenue": 94920.51, "ctrl_aov": 225.59,
+      "assisted_conv": 853, "inc_factor": 55.6
+    }
+  },
+  "sensitivity": {
+    "pre_offer": { "start": "Jan 24", "end": "Feb 14", "days": 22, "inc_orders": 188, "lift_pct": 14.0, "t_aov": 398, "c_aov": 392, "inc_revenue": 82418 },
+    "post_offer": { "start": "Feb 15", "end": "Mar 6", "days": 20, "inc_orders": 84, "lift_pct": 6.5, "t_aov": 291, "c_aov": 291, "inc_revenue": 23957 }
+  },
+  "weekly": [
+    { "week": "Jan 24-25", "t_orders": 244, "cf_orders": 228, "delta_orders": 16, "lift_orders": 7.2, "t_aov": 544, "c_aov": 532, "t_rev": 132811, "cf_rev": 121123, "delta_rev": 11688, "ah_assisted": 13 },
+    { "week": "Jan 26-Feb 1", "t_orders": 483, "cf_orders": 444, "delta_orders": 39, "lift_orders": 8.8, "t_aov": 474, "c_aov": 456, "t_rev": 229082, "cf_rev": 202615, "delta_rev": 26467, "ah_assisted": 48 },
+    { "week": "Feb 2-8", "t_orders": 366, "cf_orders": 303, "delta_orders": 63, "lift_orders": 20.6, "t_aov": 409, "c_aov": 386, "t_rev": 149739, "cf_rev": 117157, "delta_rev": 32581, "ah_assisted": 65 },
+    { "week": "Feb 9-15", "t_orders": 465, "cf_orders": 418, "delta_orders": 47, "lift_orders": 11.1, "t_aov": 232, "c_aov": 259, "t_rev": 107728, "cf_rev": 108560, "delta_rev": -832, "ah_assisted": 82 },
+    { "week": "Feb 16-22", "t_orders": 254, "cf_orders": 225, "delta_orders": 29, "lift_orders": 12.7, "t_aov": 417, "c_aov": 444, "t_rev": 105982, "cf_rev": 99998, "delta_rev": 5984, "ah_assisted": 51 },
+    { "week": "Feb 23-Mar 1", "t_orders": 508, "cf_orders": 444, "delta_orders": 64, "lift_orders": 14.5, "t_aov": 241, "c_aov": 265, "t_rev": 122426, "cf_rev": 117700, "delta_rev": 4726, "ah_assisted": 85 },
+    { "week": "Mar 2-8", "t_orders": 824, "cf_orders": 781, "delta_orders": 43, "lift_orders": 5.5, "t_aov": 266, "c_aov": 244, "t_rev": 218901, "cf_rev": 190843, "delta_rev": 28058, "ah_assisted": 196 },
+    { "week": "Mar 9-15", "t_orders": 859, "cf_orders": 802, "delta_orders": 57, "lift_orders": 7.1, "t_aov": 202, "c_aov": 235, "t_rev": 173387, "cf_rev": 188758, "delta_rev": -15370, "ah_assisted": 113 },
+    { "week": "Mar 16-22", "t_orders": 1028, "cf_orders": 996, "delta_orders": 32, "lift_orders": 3.2, "t_aov": 192, "c_aov": 186, "t_rev": 197807, "cf_rev": 185483, "delta_rev": 12324, "ah_assisted": 102 },
+    { "week": "Mar 23-29", "t_orders": 1261, "cf_orders": 1263, "delta_orders": -2, "lift_orders": -0.1, "t_aov": 157, "c_aov": 158, "t_rev": 197789, "cf_rev": 199729, "delta_rev": -1940, "ah_assisted": 71 },
+    { "week": "Mar 30-Apr 4", "t_orders": 1827, "cf_orders": 1741, "delta_orders": 86, "lift_orders": 5.0, "t_aov": 101, "c_aov": 111, "t_rev": 183896, "cf_rev": 192661, "delta_rev": -8765, "ah_assisted": 27 }
+  ],
+  "cross_channel": [
+    { "channel": "MKT", "delta_orders": 206, "delta_revenue": 40165 },
+    { "channel": "Affiliates", "delta_orders": 30, "delta_revenue": 29736 },
+    { "channel": "Google Demand Gen", "delta_orders": 33, "delta_revenue": 21986 },
+    { "channel": "External Email", "delta_orders": -34, "delta_revenue": -15417 },
+    { "channel": "Unknown", "delta_orders": 10, "delta_revenue": -14129 },
+    { "channel": "Bing", "delta_orders": 33, "delta_revenue": 9674 },
+    { "channel": "Google Search", "delta_orders": 27, "delta_revenue": 8326 },
+    { "channel": "ACQ - PRINT", "delta_orders": 5, "delta_revenue": 7748 },
+    { "channel": "Facebook", "delta_orders": 151, "delta_revenue": 7729 },
+    { "channel": "Google PMAX", "delta_orders": 17, "delta_revenue": -7633 },
+    { "channel": "TV", "delta_orders": -4, "delta_revenue": 6442 },
+    { "channel": "Outbound", "delta_orders": 0, "delta_revenue": 292 }
+  ],
+  "spend_delta": [
+    { "channel": "Affiliates", "treat": 25959, "ctrl_scaled": 13433, "delta": 12526 },
+    { "channel": "Bing", "treat": 24766, "ctrl_scaled": 20009, "delta": 4757 },
+    { "channel": "Facebook", "treat": 311518, "ctrl_scaled": 247913, "delta": 63605 },
+    { "channel": "Google", "treat": 193033, "ctrl_scaled": 159654, "delta": 33378 }
+  ],
+  "preperiod": {
+    "matched_market": { "sf": 0.7719, "orders_mape": 19.0, "orders_corr": 0.9731, "revenue_mape": 44.5, "revenue_corr": 0.9545 },
+    "whole_country": { "sf": 0.2355, "orders_mape": 10.7, "orders_corr": 0.9761, "revenue_mape": 20.3, "revenue_corr": 0.9555 },
+    "synthetic_control": { "status": "FAILED", "orders_mape": 95.1 }
+  },
+  "benchmarks": [
+    { "name": "4Patriots Audiohook (blended, Orders, pixel)", "value": 3.86, "source": "this test \u00d7 2 (GP\u2192top-line)", "us": true },
+    { "name": "4Patriots Audiohook (blended, Orders, IO)", "value": 4.70, "source": "this test \u00d7 2 (GP\u2192top-line)", "us": true },
+    { "name": "CTV / Tatari median (Stella 2025)", "value": 3.30, "source": "Stella 2025, N=18" },
+    { "name": "YouTube median (Stella 2025)", "value": 2.17, "source": "Stella 2025" },
+    { "name": "All-channel median (Stella 2025)", "value": 2.31, "source": "Stella 2025, N=225" },
+    { "name": "Meta median (Stella 2025)", "value": 2.92, "source": "Stella 2025, N=63" }
+  ],
+  "adjusted_projections": {
+    "test_inc_factor": 55.6,
+    "default_inc_factor": 65,
+    "pre_offer_ctrl_aov": 392.23,
+    "blended_ctrl_aov": 225.59,
+    "cpa_pre_offer": 280.16,
+    "cpa_blended": 161.14
+  },
+  "methodology": {
+    "headline_source": "sales_by_dma_by_channel_ga4.csv (GA4, IP-based DMA resolution)",
+    "cross_channel_source": "sales_by_dma_by_channel_ga4.csv (GA4, primary)",
+    "sf_source": "sales_by_dma.csv (GA4 aggregate, pre-period)",
+    "spend_source": "aggregate_spend_by_dma.csv",
+    "audiohook_source": "audiohok_spend_impressions_assisted_conversions.csv (corrected daily file)",
+    "spend_denominator": "Audiohook pixel-reported payouts (CPA \u00d7 assisted conversions \u00d7 65% default IF)",
+    "io_cap_note": "Actual IO was $45,500. Pixel continued recording payouts beyond IO cap. Using pixel total ($55,468) to model ongoing performance."
+  }
+};
+
+/* ============================================================
+   Palette + Chart.js defaults
+   ============================================================ */
+const P = {
+  navy: '#13213C', navy2: '#1E3665', red: '#A21E22',
+  gold: '#C8A646', green: '#2E7D32', gray: '#8B92A3',
+  gray100: '#EEF0F4', gray200: '#DCE0E8'
+};
+
+Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+Chart.defaults.font.size = 12;
+Chart.defaults.color = '#525868';
+Chart.defaults.plugins.legend.position = 'bottom';
+Chart.defaults.plugins.legend.labels.usePointStyle = true;
+Chart.defaults.plugins.legend.labels.padding = 14;
+Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(19,33,60,0.95)';
+Chart.defaults.plugins.tooltip.padding = 10;
+Chart.defaults.plugins.tooltip.titleFont = { weight: '600', size: 12 };
+Chart.defaults.plugins.tooltip.bodyFont = { size: 12 };
+Chart.defaults.plugins.tooltip.boxPadding = 4;
+
+/* ============================================================
+   Helpers
+   ============================================================ */
+const fmtD = n => '$' + Math.round(n).toLocaleString('en-US');
+const fmtK = n => Math.abs(n) >= 1e6 ? '$' + (n/1e6).toFixed(2) + 'M'
+               : Math.abs(n) >= 1e3 ? '$' + (n/1e3).toFixed(0) + 'k' : fmtD(n);
+const fmtN = n => Math.round(n).toLocaleString('en-US');
+const fmtP = n => n.toFixed(1) + '%';
+const fmtX = n => n.toFixed(2) + 'x';
+const CTRL_AOV = DATA.headline.blended.ctrl_aov;
+
+/* ============================================================
+   KPI GRID
+   ============================================================ */
+const H = DATA.headline;
+const kpis = [
+  {
+    label: 'Blended incrementality factor', val: fmtP(H.blended.inc_factor),
+    delta: 'vs Audiohook default 65%',
+    hero: true
+  },
+  {
+    label: 'iROAS Orders (pixel $55,468)', val: fmtX(H.blended.iroas_orders_pixel),
+    delta: 'GP-basis · top-line ~' + fmtX(H.blended.iroas_orders_pixel * 2),
+    pass: H.blended.iroas_orders_pixel >= 1.4
+  },
+  {
+    label: 'iROAS Orders (IO cap $45,500)', val: fmtX(H.blended.iroas_orders_io),
+    delta: 'GP-basis · top-line ~' + fmtX(H.blended.iroas_orders_io * 2),
+    pass: H.blended.iroas_orders_io >= 1.4
+  },
+  {
+    label: 'Total incremental orders', val: fmtN(H.blended.inc_orders),
+    delta: fmtP(H.blended.lift_pct) + ' lift (test + cooldown)',
+  },
+  {
+    label: 'Blended confidence', val: fmtP(H.blended.confidence),
+    delta: 'Test: ' + fmtP(H.test.confidence) + ' · Cooldown: ' + fmtP(H.cooldown.confidence),
+  }
+];
+
+const kgrid = document.getElementById('kpi-grid');
+kpis.forEach(k => {
+  const d = document.createElement('div');
+  d.className = 'kpi' + (k.hero ? ' hero' : '');
+  d.innerHTML = `
+    <div class="label">${k.label}</div>
+    <div class="val">${k.val}</div>
+    <div class="delta">${k.delta}</div>
+    ${k.pass !== undefined ? `<span class="pass-badge ${k.pass ? 'pass':'fail'}">${k.pass ? '✓ clears floor' : '✗ below floor'}</span>` : ''}
+  `;
+  kgrid.appendChild(d);
+});
+
+/* ============================================================
+   INCREMENTALITY FACTOR CHART
+   ============================================================ */
+(function() {
+  const ctx = document.getElementById('if-chart').getContext('2d');
+  const labels = ['Test period (55.2%)', 'Cooldown (56.1%)', 'Blended (55.6%)'];
+  const values = [55.2, 56.1, 55.6];
+  const colors = [P.navy2, P.navy, P.green];
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Incrementality factor (%)',
+        data: values,
+        backgroundColor: colors,
+        borderRadius: 6,
+        maxBarThickness: 120
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (c) => {
+              const idx = c.dataIndex;
+              const windows = [
+                {inc: 272, ah: 493},
+                {inc: 202, ah: 360},
+                {inc: 474, ah: 853}
+              ];
+              const w = windows[idx];
+              return [
+                'IF: ' + values[idx].toFixed(1) + '%',
+                'Inc orders: ' + fmtN(w.inc),
+                'AH assisted conv: ' + fmtN(w.ah),
+                'Ratio: ' + w.inc + ' / ' + w.ah
+              ];
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          min: 0, max: 80,
+          grid: { color: P.gray100 },
+          ticks: { callback: v => v + '%' },
+          title: { display: true, text: 'Incrementality factor (%)' }
+        },
+        y: { grid: { display: false } }
+      }
+    },
+    plugins: [{
+      id: 'defaultLine',
+      afterDraw: (chart) => {
+        const {ctx, chartArea: {top, bottom}, scales: {x}} = chart;
+        const xPos = x.getPixelForValue(65);
+        ctx.save();
+        ctx.strokeStyle = P.red;
+        ctx.setLineDash([6, 4]);
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(xPos, top); ctx.lineTo(xPos, bottom); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = P.red;
+        ctx.font = '600 11px -apple-system, sans-serif';
+        ctx.fillText('65% AH default', xPos + 4, top + 14);
+        ctx.restore();
+      }
+    }]
+  });
+})();
+
+/* ============================================================
+   HERO CHART (2 models x orders/revenue x window)
+   ============================================================ */
+let heroModel = 'orders';
+let heroWindow = 'test';
+
+function heroData() {
+  const spend = DATA.meta.audiohook_pixel_spend;
+
+  // Matched markets data comes from headline; whole country not available in GA4 payload
+  const windows = {
+    test: {
+      mm_iroas_orders: H.test.iroas_orders_pixel,
+      mm_iroas_revenue: H.test.iroas_revenue_pixel,
+      mm_inc_orders: H.test.inc_orders,
+      mm_lift: H.test.lift_pct,
+      mm_conf: H.test.confidence,
+      wc_iroas_orders: null,
+      wc_iroas_revenue: null,
+      wc_inc_orders: null,
+      wc_lift: null,
+      wc_conf: null,
+      ctrl_aov: H.test.ctrl_aov,
+      inc_rev_mm: H.test.inc_revenue,
+      inc_rev_wc: null
+    },
+    cooldown: {
+      mm_iroas_orders: null,
+      mm_iroas_revenue: null,
+      mm_inc_orders: H.cooldown.inc_orders,
+      mm_lift: H.cooldown.lift_pct,
+      mm_conf: H.cooldown.confidence,
+      wc_iroas_orders: null,
+      wc_iroas_revenue: null,
+      wc_inc_orders: null,
+      wc_lift: null,
+      wc_conf: null,
+      ctrl_aov: H.cooldown.ctrl_aov,
+      inc_rev_mm: H.cooldown.inc_revenue,
+      inc_rev_wc: null
+    },
+    blended: {
+      mm_iroas_orders: H.blended.iroas_orders_pixel,
+      mm_iroas_revenue: H.blended.iroas_revenue_pixel,
+      mm_inc_orders: H.blended.inc_orders,
+      mm_lift: H.blended.lift_pct,
+      mm_conf: H.blended.confidence,
+      wc_iroas_orders: null,
+      wc_iroas_revenue: null,
+      wc_inc_orders: null,
+      wc_lift: null,
+      wc_conf: null,
+      ctrl_aov: H.blended.ctrl_aov,
+      inc_rev_mm: H.blended.inc_revenue,
+      inc_rev_wc: null
+    }
+  };
+
+  return windows[heroWindow];
+}
+
+let heroChart;
+function renderHero() {
+  const d = heroData();
+  const ctx = document.getElementById('hero-chart').getContext('2d');
+  const labels = ['Matched Markets', 'Whole Country'];
+
+  let vals;
+  if (heroModel === 'orders') {
+    vals = [d.mm_iroas_orders, d.wc_iroas_orders];
+  } else {
+    vals = [d.mm_iroas_revenue, d.wc_iroas_revenue];
+  }
+
+  // Replace null with 0 for display, and mark them
+  const displayVals = vals.map(v => v === null ? 0 : v);
+  const isNull = vals.map(v => v === null);
+  const colors = displayVals.map((v, i) => {
+    if (isNull[i]) return P.gray100;
+    return v >= 1.4 ? P.green : (v >= 1.0 ? P.gold : P.red);
+  });
+
+  if (heroChart) heroChart.destroy();
+  heroChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: (heroModel === 'orders' ? 'Orders iROAS' : 'Revenue iROAS'),
+        data: displayVals,
+        backgroundColor: colors,
+        borderRadius: 6,
+        maxBarThickness: 120
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (c) => {
+              const i = c.dataIndex;
+              if (isNull[i]) return 'N/A (no spend in cooldown)';
+              const lines = ['iROAS: ' + fmtX(vals[i])];
+              if (i === 0) {
+                lines.push('Inc orders: ' + fmtN(d.mm_inc_orders));
+                if (d.mm_conf !== null) lines.push('Confidence: ' + fmtP(d.mm_conf));
+                lines.push('Lift: ' + fmtP(d.mm_lift));
+              } else {
+                lines.push('Inc orders: ' + fmtN(d.wc_inc_orders));
+                if (d.wc_lift !== null) lines.push('Lift: ' + fmtP(d.wc_lift));
+              }
+              return lines;
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: { color: P.gray100 },
+          ticks: { callback: v => v.toFixed(1) + 'x' },
+          title: { display: true, text: 'iROAS (GP basis)' }
+        },
+        x: { grid: { display: false } }
+      }
+    },
+    plugins: [{
+      id: 'floorLine',
+      afterDraw: (chart) => {
+        const {ctx, chartArea: {left, right}, scales: {y}} = chart;
+        const yF = y.getPixelForValue(1.4);
+        if (yF < chart.chartArea.top || yF > chart.chartArea.bottom) return;
+        ctx.save();
+        ctx.strokeStyle = P.red;
+        ctx.setLineDash([6, 4]);
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(left, yF); ctx.lineTo(right, yF); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = P.red;
+        ctx.font = '600 11px -apple-system, sans-serif';
+        ctx.fillText('1.4x GP floor', right - 82, yF - 5);
+        ctx.restore();
+      }
+    }]
+  });
+  renderHeroMath();
+}
+
+function renderHeroMath() {
+  const d = heroData();
+  const spend = DATA.meta.audiohook_pixel_spend;
+  let rows = '';
+
+  if (heroModel === 'orders') {
+    rows = `
+      <tr><td>Matched Markets</td><td>${fmtN(d.mm_inc_orders)}</td><td>$${d.ctrl_aov.toFixed(2)}</td><td>${fmtK(spend)}</td><td><b>${d.mm_iroas_orders !== null ? fmtX(d.mm_iroas_orders) : 'N/A'}</b></td></tr>
+      <tr><td>Whole Country</td><td>${d.wc_inc_orders !== null ? fmtN(d.wc_inc_orders) : 'N/A'}</td><td>$${d.ctrl_aov.toFixed(2)}</td><td>${fmtK(spend)}</td><td><b>${d.wc_iroas_orders !== null ? fmtX(d.wc_iroas_orders) : 'N/A'}</b></td></tr>
+    `;
+  } else {
+    rows = `
+      <tr><td>Matched Markets</td><td>${d.inc_rev_mm !== null ? fmtK(d.inc_rev_mm) : 'N/A'}</td><td>${fmtK(spend)}</td><td><b>${d.mm_iroas_revenue !== null ? fmtX(d.mm_iroas_revenue) : 'N/A'}</b></td></tr>
+      <tr><td>Whole Country</td><td>${d.inc_rev_wc !== null ? fmtK(d.inc_rev_wc) : 'N/A'}</td><td>${fmtK(spend)}</td><td><b>${d.wc_iroas_revenue !== null ? fmtX(d.wc_iroas_revenue) : 'N/A'}</b></td></tr>
+    `;
+  }
+
+  const headerRow = heroModel === 'orders'
+    ? '<th>Model</th><th>Inc orders</th><th>Ctrl AOV</th><th>Spend</th><th>iROAS</th>'
+    : '<th>Model</th><th>Inc GP rev</th><th>Spend</th><th>iROAS</th>';
+
+  document.getElementById('hero-math-table').innerHTML = `
+    <p style="margin-top:12px;"><b>Formula (${heroModel}):</b> ${heroModel === 'orders' ? '(Inc orders x Ctrl AOV) / Spend' : 'Inc GP revenue / Spend'}</p>
+    <table>
+      <thead><tr>${headerRow}</tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
+document.querySelectorAll('#hero-model-toggle button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#hero-model-toggle button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    heroModel = b.dataset.val;
+    renderHero();
+  });
+});
+document.querySelectorAll('#hero-window-toggle button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#hero-window-toggle button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    heroWindow = b.dataset.val;
+    renderHero();
+  });
+});
+
+renderHero();
+
+/* ============================================================
+   SENSITIVITY: PRE-OFFER vs POST-OFFER (JS-driven)
+   ============================================================ */
+let sensMode = 'orders';
+
+function renderSensitivity() {
+  const pre = DATA.sensitivity.pre_offer;
+  const post = DATA.sensitivity.post_offer;
+  const grid = document.getElementById('sens-grid');
+  const sub = document.getElementById('sens-sub');
+
+  const isOrders = sensMode === 'orders';
+  const modelLabel = isOrders ? 'Orders Model' : 'Revenue Model';
+  const aovNote = isOrders ? ' · using constant control AOV of ' + fmtD(CTRL_AOV) : '';
+  sub.textContent = modelLabel + aovNote + ' — Around Feb 15, 4Patriots launched a $29 offer that compressed AOV from ~$398 to ~$291. Pre-offer: +188 orders (+14.0%). Post-offer: +84 orders (+6.5%). GA4 shows positive post-offer lift unlike the 1P baseline.';
+
+  function revForPeriod(p) {
+    return isOrders ? p.inc_orders * CTRL_AOV : p.inc_revenue;
+  }
+
+  const totalOrders = pre.inc_orders + post.inc_orders;
+  const totalRev = revForPeriod(pre) + revForPeriod(post);
+
+  function cardHTML(label, dates, days, note, p) {
+    const rev = revForPeriod(p);
+    const cls = rev > 0 ? 'positive' : 'negative';
+    const sign = p.inc_orders >= 0 ? '+' : '';
+    const revSign = rev >= 0 ? '+' : '-';
+    return `
+      <div class="sens-card ${cls}">
+        <div class="sens-label">${label}</div>
+        <div class="sens-dates">${days} days · ${note}</div>
+        <div class="sens-metric"><div class="sm-label">Incremental orders</div><div class="sm-val">${sign}${fmtN(p.inc_orders)}</div></div>
+        <div class="sens-metric"><div class="sm-label">Lift %</div><div class="sm-val">${sign}${fmtP(p.lift_pct)}</div></div>
+        <div class="sens-metric"><div class="sm-label">Inc GP revenue</div><div class="sm-val">${revSign}${fmtD(Math.abs(rev))}</div></div>
+        <div class="sens-metric"><div class="sm-label">AOV context</div><div class="sm-val" style="font-size:16px;">T: ${fmtD(p.t_aov)} · C: ${fmtD(p.c_aov)}</div></div>
+      </div>`;
+  }
+
+  const totalCls = totalRev > 0 ? 'positive' : 'negative';
+  const totalSign = totalOrders >= 0 ? '+' : '';
+  const totalRevSign = totalRev >= 0 ? '+' : '-';
+  // Weighted AOVs
+  const wT = pre.inc_orders > 0 ? pre.t_aov : post.t_aov;
+  const wC = pre.inc_orders > 0 ? pre.c_aov : post.c_aov;
+
+  grid.innerHTML =
+    cardHTML('Pre-offer (' + pre.start + ' – ' + pre.end + ')', pre.start + ' – ' + pre.end, pre.days, 'before $29 offer launch', pre) +
+    cardHTML('Post-offer (' + post.start + ' – ' + post.end + ')', post.start + ' – ' + post.end, post.days, 'after $29 offer launch', post) +
+    `<div class="sens-card total">
+      <div class="sens-label">Full test period (${pre.start} – ${post.end})</div>
+      <div class="sens-dates">${pre.days + post.days} days · pre-offer + post-offer combined</div>
+      <div class="sens-metric"><div class="sm-label">Incremental orders</div><div class="sm-val">${totalSign}${fmtN(totalOrders)}</div></div>
+      <div class="sens-metric"><div class="sm-label">Inc GP revenue</div><div class="sm-val">${totalRevSign}${fmtD(Math.abs(totalRev))}</div></div>
+      <div class="sens-metric"><div class="sm-label">Revenue model</div><div class="sm-val" style="font-size:14px;">${modelLabel}</div></div>
+    </div>`;
+}
+
+document.querySelectorAll('#sens-toggle button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#sens-toggle button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    sensMode = b.dataset.val;
+    renderSensitivity();
+  });
+});
+renderSensitivity();
+
+/* ============================================================
+   WEEKLY SCRUBBER
+   ============================================================ */
+const weeks = DATA.weekly;
+const weekLabels = weeks.map((w, i) => 'Wk ' + (i+1) + ': ' + w.week);
+let weeklyMode = 'orders';
+
+const scrub = document.getElementById('week-scrub');
+const weekLabelEl = document.getElementById('week-label');
+const readoutEl = document.getElementById('week-readout');
+const weeklySub = document.getElementById('weekly-sub');
+
+function weekRevForRow(w) {
+  if (weeklyMode === 'orders') return w.delta_orders * CTRL_AOV;
+  return w.delta_rev !== undefined && w.delta_rev !== null ? w.delta_rev : ((w.t_rev || w.t_orders * w.t_aov) - (w.cf_rev || w.cf_orders * w.c_aov));
+}
+
+function renderReadout(idx) {
+  const isOrders = weeklyMode === 'orders';
+  const modelTag = isOrders ? 'Orders Model' : 'Revenue Model';
+  if (idx === 0) {
+    const totDelta = weeks.reduce((a,b) => a + b.delta_orders, 0);
+    const totAssisted = weeks.reduce((a,b) => a + b.ah_assisted, 0);
+    const totTreat = weeks.reduce((a,b) => a + b.t_orders, 0);
+    const totCf = weeks.reduce((a,b) => a + b.cf_orders, 0);
+    const totRev = weeks.reduce((a,w) => a + weekRevForRow(w), 0);
+    readoutEl.innerHTML = `
+      <div class="sr-item"><div class="l">Treatment orders</div><div class="v">${fmtN(totTreat)}</div><div class="d">All 11 weeks</div></div>
+      <div class="sr-item"><div class="l">Counterfactual</div><div class="v">${fmtN(totCf)}</div><div class="d">Scaled control</div></div>
+      <div class="sr-item"><div class="l">Order delta</div><div class="v">${totDelta >= 0 ? '+' : ''}${fmtN(totDelta)}</div><div class="d">Test + cooldown</div></div>
+      <div class="sr-item"><div class="l">Inc revenue (${modelTag})</div><div class="v">${totRev >= 0 ? '+' : ''}${fmtK(totRev)}</div><div class="d">Total · ${modelTag}</div></div>
+      <div class="sr-item"><div class="l">AH assisted conv</div><div class="v">${fmtN(totAssisted)}</div><div class="d">Audiohook pixel</div></div>
+    `;
+  } else {
+    const w = weeks[idx-1];
+    const wRev = weekRevForRow(w);
+    readoutEl.innerHTML = `
+      <div class="sr-item"><div class="l">Treatment orders</div><div class="v">${fmtN(w.t_orders)}</div><div class="d">AOV: ${fmtD(w.t_aov)}</div></div>
+      <div class="sr-item"><div class="l">Counterfactual</div><div class="v">${fmtN(w.cf_orders)}</div><div class="d">AOV: ${fmtD(w.c_aov)}</div></div>
+      <div class="sr-item"><div class="l">Order delta</div><div class="v">${w.delta_orders >= 0 ? '+' : ''}${fmtN(w.delta_orders)}</div><div class="d">${fmtP(w.lift_orders)} lift</div></div>
+      <div class="sr-item"><div class="l">Inc revenue (${modelTag})</div><div class="v">${wRev >= 0 ? '+' : ''}${fmtK(wRev)}</div><div class="d">${modelTag}</div></div>
+      <div class="sr-item"><div class="l">AH assisted conv</div><div class="v">${fmtN(w.ah_assisted)}</div><div class="d">Audiohook pixel</div></div>
+    `;
+  }
+}
+
+function updateWeeklySub() {
+  const isOrders = weeklyMode === 'orders';
+  const aovNote = isOrders ? ' · using constant control AOV of ' + fmtD(CTRL_AOV) : '';
+  weeklySub.textContent = (isOrders ? 'Orders Model' : 'Revenue Model') + aovNote + ' — Drag the scrubber to inspect any week. Vertical lines mark the Feb 15 offer launch and Mar 6 media stop.';
+}
+
+renderReadout(0);
+
+scrub.addEventListener('input', (e) => {
+  const idx = parseInt(e.target.value, 10);
+  weekLabelEl.textContent = idx === 0 ? 'all weeks' : ('Week ' + idx + ' · ' + weeks[idx-1].week);
+  renderReadout(idx);
+  if (weeklyChart) {
+    weeklyChart.data.datasets.forEach((ds) => {
+      if (ds.type === 'line') {
+        ds.pointRadius = weeks.map((w, j) => (idx === 0 ? 4 : (j === idx-1 ? 8 : 3)));
+        ds.pointBorderWidth = weeks.map((w, j) => (idx === 0 ? 1 : (j === idx-1 ? 3 : 1)));
+      }
+    });
+    weeklyChart.update('none');
+  }
+}, false);
+
+// Weekly chart: bar for revenue delta, line for AH assisted
+let weeklyChart;
+const offerIdx = 3.5;
+const mediaStopIdx = 5.5;
+const weeklyAnnotationPlugin = {
+  id: 'annotationLines',
+  afterDraw: (chart) => {
+    const {ctx, chartArea: {top, bottom}, scales: {x}} = chart;
+    const offerX = x.getPixelForValue(offerIdx);
+    ctx.save();
+    ctx.strokeStyle = P.red;
+    ctx.setLineDash([6, 4]);
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(offerX, top); ctx.lineTo(offerX, bottom); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = P.red;
+    ctx.font = '600 10px -apple-system, sans-serif';
+    ctx.fillText('$29 offer ~Feb 15', offerX + 4, top + 12);
+    const stopX = x.getPixelForValue(mediaStopIdx);
+    ctx.strokeStyle = P.navy;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath(); ctx.moveTo(stopX, top); ctx.lineTo(stopX, bottom); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = P.navy;
+    ctx.fillText('Media stop Mar 6', stopX + 4, top + 12);
+    ctx.restore();
+  }
+};
+
+function renderWeeklyChart() {
+  const ctx = document.getElementById('weekly-chart').getContext('2d');
+  if (weeklyChart) weeklyChart.destroy();
+
+  const isOrders = weeklyMode === 'orders';
+  const barLabel = isOrders ? 'Incremental revenue (Orders Model)' : 'Incremental revenue (Revenue Model)';
+  const barData = weeks.map(w => weekRevForRow(w));
+
+  weeklyChart = new Chart(ctx, {
+    data: {
+      labels: weekLabels,
+      datasets: [
+        {
+          type: 'bar',
+          label: barLabel,
+          data: barData,
+          backgroundColor: barData.map(v => v >= 0 ? P.green : P.red),
+          yAxisID: 'y',
+          borderRadius: 4,
+          order: 2
+        },
+        {
+          type: 'line',
+          label: 'AH assisted conversions',
+          data: weeks.map(w => w.ah_assisted),
+          borderColor: P.gold,
+          backgroundColor: P.gold,
+          yAxisID: 'y1',
+          tension: 0.3,
+          pointRadius: weeks.map(() => 4),
+          pointHoverRadius: 8,
+          pointBackgroundColor: P.gold,
+          borderWidth: 2.5,
+          order: 1
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        tooltip: {
+          callbacks: {
+            afterBody: (items) => {
+              const i = items[0].dataIndex;
+              const w = weeks[i];
+              return [
+                '------',
+                'Treatment: ' + fmtN(w.t_orders) + ' orders',
+                'Counterfactual: ' + fmtN(w.cf_orders) + ' orders',
+                'Order delta: ' + (w.delta_orders >= 0 ? '+' : '') + fmtN(w.delta_orders),
+                'Lift: ' + fmtP(w.lift_orders),
+                'T AOV: ' + fmtD(w.t_aov) + ' · C AOV: ' + fmtD(w.c_aov)
+              ];
+            },
+            label: (c) => {
+              if (c.datasetIndex === 0) return barLabel + ': ' + (c.parsed.y >= 0 ? '+' : '') + fmtK(c.parsed.y);
+              if (c.datasetIndex === 1) return 'AH assisted: ' + fmtN(c.parsed.y);
+            }
+          }
+        }
+      },
+      scales: {
+        y:  { position: 'left',  title: { display: true, text: barLabel }, grid: { color: P.gray100 }, ticks: { callback: v => fmtK(v) } },
+        y1: { position: 'right', title: { display: true, text: 'AH assisted conversions' }, grid: { drawOnChartArea: false } },
+        x:  { grid: { display: false } }
+      }
+    },
+    plugins: [weeklyAnnotationPlugin]
+  });
+}
+
+document.querySelectorAll('#weekly-model-toggle button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#weekly-model-toggle button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    weeklyMode = b.dataset.val;
+    updateWeeklySub();
+    renderWeeklyChart();
+    renderReadout(parseInt(scrub.value, 10));
+  });
+});
+
+renderWeeklyChart();
+
+/* ============================================================
+   CROSS-CHANNEL LAST-CLICK DELTAS
+   ============================================================ */
+let ccMode = 'orders';
+let ccChart;
+
+function ccValForRow(r) {
+  return ccMode === 'orders' ? r.delta_orders * CTRL_AOV : r.delta_revenue;
+}
+
+function renderCC() {
+  const cc = [...DATA.cross_channel];
+  // Compute values and sort by absolute value
+  cc.forEach(r => { r._val = ccValForRow(r); });
+  cc.sort((a, b) => Math.abs(b._val) - Math.abs(a._val));
+
+  // Add total row
+  const totalVal = cc.reduce((a, r) => a + r._val, 0);
+  const totalOrders = cc.reduce((a, r) => a + r.delta_orders, 0);
+  const labels = cc.map(r => r.channel).concat(['TOTAL']);
+  const vals = cc.map(r => r._val).concat([totalVal]);
+  const orderCounts = cc.map(r => r.delta_orders).concat([totalOrders]);
+  const colors = cc.map(r => r._val >= 0 ? P.green : P.red).concat([P.navy2]);
+
+  const isOrders = ccMode === 'orders';
+  const modelLabel = isOrders ? 'Orders Model' : 'Revenue Model';
+  const aovNote = isOrders ? ' · using constant control AOV of ' + fmtD(CTRL_AOV) : '';
+  document.getElementById('cc-sub').textContent = modelLabel + aovNote + ' — Channel-by-channel, last-click attribution (GA4 taxonomy). Sorted by absolute value descending. Source: sales_by_dma_by_channel_ga4.csv (GA4, IP-based DMA).';
+
+  const ctx = document.getElementById('cc-chart').getContext('2d');
+  if (ccChart) ccChart.destroy();
+
+  ccChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: isOrders ? 'Incremental revenue (Orders Model)' : 'Incremental revenue (Revenue Model)',
+        data: vals,
+        backgroundColor: colors,
+        borderRadius: 4
+      }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (c) => {
+              const v = vals[c.dataIndex];
+              const ord = orderCounts[c.dataIndex];
+              return [
+                modelLabel + ': ' + (v >= 0 ? '+' : '') + fmtK(v),
+                'Delta orders: ' + (ord >= 0 ? '+' : '') + fmtN(ord)
+              ];
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: P.gray100 },
+          ticks: { callback: v => fmtK(v) },
+          title: { display: true, text: 'Incremental revenue (' + modelLabel + ')' }
+        },
+        y: { grid: { display: false } }
+      }
+    }
+  });
+}
+
+document.querySelectorAll('#cc-toggle button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#cc-toggle button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    ccMode = b.dataset.val;
+    renderCC();
+  });
+});
+renderCC();
+
+/* ============================================================
+   CROSS-CHANNEL SPEND DELTAS
+   ============================================================ */
+(function() {
+  const sd = DATA.spend_delta;
+  const ctx = document.getElementById('spend-chart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: sd.map(r => r.channel),
+      datasets: [{
+        label: 'Spend delta (treatment - scaled control)',
+        data: sd.map(r => r.delta),
+        backgroundColor: sd.map(r => r.delta > 0 ? P.navy2 : P.gray),
+        borderRadius: 4
+      }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (c) => {
+              const r = sd[c.dataIndex];
+              return [
+                'Delta: ' + (r.delta >= 0 ? '+' : '') + fmtK(r.delta),
+                'Treatment: ' + fmtK(r.treat),
+                'Scaled control: ' + fmtK(r.ctrl_scaled)
+              ];
+            }
+          }
+        }
+      },
+      scales: {
+        x: { grid: { color: P.gray100 }, ticks: { callback: v => fmtK(v) }, title: { display: true, text: 'Spend delta ($)' } },
+        y: { grid: { display: false } }
+      }
+    }
+  });
+})();
+
+/* ============================================================
+   INDUSTRY BENCHMARKS
+   ============================================================ */
+(function() {
+  const b = DATA.benchmarks;
+  const ctx = document.getElementById('bench-chart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: b.map(r => r.name),
+      datasets: [{
+        label: 'Top-line equivalent iROAS',
+        data: b.map(r => r.value),
+        backgroundColor: b.map(r => r.us ? P.red : P.navy2),
+        borderRadius: 6,
+        maxBarThickness: 60
+      }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (c) => {
+              const r = b[c.dataIndex];
+              return [
+                'iROAS: ' + fmtX(r.value) + ' (top-line equiv)',
+                'Source: ' + r.source
+              ];
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          beginAtZero: true,
+          grid: { color: P.gray100 },
+          ticks: { callback: v => v.toFixed(1) + 'x' },
+          title: { display: true, text: 'Top-line equivalent iROAS' }
+        },
+        y: { grid: { display: false } }
+      }
+    },
+    plugins: [{
+      id: 'floorLine',
+      afterDraw: (chart) => {
+        const {ctx, chartArea: {top, bottom}, scales: {x}} = chart;
+        const xF = x.getPixelForValue(2.8);
+        if (xF < chart.chartArea.left || xF > chart.chartArea.right) return;
+        ctx.save();
+        ctx.strokeStyle = P.red;
+        ctx.setLineDash([6, 4]);
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(xF, top); ctx.lineTo(xF, bottom); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = P.red;
+        ctx.font = '600 11px -apple-system, sans-serif';
+        ctx.fillText('2.8x floor (top-line)', xF + 4, top + 14);
+        ctx.restore();
+      }
+    }]
+  });
+})();
+
+/* ============================================================
+   PRE-PERIOD FIT TABLE
+   ============================================================ */
+(function() {
+  const pp = DATA.preperiod;
+  const table = document.getElementById('pp-table');
+  let html = '<thead><tr><th>Model</th><th>Scale factor</th><th>Orders MAPE</th><th>Orders corr</th><th>Revenue MAPE</th><th>Revenue corr</th><th>Status</th></tr></thead><tbody>';
+
+  // Matched market
+  const mm = pp.matched_market;
+  const mmMapeClass = mm.orders_mape > 10 ? 'neg' : 'pos';
+  html += `<tr>
+    <td>Matched Markets</td>
+    <td>${mm.sf.toFixed(4)}</td>
+    <td class="${mmMapeClass}">${fmtP(mm.orders_mape)}</td>
+    <td>${mm.orders_corr.toFixed(4)}</td>
+    <td>${fmtP(mm.revenue_mape)}</td>
+    <td>${mm.revenue_corr.toFixed(4)}</td>
+    <td class="pos">Primary</td>
+  </tr>`;
+
+  // Whole country
+  const wc = pp.whole_country;
+  const wcMapeClass = wc.orders_mape > 10 ? 'neg' : 'pos';
+  html += `<tr>
+    <td>Whole Country</td>
+    <td>${wc.sf.toFixed(4)}</td>
+    <td class="${wcMapeClass}">${fmtP(wc.orders_mape)}</td>
+    <td>${wc.orders_corr.toFixed(4)}</td>
+    <td>${fmtP(wc.revenue_mape)}</td>
+    <td>${wc.revenue_corr.toFixed(4)}</td>
+    <td class="pos">Validator</td>
+  </tr>`;
+
+  // Synthetic control
+  const sc = pp.synthetic_control;
+  html += `<tr>
+    <td>Synthetic Control</td>
+    <td>-</td>
+    <td class="neg">${fmtP(sc.orders_mape)}</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td class="neg">FAILED — collapsed to 1 DMA</td>
+  </tr>`;
+
+  html += '</tbody>';
+  table.innerHTML = html;
+})();
+
+</script>
+</body>
+</html>
