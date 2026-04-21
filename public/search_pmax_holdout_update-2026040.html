@@ -143,9 +143,28 @@
   .decision.gold  .head { color: #9e7f18; }
   .decision.navy  .head { color: var(--navy-2); }
   .decision .body { font-size: 15px; color: var(--gray-900); margin-top: 4px; line-height: 1.5; }
+
+  /* Nav bar */
+  .nav-bar {
+    background: var(--navy); padding: 10px 24px; display: flex; align-items: center; gap: 10px;
+  }
+  .nav-bar a {
+    color: rgba(255,255,255,0.85); text-decoration: none; font-size: 13px; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 6px; transition: color 0.15s;
+  }
+  .nav-bar a:hover { color: #fff; }
+  .nav-bar .sep { color: rgba(255,255,255,0.3); font-size: 13px; }
+  .nav-bar .current { color: rgba(255,255,255,0.5); font-size: 13px; font-weight: 400; }
 </style>
 </head>
 <body>
+
+<nav class="nav-bar">
+  <a href="index.html">← All studies</a>
+  <span class="sep">|</span>
+  <span class="current">Search &amp; PMAX holdout</span>
+</nav>
+
 <div class="wrap">
 
   <!-- ============ 1. NARRATIVE HEADLINE ============ -->
