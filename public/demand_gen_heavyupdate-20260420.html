@@ -199,6 +199,20 @@
   .tldr b { color: var(--navy); }
   .tldr .tldr-label { display: block; font-size: 11px; color: var(--red); font-weight: 700; letter-spacing: 0.12em; margin-bottom: 8px; }
 
+  /* Comments card */
+  .comments-card {
+    background: #fff; border-left: 4px solid var(--gold);
+    border-radius: 4px 12px 12px 4px; padding: 20px 24px;
+    box-shadow: var(--shadow); margin-bottom: 28px;
+  }
+  .comments-card .comments-label {
+    display: block; font-size: 11px; color: var(--gold); font-weight: 700;
+    letter-spacing: 0.12em; margin-bottom: 8px; text-transform: uppercase;
+  }
+  .comments-card .comments-empty {
+    color: var(--gray-400); font-style: italic; font-size: 15px;
+  }
+
   /* Flags */
   .flag-list { margin: 12px 0 0 0; padding-left: 0; list-style: none; }
   .flag-list li {
@@ -259,8 +273,30 @@
 
   <!-- ============ LAYER 1: EXECUTIVE ============ -->
 
+  <div class="comments-card" id="eric-comments">
+    <span class="comments-label">Eric's Executive TL;DR</span>
+    <iframe src="demand_gen_heavyupdate-20260420-comments.txt" class="comments-frame"
+      style="width:100%; border:none; overflow:hidden; display:block;"
+    ></iframe>
+  </div>
+  <script>
+  document.querySelector('#eric-comments .comments-frame').addEventListener('load', function(){
+    try {
+      var b = this.contentDocument.body;
+      b.style.cssText = 'margin:0;padding:0;font:15px/1.7 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;color:#1A1E28;white-space:pre-wrap;word-wrap:break-word;';
+      var resize = function(frame, body) {
+        frame.style.height = 'auto';
+        frame.style.height = Math.max(24, body.scrollHeight) + 'px';
+      };
+      resize(this, b);
+      setTimeout(function(){ resize(this, b); }.bind(this), 100);
+      setTimeout(function(){ resize(this, b); }.bind(this), 500);
+    } catch(e){}
+  });
+  </script>
+
   <div class="tldr">
-    <span class="tldr-label">Executive TL;DR</span>
+    <span class="tldr-label">Claude Overview</span>
     Matched-markets Orders iROAS cleared the <b>1.4x GP floor</b> at <b>1.46x</b>
     with effectively 100% confidence, and this run's incremental GP dollars concentrate in
     <b>new-to-file customers</b> — NTF new-customer GP roughly doubled week-over-week.

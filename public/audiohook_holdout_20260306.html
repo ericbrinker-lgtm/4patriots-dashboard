@@ -201,6 +201,25 @@
   .tldr b { color: var(--navy); }
   .tldr .tldr-label { display: block; font-size: 11px; color: var(--red); font-weight: 700; letter-spacing: 0.12em; margin-bottom: 8px; }
 
+  /* Eric's comments card */
+  .comments-card {
+    background: #fff; border-left: 4px solid var(--gold);
+    border-radius: 4px 12px 12px 4px; padding: 20px 24px;
+    box-shadow: var(--shadow); margin-bottom: 28px;
+  }
+  .comments-card .comments-label {
+    display: block; font-size: 11px; color: var(--gold); font-weight: 700;
+    letter-spacing: 0.12em; margin-bottom: 8px; text-transform: uppercase;
+  }
+  .comments-card object {
+    width: 100%; min-height: 40px; border: none; display: block;
+    font-size: 15px; line-height: 1.7; color: var(--gray-900);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  .comments-card .comments-empty {
+    color: var(--gray-400); font-style: italic; font-size: 15px;
+  }
+
   /* Flags */
   .flag-list { margin: 12px 0 0 0; padding-left: 0; list-style: none; }
   .flag-list li {
@@ -286,9 +305,32 @@
     </div>
   </header>
 
-  <!-- TL;DR -->
+  <!-- ERIC'S EXECUTIVE TL;DR (loaded from audiohook-comments.txt) -->
+  <div class="comments-card" id="eric-comments">
+    <span class="comments-label">Eric's Executive TL;DR</span>
+    <iframe src="audiohook-comments.txt" class="comments-frame"
+      style="width:100%; border:none; overflow:hidden; display:block;"
+    ></iframe>
+  </div>
+  <script>
+  document.querySelector('#eric-comments .comments-frame').addEventListener('load', function(){
+    try {
+      var b = this.contentDocument.body;
+      b.style.cssText = 'margin:0;padding:0;font:15px/1.7 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;color:#1A1E28;white-space:pre-wrap;word-wrap:break-word;';
+      var resize = function(frame, body) {
+        frame.style.height = 'auto';
+        frame.style.height = Math.max(24, body.scrollHeight) + 'px';
+      };
+      resize(this, b);
+      setTimeout(function(){ resize(this, b); }.bind(this), 100);
+      setTimeout(function(){ resize(this, b); }.bind(this), 500);
+    } catch(e){}
+  });
+  </script>
+
+  <!-- CLAUDE OVERVIEW -->
   <div class="tldr">
-    <span class="tldr-label">Executive TL;DR</span>
+    <span class="tldr-label">Claude Overview</span>
     Blended incrementality factor: <b>55.6%</b> (replaces Audiohook's default 65%). Matched markets Orders iROAS <b>1.93x</b> (pixel spend) / <b>2.35x</b> (IO cap) on a blended basis (test + 30-day cooldown), clearing the 1.4x GP floor at 83% confidence. GA4 data shows positive post-offer lift (+6.5%, 84 orders), unlike the prior 1P analysis. Recommendation: <b>continue with adjusted billing</b> — apply the 55.6% factor and peg CPA to trailing AOV.
   </div>
 
@@ -341,7 +383,7 @@
       <div class="math-body">
         <p><b>Orders iROAS</b> = (Incremental Orders x Control-cell AOV) / Incremental Spend ($55,468 pixel payouts).
         <b>Revenue iROAS</b> = Incremental GP Revenue / Incremental Spend. Revenue figures are already gross profit — no margin multiplier applied.</p>
-        <p>MM scale factor: <b>0.7719</b> (GA4 aggregate, pre-period). Applied universally to orders, revenue, spend, and sessions — no per-metric SFs. IO cap: $45,500 (iROAS at IO shown in KPI grid).</p>
+        <p>MM scale factor: <b>0.7719</b> (GA4 aggregate, pre-period). Applied to orders and revenue. Spend deltas use a separate <b>spend-derived SF of 0.9832</b> (pre-period T/C spend ratio) because ad platforms use their own geo-targeting, which sees the cells as roughly equal — applying the GA4 orders SF to spend data creates false deltas. IO cap: $45,500 (iROAS at IO shown in KPI grid).</p>
         <p style="color: var(--red);"><b>Note:</b> Synthetic control failed — it collapsed to a single DMA (Raleigh-Durham NC) with 95.1% orders MAPE. Excluded from all analysis.</p>
         <div id="hero-math-table"></div>
       </div>
@@ -410,7 +452,7 @@
   <div class="card">
     <span class="layer-label layer-tac">Cross-channel spend behavior</span>
     <h2>Cross-channel spend deltas (treatment - scaled control)</h2>
-    <div class="card-sub">Validates the test: spend behavior during the test period. Audiohook is not shown here — they front their own media cost ($55,468 pixel payouts / $45,500 IO cap). Note: with SF=0.7719, the scaled control spend is lower than treatment, producing positive deltas. This reflects cell-size imbalance, not spend manipulation.</div>
+    <div class="card-sub">Validates the test: no large spend swings during the test period. Scaled using a <b>spend-derived SF of 0.9832</b> (pre-period treatment ÷ control spend), not the GA4 orders SF of 0.7719 — ad platforms use their own geo-targeting, which sees the cells as roughly equal. Audiohook is not shown here — they front their own media cost ($55,468 pixel / $45,500 IO). Total delta: -$6,457 on a $555K base. Only Affiliates shows a meaningful positive delta (+$8.8K), likely a geographic concentration effect.</div>
     <div class="chart-box h300"><canvas id="spend-chart"></canvas></div>
   </div>
 
@@ -579,11 +621,12 @@ const DATA = {
     { "channel": "Outbound", "delta_orders": 0, "delta_revenue": 292 }
   ],
   "spend_delta": [
-    { "channel": "Affiliates", "treat": 25959, "ctrl_scaled": 13433, "delta": 12526 },
-    { "channel": "Bing", "treat": 24766, "ctrl_scaled": 20009, "delta": 4757 },
-    { "channel": "Facebook", "treat": 311518, "ctrl_scaled": 247913, "delta": 63605 },
-    { "channel": "Google", "treat": 193033, "ctrl_scaled": 159654, "delta": 33378 }
+    { "channel": "Affiliates", "treat": 25959, "ctrl_scaled": 17111, "delta": 8849 },
+    { "channel": "Bing", "treat": 24766, "ctrl_scaled": 25486, "delta": -721 },
+    { "channel": "Facebook", "treat": 311518, "ctrl_scaled": 315778, "delta": -4260 },
+    { "channel": "Google", "treat": 193033, "ctrl_scaled": 203359, "delta": -10326 }
   ],
+  "spend_sf": 0.9832,
   "preperiod": {
     "matched_market": { "sf": 0.7719, "orders_mape": 19.0, "orders_corr": 0.9731, "revenue_mape": 44.5, "revenue_corr": 0.9545 },
     "whole_country": { "sf": 0.2355, "orders_mape": 10.7, "orders_corr": 0.9761, "revenue_mape": 20.3, "revenue_corr": 0.9555 },
@@ -1304,15 +1347,23 @@ renderCC();
    ============================================================ */
 (function() {
   const sd = DATA.spend_delta;
+  const totalTreat = sd.reduce((a, r) => a + r.treat, 0);
+  const totalCtrl = sd.reduce((a, r) => a + r.ctrl_scaled, 0);
+  const totalDelta = sd.reduce((a, r) => a + r.delta, 0);
+  const labels = sd.map(r => r.channel).concat(['TOTAL']);
+  const deltas = sd.map(r => r.delta).concat([totalDelta]);
+  const colors = sd.map(r => r.delta > 0 ? P.navy2 : P.gray).concat([P.navy]);
+  const rows = [...sd, { channel: 'TOTAL', treat: totalTreat, ctrl_scaled: totalCtrl, delta: totalDelta }];
+
   const ctx = document.getElementById('spend-chart').getContext('2d');
   new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: sd.map(r => r.channel),
+      labels: labels,
       datasets: [{
         label: 'Spend delta (treatment - scaled control)',
-        data: sd.map(r => r.delta),
-        backgroundColor: sd.map(r => r.delta > 0 ? P.navy2 : P.gray),
+        data: deltas,
+        backgroundColor: colors,
         borderRadius: 4
       }]
     },
@@ -1323,7 +1374,7 @@ renderCC();
         tooltip: {
           callbacks: {
             label: (c) => {
-              const r = sd[c.dataIndex];
+              const r = rows[c.dataIndex];
               return [
                 'Delta: ' + (r.delta >= 0 ? '+' : '') + fmtK(r.delta),
                 'Treatment: ' + fmtK(r.treat),
@@ -1334,7 +1385,7 @@ renderCC();
         }
       },
       scales: {
-        x: { grid: { color: P.gray100 }, ticks: { callback: v => fmtK(v) }, title: { display: true, text: 'Spend delta ($)' } },
+        x: { grid: { color: P.gray100 }, ticks: { callback: v => fmtK(v) }, title: { display: true, text: 'Spend delta ($) · SF=0.9832' } },
         y: { grid: { display: false } }
       }
     }
@@ -1455,6 +1506,7 @@ renderCC();
   html += '</tbody>';
   table.innerHTML = html;
 })();
+
 
 </script>
 </body>

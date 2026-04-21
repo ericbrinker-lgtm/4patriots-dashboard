@@ -1,0 +1,5 @@
+Performance was stronger before the 72HR-B1G2 launch, when we used $150 payouts for 6 out of 10 pixel conversions. To ensure that lift, I propose:
+
+1. Set an "incrementality factor" with Audiohook, counting 50% of pixel conversions.
+2. Adjust payouts to AOV / 1.4. We can adjust AOV on demand.
+3. Optionally, set a monthly IO limit (e.g., $120k) to scale our successful test pace and theoretically double our returns.

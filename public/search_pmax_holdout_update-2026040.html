@@ -106,6 +106,21 @@
   .tldr { background: #fff; border-left: 4px solid var(--red); border-radius: 4px 12px 12px 4px; padding: 20px 24px; box-shadow: var(--shadow); margin-bottom: 28px; font-size: 15.5px; line-height: 1.6; color: var(--gray-900); }
   .tldr b { color: var(--navy); }
   .tldr .tldr-label { display: block; font-size: 11px; color: var(--red); font-weight: 700; letter-spacing: 0.12em; margin-bottom: 8px; }
+
+  /* Comments card */
+  .comments-card {
+    background: #fff; border-left: 4px solid var(--gold);
+    border-radius: 4px 12px 12px 4px; padding: 20px 24px;
+    box-shadow: var(--shadow); margin-bottom: 28px;
+  }
+  .comments-card .comments-label {
+    display: block; font-size: 11px; color: var(--gold); font-weight: 700;
+    letter-spacing: 0.12em; margin-bottom: 8px; text-transform: uppercase;
+  }
+  .comments-card .comments-empty {
+    color: var(--gray-400); font-style: italic; font-size: 15px;
+  }
+
   .tldr .backfill-callout { margin-top: 14px; padding: 14px 16px; background: rgba(200,166,70,0.08); border-radius: 8px; border-left: 3px solid var(--gold); font-size: 14px; line-height:1.55; }
   .tldr .backfill-callout .cl { display: block; font-size: 10px; color: #9e7f18; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 4px; }
   .flag-list { margin: 12px 0 0 0; padding-left: 0; list-style: none; }
@@ -147,9 +162,16 @@
     </div>
   </header>
 
-  <!-- ============ 2. EXECUTIVE TL;DR ============ -->
+  <!-- ============ 2. ERIC'S EXECUTIVE TL;DR + CLAUDE OVERVIEW ============ -->
+  <div class="comments-card" id="eric-comments">
+    <span class="comments-label">Eric's Executive TL;DR</span>
+    <iframe src="search_pmax_holdout_update-2026040-comments.txt" class="comments-frame"
+      style="width:100%; border:none; overflow:hidden; display:block;"
+    ></iframe>
+  </div>
+
   <div class="tldr">
-    <span class="tldr-label">Executive TL;DR</span>
+    <span class="tldr-label">Claude Overview</span>
     Matched markets shows <b>+4.73% order lift</b> and <b>+12.32% revenue lift</b> in the lit cell, both at
     effectively 100% confidence. Revenue-model iROAS on S&amp;P spend is <b>1.34x GP (≈2.67x top-line)</b>, close
     to the PMAX benchmark. Order lift now cleanly clears the 80% confidence bar (up from 77% in the 4/13 run).
@@ -165,6 +187,21 @@
     Recommendation: <b>keep Search &amp; PMAX at current nationwide spend.</b> Net cost is near zero after backfill;
     incremental revenue is conclusive. Next: a branded vs. non-branded Search holdout, and a PMAX-only holdout.
   </div>
+  <script>
+  document.querySelector('#eric-comments .comments-frame').addEventListener('load', function(){
+    try {
+      var b = this.contentDocument.body;
+      b.style.cssText = 'margin:0;padding:0;font:15px/1.7 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;color:#1A1E28;white-space:pre-wrap;word-wrap:break-word;';
+      var resize = function(frame, body) {
+        frame.style.height = 'auto';
+        frame.style.height = Math.max(24, body.scrollHeight) + 'px';
+      };
+      resize(this, b);
+      setTimeout(function(){ resize(this, b); }.bind(this), 100);
+      setTimeout(function(){ resize(this, b); }.bind(this), 500);
+    } catch(e){}
+  });
+  </script>
 
   <!-- ============ 3. EXECUTIVE VIEW — DENOMINATOR TOGGLE ============ -->
 
