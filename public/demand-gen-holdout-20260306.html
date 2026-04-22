@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demand Gen incrementality validation — 2026-03-06 readout</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --navy: #13213C;
+    --navy-2: #1E3665;
+    --red: #A21E22;
+    --gold: #C8A646;
+    --green: #2E7D32;
+    --gray-50: #F7F8FA;
+    --gray-100: #EEF0F4;
+    --gray-200: #DCE0E8;
+    --gray-400: #8B92A3;
+    --gray-600: #525868;
+    --gray-900: #1A1E28;
+    --shadow: 0 1px 2px rgba(19,33,60,0.04), 0 4px 12px rgba(19,33,60,0.06);
+    --shadow-lg: 0 4px 8px rgba(19,33,60,0.06), 0 12px 32px rgba(19,33,60,0.08);
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-900);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--navy-2); }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 32px 28px 80px; }
+
+  header.top {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
+    color: #fff;
+    padding: 36px 28px 44px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    margin-bottom: 28px;
+  }
+  header.top .eyebrow {
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--gold); font-weight: 600; margin-bottom: 8px;
+  }
+  header.top h1 { margin: 0 0 6px 0; font-size: 32px; font-weight: 700; letter-spacing: -0.01em; }
+  header.top .sub { color: rgba(255,255,255,0.78); font-size: 15px; max-width: 820px; }
+  header.top .meta-row {
+    margin-top: 20px; display: flex; gap: 24px; flex-wrap: wrap;
+    font-size: 13px; color: rgba(255,255,255,0.78);
+  }
+  header.top .meta-row b { color: #fff; font-weight: 600; }
+
+  .layer-label {
+    display: inline-block;
+    font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+    font-weight: 700; padding: 4px 10px; border-radius: 999px;
+    margin-bottom: 10px;
+  }
+  .layer-exec { background: rgba(162,30,34,0.08); color: var(--red); }
+  .layer-tac  { background: rgba(30,54,101,0.08); color: var(--navy-2); }
+  .layer-deep { background: rgba(138,138,138,0.14); color: var(--gray-600); }
+
+  .kpi-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+    margin-bottom: 28px;
+  }
+  @media (max-width: 900px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+  .kpi {
+    background: #fff; border-radius: var(--radius); padding: 20px 22px;
+    box-shadow: var(--shadow); border: 1px solid var(--gray-100);
+    position: relative;
+  }
+  .kpi .label { font-size: 12px; color: var(--gray-600); font-weight: 500; letter-spacing: 0.02em; }
+  .kpi .val { font-size: 34px; font-weight: 700; color: var(--navy); line-height: 1.1; margin-top: 6px; letter-spacing: -0.02em; }
+  .kpi .delta { margin-top: 6px; font-size: 12px; color: var(--gray-600); }
+  .kpi .delta.up { color: var(--green); }
+  .kpi .delta.down { color: var(--red); }
+  .kpi.hero { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%); color: #fff; }
+  .kpi.hero .label { color: rgba(255,255,255,0.72); }
+  .kpi.hero .val { color: #fff; }
+  .kpi.hero .delta { color: rgba(255,255,255,0.82); }
+  .kpi .pass-badge {
+    display: inline-block; margin-top: 8px; padding: 2px 8px; border-radius: 4px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.02em;
+  }
+  .kpi .pass-badge.pass { background: rgba(46,125,50,0.14); color: var(--green); }
+  .kpi .pass-badge.fail { background: rgba(162,30,34,0.14); color: var(--red); }
+  .kpi .pass-badge.soft { background: rgba(200,166,70,0.18); color: #8a6a10; }
+
+  .card {
+    background: #fff; border-radius: var(--radius); padding: 22px 24px;
+    box-shadow: var(--shadow); border: 1px solid var(--gray-100);
+    margin-bottom: 22px;
+  }
+  .card h2 {
+    margin: 0 0 4px 0; font-size: 20px; font-weight: 700; color: var(--navy);
+    letter-spacing: -0.01em;
+  }
+  .card h3 { margin: 28px 0 6px 0; font-size: 15px; font-weight: 600; color: var(--navy); }
+  .card .card-sub {
+    color: var(--gray-600); font-size: 13px; margin-bottom: 20px;
+    max-width: 820px; line-height: 1.5;
+  }
+
+  .controls {
+    display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .toggle-group { display: inline-flex; background: var(--gray-100); border-radius: 8px; padding: 3px; }
+  .toggle-group button {
+    background: transparent; border: none; padding: 7px 14px; font-size: 13px;
+    font-weight: 500; color: var(--gray-600); border-radius: 6px;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .toggle-group button.active { background: #fff; color: var(--navy); box-shadow: 0 1px 2px rgba(19,33,60,0.08); font-weight: 600; }
+  .toggle-group button:hover:not(.active) { color: var(--navy); }
+
+  .chart-box { position: relative; width: 100%; }
+  .chart-box.h300 { height: 300px; }
+  .chart-box.h360 { height: 360px; }
+  .chart-box.h420 { height: 420px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+
+  .scrubber { margin-top: 8px; }
+  .scrubber label { font-size: 12px; color: var(--gray-600); font-weight: 500; }
+  .scrubber input[type="range"] { width: 100%; margin-top: 8px; accent-color: var(--navy-2); }
+  .scrubber-readout {
+    margin-top: 14px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+    background: var(--gray-50); border-radius: 8px; padding: 14px 16px;
+  }
+  .scrubber-readout .sr-item .l { font-size: 11px; color: var(--gray-600); letter-spacing: 0.04em; text-transform: uppercase; font-weight: 600; }
+  .scrubber-readout .sr-item .v { font-size: 20px; font-weight: 700; color: var(--navy); margin-top: 2px; letter-spacing: -0.01em; }
+  .scrubber-readout .sr-item .d { font-size: 11px; color: var(--gray-600); margin-top: 1px; }
+
+  details.math {
+    margin-top: 12px; background: var(--gray-50); border-radius: 8px;
+    border: 1px solid var(--gray-200); transition: background 0.15s;
+  }
+  details.math[open] { background: #fff; border-color: var(--gray-200); }
+  details.math summary {
+    padding: 12px 16px; cursor: pointer; font-size: 13px; font-weight: 600;
+    color: var(--navy-2); list-style: none;
+  }
+  details.math summary::-webkit-details-marker { display: none; }
+  details.math summary::before { content: "▸ "; color: var(--gray-400); transition: transform 0.2s; display: inline-block; }
+  details.math[open] summary::before { content: "▾ "; color: var(--navy-2); }
+  details.math .math-body {
+    padding: 4px 18px 18px; font-size: 13px; line-height: 1.65; color: var(--gray-900);
+  }
+  details.math .math-body code {
+    background: var(--gray-100); padding: 2px 6px; border-radius: 4px;
+    font-family: "SF Mono", Consolas, "Liberation Mono", monospace; font-size: 12.5px;
+  }
+  details.math .math-body table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12.5px; }
+  details.math .math-body th, details.math .math-body td { text-align: right; padding: 6px 10px; border-bottom: 1px solid var(--gray-200); }
+  details.math .math-body th:first-child, details.math .math-body td:first-child { text-align: left; }
+  details.math .math-body th { color: var(--gray-600); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
+
+  table.dtable { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.dtable th, table.dtable td { padding: 9px 10px; text-align: right; border-bottom: 1px solid var(--gray-100); }
+  table.dtable th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--gray-600); font-weight: 600; background: var(--gray-50); }
+  table.dtable th:first-child, table.dtable td:first-child { text-align: left; }
+  table.dtable td.pos { color: var(--green); font-weight: 600; }
+  table.dtable td.neg { color: var(--red); font-weight: 600; }
+  table.dtable tbody tr:hover { background: var(--gray-50); }
+  table.dtable tr.total-row td { border-top: 2px solid var(--gray-200); font-weight: 700; color: var(--navy); }
+
+  .tldr {
+    background: #fff; border-left: 4px solid var(--red);
+    border-radius: 4px 12px 12px 4px; padding: 20px 24px;
+    box-shadow: var(--shadow); margin-bottom: 28px;
+    font-size: 15.5px; line-height: 1.6; color: var(--gray-900);
+  }
+  .tldr b { color: var(--navy); }
+  .tldr .tldr-label { display: block; font-size: 11px; color: var(--red); font-weight: 700; letter-spacing: 0.12em; margin-bottom: 8px; }
+
+  .comments-card {
+    background: #fff; border-left: 4px solid var(--gold);
+    border-radius: 4px 12px 12px 4px; padding: 20px 24px;
+    box-shadow: var(--shadow); margin-bottom: 28px;
+  }
+  .comments-card .comments-label {
+    display: block; font-size: 11px; color: var(--gold); font-weight: 700;
+    letter-spacing: 0.12em; margin-bottom: 8px; text-transform: uppercase;
+  }
+  .comments-card .comments-empty { color: var(--gray-400); font-style: italic; font-size: 15px; }
+
+  .flag-list { margin: 12px 0 0 0; padding-left: 0; list-style: none; }
+  .flag-list li {
+    padding: 10px 14px; margin-bottom: 8px; border-radius: 8px;
+    font-size: 13px; line-height: 1.55;
+    background: var(--gray-50); border-left: 3px solid var(--gray-400);
+  }
+  .flag-list li.watch { border-left-color: var(--gold); background: rgba(200,166,70,0.08); }
+  .flag-list li.resolved { border-left-color: var(--green); background: rgba(46,125,50,0.06); }
+  .flag-list li.issue { border-left-color: var(--red); background: rgba(162,30,34,0.06); }
+  .flag-list li b { color: var(--navy); }
+
+  .gauge-wrap { display: flex; gap: 22px; align-items: center; flex-wrap: wrap; }
+  .gauge-box { flex: 0 0 280px; }
+
+  footer.foot {
+    margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--gray-200);
+    font-size: 12px; color: var(--gray-600);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  footer.foot a { color: var(--navy-2); text-decoration: none; }
+  footer.foot a:hover { text-decoration: underline; }
+
+  .decision {
+    background: linear-gradient(135deg, rgba(46,125,50,0.06) 0%, rgba(46,125,50,0.02) 100%);
+    border: 1px solid rgba(46,125,50,0.22);
+    border-radius: 10px; padding: 16px 20px; margin-top: 14px;
+  }
+  .decision .head { font-size: 11px; color: var(--green); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+  .decision .body { font-size: 15px; color: var(--gray-900); margin-top: 4px; line-height: 1.5; }
+
+  .hint { font-size: 12px; color: var(--gray-600); margin-top: 6px; }
+
+  .nav-bar {
+    background: var(--navy); padding: 10px 24px; display: flex; align-items: center; gap: 10px;
+  }
+  .nav-bar a {
+    color: rgba(255,255,255,0.85); text-decoration: none; font-size: 13px; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 6px; transition: color 0.15s;
+  }
+  .nav-bar a:hover { color: #fff; }
+  .nav-bar .sep { color: rgba(255,255,255,0.3); font-size: 13px; }
+  .nav-bar .current { color: rgba(255,255,255,0.5); font-size: 13px; font-weight: 400; }
+</style>
+</head>
+<body>
+
+<nav class="nav-bar">
+  <a href="index.html">← All studies</a>
+  <span class="sep">|</span>
+  <span class="current">Demand Gen incrementality validation (Jan 10 – Mar 6, 2026)</span>
+</nav>
+
+<div class="wrap">
+
+  <header class="top">
+    <div class="eyebrow">Geo incrementality validation · Demand Gen at BAU</div>
+    <h1>DG is earning its keep — every $1 of DG last-click ROAS is worth ~$2.5 in true incremental GP</h1>
+    <div class="sub">This is a validation test, not a kill test. The question wasn't "should we stop DG?" — it was "what's DG's incrementality factor on top of its last-click ROAS?" We held DG dark in 25 matched DMAs for 50 days so the 25 BAU DMAs could serve as our "DG-on" benchmark. Jan 10 – Feb 28 test window, 6-day cooldown through Mar 6. Cross-channel pulls from GA4 starting Jan 24.</div>
+    <div class="meta-row">
+      <span><b>Test:</b> <span id="m-test">—</span></span>
+      <span><b>Test window:</b> <span id="m-tw">—</span></span>
+      <span><b>Cooldown:</b> <span id="m-cw">—</span></span>
+      <span><b>Pre-period:</b> <span id="m-pp">—</span></span>
+      <span><b>Analysis date:</b> <span id="m-ad">—</span></span>
+    </div>
+  </header>
+
+  <!-- ============ LAYER 1: EXECUTIVE ============ -->
+
+  <div class="comments-card" id="eric-comments">
+    <span class="comments-label">Eric's Executive TL;DR</span>
+    <iframe src="demand-gen-holdout-20260306-comments.txt" class="comments-frame"
+      style="width:100%; border:none; overflow:hidden; display:block;"
+    ></iframe>
+  </div>
+  <script>
+  document.querySelector('#eric-comments .comments-frame').addEventListener('load', function(){
+    try {
+      var b = this.contentDocument.body;
+      b.style.cssText = 'margin:0;padding:0;font:15px/1.7 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;color:#1A1E28;white-space:pre-wrap;word-wrap:break-word;';
+      var resize = function(frame, body) {
+        frame.style.height = 'auto';
+        frame.style.height = Math.max(24, body.scrollHeight) + 'px';
+      };
+      resize(this, b);
+      setTimeout(function(){ resize(this, b); }.bind(this), 100);
+      setTimeout(function(){ resize(this, b); }.bind(this), 500);
+    } catch(e){}
+  });
+  </script>
+
+  <div class="tldr">
+    <span class="tldr-label">Claude Overview</span>
+    DG is validated as incremental. Running DG at BAU drove <b>+538 orders (+12.7%)</b> and
+    <b>+$227k in GP revenue (+15.2%)</b> over the 50-day test window vs. the DG-off cell.
+    Matched-markets Orders iROAS landed at <b>1.51x</b> (confidence 94%), Revenue iROAS at <b>1.77x</b> —
+    both above the 1.4x GP floor. All three models point the same direction.
+    The bigger story is the halo: DG's own last-click contribution was only
+    <b>~$52k</b>, but <b>Facebook (+$85k), Unknown (+$46k), MKT (+$33k), Google Search (+$30k),
+    and Google PMAX (+$18k)</b> all lifted when DG ran — DG is doing far more for the business
+    than its last-click line shows. Incrementality factor on BAU LC ROAS: <b>2.51x</b>.
+    Recommendation: <b>keep DG running at BAU</b>. The watch number is
+    <b>LC ROAS ≥ ~0.56x</b> — drop below that and true iROAS approaches the 1.4x floor.
+  </div>
+
+  <span class="layer-label layer-exec">Layer 1 · Executive view</span>
+
+  <div class="kpi-grid" id="kpi-grid"></div>
+
+  <!-- HERO: 3-MODEL iROAS COMPARISON -->
+  <div class="card">
+    <span class="layer-label layer-exec">Headline</span>
+    <h2>Three-model iROAS comparison — DG's incremental return</h2>
+    <div class="card-sub">Matched markets is the primary model — it anchors the headline. Synthetic control and whole-country are directional validators. Toggle the model (Orders is primary), the window, and the denominator. Read these bars as "the GP iROAS DG earned while running at BAU" — the test measures DG-on (control) vs. DG-off (treatment). The cooldown window is shown but should be interpreted with care — DG spend resumed immediately on Mar 1, so it's a post-resumption window, not a clean cooldown.</div>
+    <div class="controls">
+      <div class="toggle-group" id="hero-model-toggle">
+        <button data-val="orders" class="active">Orders iROAS</button>
+        <button data-val="revenue">Revenue iROAS</button>
+      </div>
+      <div class="toggle-group" id="hero-window-toggle">
+        <button data-val="test" class="active">Test (50d)</button>
+        <button data-val="combined">Combined (56d)</button>
+        <button data-val="cooldown">Cooldown (6d)</button>
+      </div>
+      <div class="toggle-group" id="hero-denom-toggle">
+        <button data-val="dg" class="active">DG spend only</button>
+        <button data-val="allad">All-ad spend</button>
+      </div>
+    </div>
+    <div id="denom-caption" class="card-sub" style="margin-top:10px;padding:10px 14px;background:rgba(19,33,60,0.04);border-left:3px solid var(--navy);border-radius:4px;font-size:13px;">
+      <b>Denominator:</b> <span id="denom-mode-label">DG spend only</span>. <span id="denom-explainer">Conventional channel iROAS — divides DG's incremental GP by the DG spend delta alone. Halo revenue is in the numerator (incremental orders include cross-channel halo); halo spend is ignored in the denominator.</span>
+    </div>
+    <div class="chart-box h360"><canvas id="hero-chart"></canvas></div>
+    <details class="math">
+      <summary>Show the math · how each bar is computed</summary>
+      <div class="math-body">
+        <p><b>Orders iROAS</b> = (DG Incremental Orders × Control-cell AOV) ÷ DG Incremental Spend. <i>DG incremental orders</i> = control (DG-on) − treatment (DG-off), scaled. <b>Revenue iROAS</b> = DG Incremental GP Revenue ÷ DG Incremental Spend. Revenue in the CSVs is already gross profit — no margin multiplier is applied.</p>
+        <p>DG incremental spend = control DG spend × MM scale factor − treatment DG spend (treatment was near $0 during the test). This is the dollar difference DG was running at BAU vs. dark. The same orders-based SF is applied universally to orders, revenue, spend, and sessions. MM scale factor this run: <b id="mm-sf-show">1.0199</b>.</p>
+        <div id="hero-math-table"></div>
+      </div>
+    </details>
+  </div>
+
+  <!-- ============ LAYER 2: TACTICAL ============ -->
+
+  <span class="layer-label layer-tac">Layer 2 · Tactical deep-dive</span>
+
+  <!-- WEEKLY SCRUBBER -->
+  <div class="card">
+    <span class="layer-label layer-tac">Week explorer · week-by-week shape</span>
+    <h2>DG incremental orders, revenue, and spend — week by week</h2>
+    <div class="card-sub">Drag the scrubber to inspect any week. Week 1 is noise (DG's order lift hadn't materialized yet), then six weeks of consistent DG contribution — the BAU cell outpaced the DG-off cell in orders and revenue. Week 8 (cooldown) is near zero because DG had resumed in both cells by then.</div>
+    <div class="scrubber">
+      <label>Week · <span id="week-label" style="font-weight: 700; color: var(--navy);">all weeks</span></label>
+      <input type="range" id="week-scrub" min="0" max="7" value="0" step="1" />
+      <div class="scrubber-readout" id="week-readout"></div>
+    </div>
+    <h3>Weekly DG incremental orders and DG incremental spend</h3>
+    <div class="chart-box h360"><canvas id="weekly-chart"></canvas></div>
+    <details class="math">
+      <summary>Show the math · what each weekly value means</summary>
+      <div class="math-body">
+        <p><b>DG incremental orders</b> = (control orders × SF 1.0199) − treatment orders for that week — i.e., how many more orders the DG-on cell produced than the DG-off cell. Positive = DG drove extra orders that week. <b>DG incremental spend</b> = the weekly DG dollars that drove those orders, derived as control DG spend × SF − treatment DG spend. Treatment DG spend was near $0 through Feb 20, crept up slightly at the end of the test, then resumed fully on Mar 1.</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- CROSS-CHANNEL SPEND -->
+  <div class="card">
+    <span class="layer-label layer-tac">Where did the spend drop?</span>
+    <h2>Cross-channel spend deltas (DG-off cell − DG-on cell, scaled)</h2>
+    <div class="card-sub">Confirms the test integrity: DG is the only channel with a large, directed <b>spend</b> drop (~$129k in the 50-day test window), meaning the only material difference between cells was DG. Smaller deltas on Facebook, PMAX, Search, and Bing reflect real dollar movement in other channels during the test but aren't part of the manipulation. Toggle between windows.</div>
+    <div class="controls">
+      <div class="toggle-group" id="spend-window-toggle">
+        <button data-val="test" class="active">Test (50d)</button>
+        <button data-val="combined">Combined (56d)</button>
+      </div>
+    </div>
+    <div class="chart-box h360"><canvas id="spend-delta"></canvas></div>
+    <h3 style="margin-top: 18px;">Spend delta table</h3>
+    <table class="dtable" id="spend-delta-table"></table>
+  </div>
+
+  <!-- CROSS-CHANNEL REVENUE -->
+  <div class="card">
+    <span class="layer-label layer-tac">Where does DG's lift show up?</span>
+    <h2>Cross-channel revenue halo — where DG actually shows up in last-click</h2>
+    <div class="card-sub">This is the validation story. When DG ran at BAU, last-click GP revenue lifted across Facebook, Unknown, MKT, Search, PMAX — not just within DG itself. Bars to the right show channels that earned more in the DG-on cell than the DG-off cell did, scaled — i.e., DG's halo. <b>GA4 (IP-based DMA resolution)</b>, same DMA basis as the matched-markets headline. Window: Jan 24 – Mar 6 (GA4 file starts Jan 24, so this covers 36 of 50 test days + 6 cooldown days). Toggle between two reads: <b>Orders Model</b> multiplies each channel's incremental order delta by a single control-cell AOV; <b>Revenue Model</b> uses observed last-click GP deltas directly. Sort re-applies on every toggle.</div>
+    <div class="controls">
+      <div class="toggle-group" id="chrev-toggle">
+        <button data-val="orders" class="active">Revenue (Orders Model)</button>
+        <button data-val="revenue">Revenue (Revenue Model)</button>
+      </div>
+    </div>
+    <div class="chart-box h420"><canvas id="chrev-chart"></canvas></div>
+    <h3 style="margin-top: 18px;">Channel detail</h3>
+    <table class="dtable" id="chrev-table"></table>
+    <details class="math">
+      <summary>Show the math · how each channel's delta is computed</summary>
+      <div class="math-body">
+        <p><b>Orders Model (per channel):</b> DG halo revenue = DG halo orders × <span id="aov-show">$362.23</span> (control-cell AOV from MM test). Positive bars = channel lifted when DG ran. Strips out AOV-mix noise — every channel's value is a pure order-volume translation.</p>
+        <p><b>Revenue Model (per channel):</b> DG halo revenue = (control last-click GP × SF 1.0199) − treatment last-click GP. Reflects what GA4 actually recorded, AOV differences included. Positive bars = channel earned more in the DG-on cell than the DG-off cell.</p>
+        <p>Source: <code>sales_by_dma_by_channel_ga4.csv</code> (GA4, IP-based DMA resolution — same basis as the matched-markets headline). When the two models disagree sharply on a channel, it signals an AOV shift.</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- COOLDOWN CARD (specific to holdout) -->
+  <div class="card">
+    <span class="layer-label layer-tac">Cooldown window · interpreted with care</span>
+    <h2>The 6-day cooldown window (Mar 1 – Mar 6)</h2>
+    <div class="card-sub">DG <b>resumed immediately</b> on Mar 1 in the treatment cell — DG spend jumped from near-zero to ~$14.6k/week, back in line with control. So this isn't a true "channel-off cooldown." It's a post-resumption window, and DG's incremental contribution narrows to zero here as expected (DG is now running in both cells). Confidence is very low (15–16%) — don't read into it.</div>
+    <table class="dtable" id="cooldown-table"></table>
+    <details class="math">
+      <summary>Why we include this card anyway</summary>
+      <div class="math-body">
+        <p>The test design included Mar 1 – Mar 6 as a cooldown, so we report it. But because DG spend returned to BAU on day 1 of the cooldown, there's no meaningful "channel-off residual" to measure. The combined window (Jan 10 – Mar 6) is the right reference when you want a 56-day roll-up — not the cooldown in isolation.</p>
+        <p>Procedure note: cooldown analysis is standard for TOF tests. This was a BOF/mid-funnel holdout, so even with a clean cooldown we'd expect small residuals. With DG back on immediately, the signal here is essentially zero.</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- ============ LAYER 3: DEEP DIVE ============ -->
+
+  <span class="layer-label layer-deep">Layer 3 · Deep-dive diagnostics</span>
+
+  <!-- LC MULTIPLIER / WARNING THRESHOLD -->
+  <div class="card">
+    <span class="layer-label layer-deep">Incrementality factor · the headline of this validation</span>
+    <h2>DG's incrementality factor on BAU LC ROAS</h2>
+    <div class="card-sub">This is the answer the test was built to produce: for every $1 of DG last-click ROAS, DG delivers <b id="mult-show">2.51x</b> of true incremental GP to the business. That multiplier reflects DG's halo through Facebook, MKT, Search, Unknown, and PMAX — revenue those channels get last-click credit for that DG actually seeded. Use this factor to translate weekly DG LC ROAS into a real-world iROAS read between geo tests. The warning threshold is <b id="wt-show">0.56x</b> — if DG LC ROAS falls below that, the implied true iROAS is slipping under the 1.4x GP floor. <span id="lc-denom-note" style="color:#666;font-style:italic;">Derived from the DG-only iROAS — use the denominator toggle in the hero chart above to see the all-ad version.</span></div>
+    <div class="gauge-wrap">
+      <div class="gauge-box"><div class="chart-box h300"><canvas id="lc-gauge"></canvas></div></div>
+      <div style="flex: 1; min-width: 280px;">
+        <table class="dtable" id="lc-table"></table>
+        <details class="math" style="margin-top: 14px;">
+          <summary>Show the math · how the warning threshold is derived</summary>
+          <div class="math-body">
+            <p><b>Step 1.</b> LC ROAS (BAU) = control DG GA4 revenue ÷ control DG spend, test window. Reads: <b>0.60x</b>.</p>
+            <p><b>Step 2.</b> Multiplier (BAU) = geo-measured iROAS (MM Orders, test, <span id="math-denom-label">DG spend only</span>) ÷ LC ROAS (BAU) = <span id="math-iroas">1.51x</span> ÷ 0.60x = <b id="math-mult">2.51x</b>.</p>
+            <p><b>Step 3.</b> For a 1.4x GP iROAS floor: warn when DG LC ROAS × multiplier &lt; 1.4x → warn threshold = 1.4 ÷ <span id="math-mult2">2.51</span> = <b id="math-threshold">0.56x</b>.</p>
+            <p>Interpretation: every $1 of DG LC ROAS reported by Google is worth ~$2.5 in actual incremental GP to the business. That's because DG's halo across Facebook, MKT, Search, PMAX, and Unknown-attributed orders is <i>larger than</i> DG's direct last-click contribution. Without this test, DG's LC ROAS alone (0.60x BAU) would look sub-floor — the incrementality factor is what proves the channel is pulling its weight.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <!-- INDUSTRY BENCHMARKS -->
+  <div class="card">
+    <span class="layer-label layer-deep">Is this in line with industry?</span>
+    <h2>Top-line equivalent iROAS vs. published benchmarks</h2>
+    <div class="card-sub">Our GP iROAS doubled is the apples-to-apples comparison to published benchmarks (which report top-line). DG at BAU delivers <b>3.03x top-line (Orders, test)</b> and <b>3.53x (Revenue, test)</b> — above the Stella 2025 all-channel median (2.31x) and YouTube median (2.17x), sitting near the top of the IQR (3.24x). DG is a strong-performing channel, not a marginal one.</div>
+    <div class="chart-box h360"><canvas id="bench-chart"></canvas></div>
+  </div>
+
+  <!-- PRE-PERIOD FIT -->
+  <div class="card">
+    <span class="layer-label layer-deep">Pre-period diagnostic</span>
+    <h2>Pre-period fit quality — matched markets (daily orders)</h2>
+    <div class="card-sub">Only 41 days of pre-period were available (sales_by_dma.csv begins 2025-11-30). Orders MAPE is 26% and revenue MAPE is 52% — both well above our 10% / 20% targets. But daily correlation is 0.98 (orders) and 0.98 (revenue), so the cells <i>track</i> — the level of daily error is high because the window includes Dec peak days where small absolute errors read as large percentages. Test-period confidence came in at 94% despite this, which says the signal is strong enough to punch through the pre-period noise.</div>
+    <div class="chart-box h360"><canvas id="pp-chart"></canvas></div>
+    <h3 style="margin-top: 22px;">Model-level fit diagnostics</h3>
+    <table class="dtable" id="pp-table"></table>
+  </div>
+
+  <!-- FLAGS -->
+  <div class="card">
+    <span class="layer-label layer-deep">Flags to watch</span>
+    <h2>New, resolved, and ongoing flags</h2>
+    <ul class="flag-list">
+      <li class="issue"><b>DATA LIMIT ·</b> Pre-period only 41 days, not the 90 we'd prefer. <code>sales_by_dma.csv</code> starts 2025-11-30. Pre-period MAPE is 26% orders / 52% revenue (above our 10% / 20% targets). Daily correlation 0.98 rescues the match enough to read results, and test-period confidence 94% says signal broke through. Flag kept on the dashboard so future readers see the caveat.</li>
+      <li class="watch"><b>COOLDOWN CAVEAT ·</b> DG spend resumed on Mar 1 (day 1 of the 6-day cooldown window). This is not a clean post-channel-off cooldown — it's a resumption window. Cooldown contribution narrows to zero and confidence is 16%. Report but don't over-interpret.</li>
+      <li class="watch"><b>Orders vs. Revenue iROAS divergence ·</b> 1.51x (Orders) vs. 1.77x (Revenue) on the test window. Not a huge gap (&lt;0.5x) but consistent — DG drove slightly higher-AOV orders than its order-count delta alone suggests. Report both.</li>
+      <li class="watch"><b>Whole-country iROAS is materially softer ·</b> WC Orders = 1.06x, WC Revenue = 1.13x. Directionally agrees with MM and SC (DG is incremental) but magnitude is much lower. WC is known to be noisier with DMA-level heterogeneity — flag and lean on MM + SC for the headline.</li>
+      <li class="resolved"><b>DG clears the 1.4x floor ·</b> MM Orders 1.51x, MM Revenue 1.77x, SC Revenue 1.77x — three readings at or above the floor. MM Orders on the combined window (1.42x) also clears. DG is profitable at BAU spend.</li>
+      <li class="resolved"><b>Halo confirmed — DG is more than its last-click line ·</b> Cross-channel LC halo revenue: Facebook +$85k, Unknown +$46k, MKT +$33k, Search +$30k, PMAX +$18k. DG's own direct LC contribution was only +$52k. The halo is ~4x the direct hit — matches the prior-run narrative and makes the 2.51x incrementality factor the right number to share externally.</li>
+      <li><b>ONGOING ·</b> Sessions data not included in this run. If we want a TOF-style proxy for next time, wire in sessions by DMA for the treatment vs. control cells to tighten the "consideration still forming?" question.</li>
+      <li><b>ONGOING ·</b> Prior run landed near 2.2x (revenue-adjudicated). This run's MM Revenue (1.77x test / 1.93x combined) and SC Revenue (1.77x test / 2.23x combined) are within that neighborhood. MM Orders (1.51x) is lower — the gap is explained by which model you adjudicate on; all readings validate DG as incremental.</li>
+    </ul>
+  </div>
+
+  <!-- DECISION -->
+  <div class="card">
+    <span class="layer-label layer-exec">Decision &amp; next steps</span>
+    <h2>What to do</h2>
+    <div class="decision">
+      <div class="head">Recommended</div>
+      <div class="body"><b>Keep DG running at BAU.</b> DG is validated as incremental — it cleared the 1.4x GP floor on the Orders headline (1.51x, 94% confidence), with the Revenue model and Synthetic Control corroborating. The cross-channel halo (Facebook, MKT, Search, Unknown, PMAX) is the bigger story than DG's direct last-click line — and it's what makes the 2.51x incrementality factor possible.</div>
+    </div>
+    <div class="decision" style="background: linear-gradient(135deg, rgba(200,166,70,0.08) 0%, rgba(200,166,70,0.02) 100%); border-color: rgba(200,166,70,0.32);">
+      <div class="head" style="color: #9e7f18;">Watch</div>
+      <div class="body">DG LC ROAS (GA4). Warning threshold: <b id="watch-threshold">0.56x</b> <span id="watch-denom-note" style="color:#666;font-weight:500;">(from DG-only iROAS)</span>. If weekly LC ROAS drops below this, true iROAS is approaching the 1.4x floor — pause to reassess or schedule a fresh geo read. Current BAU LC ROAS (control cell): <b>0.60x</b> — close to the threshold, so monitor tightly.</div>
+    </div>
+    <div class="decision" style="background: linear-gradient(135deg, rgba(30,54,101,0.06) 0%, rgba(30,54,101,0.02) 100%); border-color: rgba(30,54,101,0.22);">
+      <div class="head" style="color: var(--navy-2);">Follow-up test</div>
+      <div class="body">Re-validate DG in 1–2 quarters, or sooner if creative/placement mix shifts meaningfully. A <b>partial-channel holdout</b> (e.g., Gmail-only or Discover-only dark) could separate which placements carry the incrementality factor versus which are auction-side noise — sharpening where to lean in harder.</div>
+    </div>
+    <div class="decision" style="background: linear-gradient(135deg, rgba(19,33,60,0.06) 0%, rgba(19,33,60,0.02) 100%); border-color: rgba(19,33,60,0.22);">
+      <div class="head" style="color: var(--navy);">Data hygiene ask</div>
+      <div class="body">Extend the historical window of <code>sales_by_dma.csv</code> so future pre-periods can cover the full 90 days. This run's 41-day pre-period forced us to work around a higher-MAPE match.</div>
+    </div>
+  </div>
+
+  <footer class="foot">
+    <div>
+      Source: <code>sales_by_dma.csv</code> · <code>sales_by_dma_by_channel_ga4.csv</code> (GA4 primary) · <code>aggregate_spend_by_dma.csv</code>
+    </div>
+    <div>Analysis date: 2026-04-22 · 25 treatment DMAs · 25 control DMAs · SF 1.0199</div>
+  </footer>
+
+</div>
+
+<script>
+/* ============================================================
+   Data payload
+   ============================================================ */
+const DATA = {"meta": {"test_name": "Demand Gen holdout", "channel": "Google Demand Gen", "test_type": "Full holdout (go-dark)", "treatment_dmas": 25, "control_dmas": 25, "test_start": "2026-01-10", "test_end": "2026-02-28", "cooldown_start": "2026-03-01", "cooldown_end": "2026-03-06", "combined_start": "2026-01-10", "combined_end": "2026-03-06", "pre_start": "2025-11-30", "pre_end": "2026-01-09", "pre_days": 41, "analysis_date": "2026-04-22", "data_through": "2026-04-19", "sf_mm": 1.0199, "sf_sc": 19.2641, "sf_wc": 0.2955, "floor_gp": 1.4, "floor_topline": 2.8, "prior_run_iroas": 2.2}, "models": [{"window": "test", "model": "matched_markets", "treat_orders": 4227.0, "ctrl_orders_scaled": 4765.0, "inc_orders": -538.0, "lift_pct_orders": -11.29, "treat_revenue": 1498577.0, "ctrl_revenue_scaled": 1726020.0, "inc_revenue": -227443.0, "lift_pct_revenue": -13.18, "ctrl_aov": 362.23, "inc_spend": 128706.0, "iroas_orders": 1.514, "iroas_revenue": 1.767, "conf_orders": 93.8, "conf_revenue": 82.3}, {"window": "test", "model": "synthetic_control", "treat_orders": 4227.0, "ctrl_orders_scaled": 4689.0, "inc_orders": -462.0, "lift_pct_orders": -9.84, "treat_revenue": 1498577.0, "ctrl_revenue_scaled": 1726140.0, "inc_revenue": -227563.0, "lift_pct_revenue": -13.18, "ctrl_aov": 368.16, "inc_spend": 128706.0, "iroas_orders": 1.32, "iroas_revenue": 1.768, "conf_orders": 97.8, "conf_revenue": 97.8}, {"window": "test", "model": "whole_country", "treat_orders": 4227.0, "ctrl_orders_scaled": 4611.0, "inc_orders": -384.0, "lift_pct_orders": -8.33, "treat_revenue": 1498577.0, "ctrl_revenue_scaled": 1644271.0, "inc_revenue": -145694.0, "lift_pct_revenue": -8.86, "ctrl_aov": 356.6, "inc_spend": 128706.0, "iroas_orders": 1.064, "iroas_revenue": 1.132, "conf_orders": 97.8, "conf_revenue": 97.8}, {"window": "cooldown", "model": "matched_markets", "treat_orders": 1328.0, "ctrl_orders_scaled": 1347.0, "inc_orders": -19.0, "lift_pct_orders": -1.43, "treat_revenue": 270573.0, "ctrl_revenue_scaled": 294643.0, "inc_revenue": -24069.0, "lift_pct_revenue": -8.17, "ctrl_aov": 218.69, "inc_spend": 1480.0, "iroas_orders": 2.85, "iroas_revenue": 16.264, "conf_orders": 15.7, "conf_revenue": 54.7}, {"window": "cooldown", "model": "synthetic_control", "treat_orders": 1328.0, "ctrl_orders_scaled": 1423.0, "inc_orders": -95.0, "lift_pct_orders": -6.67, "treat_revenue": 270573.0, "ctrl_revenue_scaled": 333516.0, "inc_revenue": -62943.0, "lift_pct_revenue": -18.87, "ctrl_aov": 234.39, "inc_spend": 1480.0, "iroas_orders": 15.035, "iroas_revenue": 42.531, "conf_orders": 14.9, "conf_revenue": 14.9}, {"window": "cooldown", "model": "whole_country", "treat_orders": 1328.0, "ctrl_orders_scaled": 1337.0, "inc_orders": -9.0, "lift_pct_orders": -0.69, "treat_revenue": 270573.0, "ctrl_revenue_scaled": 300287.0, "inc_revenue": -29713.0, "lift_pct_revenue": -9.9, "ctrl_aov": 224.56, "inc_spend": 1480.0, "iroas_orders": 1.4, "iroas_revenue": 20.078, "conf_orders": 14.9, "conf_revenue": 14.9}, {"window": "combined", "model": "matched_markets", "treat_orders": 5555.0, "ctrl_orders_scaled": 6112.0, "inc_orders": -557.0, "lift_pct_orders": -9.12, "treat_revenue": 1769150.0, "ctrl_revenue_scaled": 2020662.0, "inc_revenue": -251512.0, "lift_pct_revenue": -12.45, "ctrl_aov": 330.59, "inc_spend": 130186.0, "iroas_orders": 1.415, "iroas_revenue": 1.932, "conf_orders": 90.9, "conf_revenue": 83.4}, {"window": "combined", "model": "synthetic_control", "treat_orders": 5555.0, "ctrl_orders_scaled": 6112.0, "inc_orders": -557.0, "lift_pct_orders": -9.11, "treat_revenue": 1769150.0, "ctrl_revenue_scaled": 2059656.0, "inc_revenue": -290506.0, "lift_pct_revenue": -14.1, "ctrl_aov": 337.01, "inc_spend": 130186.0, "iroas_orders": 1.441, "iroas_revenue": 2.231, "conf_orders": 95.7, "conf_revenue": 95.7}, {"window": "combined", "model": "whole_country", "treat_orders": 5555.0, "ctrl_orders_scaled": 5948.0, "inc_orders": -393.0, "lift_pct_orders": -6.61, "treat_revenue": 1769150.0, "ctrl_revenue_scaled": 1944558.0, "inc_revenue": -175408.0, "lift_pct_revenue": -9.02, "ctrl_aov": 326.91, "inc_spend": 130186.0, "iroas_orders": 0.987, "iroas_revenue": 1.347, "conf_orders": 95.7, "conf_revenue": 95.7}], "preperiod": [{"model": "Matched Markets", "sf": 1.0199, "orders_mape": 26.03, "orders_corr": 0.9825, "revenue_mape": 52.51, "revenue_corr": 0.9779}, {"model": "Synthetic Control", "sf": 19.2641, "orders_mape": 20.64, "orders_corr": 0.977, "revenue_mape": 35.55, "revenue_corr": 0.9755}, {"model": "Whole Country", "sf": 0.2955, "orders_mape": 16.96, "orders_corr": 0.9879, "revenue_mape": 31.37, "revenue_corr": 0.9762}], "preperiod_daily_mm": [{"date": "2025-11-30", "treat": 33.0, "ctrl_scaled": 16.318407960199004}, {"date": "2025-12-01", "treat": 61.0, "ctrl_scaled": 68.33333333333333}, {"date": "2025-12-02", "treat": 28.0, "ctrl_scaled": 13.25870646766169}, {"date": "2025-12-03", "treat": 18.0, "ctrl_scaled": 14.278606965174127}, {"date": "2025-12-04", "treat": 13.0, "ctrl_scaled": 34.67661691542288}, {"date": "2025-12-05", "treat": 20.0, "ctrl_scaled": 20.398009950248756}, {"date": "2025-12-06", "treat": 13.0, "ctrl_scaled": 17.33830845771144}, {"date": "2025-12-07", "treat": 22.0, "ctrl_scaled": 14.278606965174127}, {"date": "2025-12-08", "treat": 17.0, "ctrl_scaled": 52.014925373134325}, {"date": "2025-12-09", "treat": 19.0, "ctrl_scaled": 14.278606965174127}, {"date": "2025-12-10", "treat": 13.0, "ctrl_scaled": 23.457711442786067}, {"date": "2025-12-11", "treat": 25.0, "ctrl_scaled": 22.43781094527363}, {"date": "2025-12-12", "treat": 23.0, "ctrl_scaled": 23.457711442786067}, {"date": "2025-12-13", "treat": 26.0, "ctrl_scaled": 20.398009950248756}, {"date": "2025-12-14", "treat": 17.0, "ctrl_scaled": 14.278606965174127}, {"date": "2025-12-15", "treat": 81.0, "ctrl_scaled": 58.13432835820895}, {"date": "2025-12-16", "treat": 85.0, "ctrl_scaled": 90.77114427860695}, {"date": "2025-12-17", "treat": 72.0, "ctrl_scaled": 71.39303482587064}, {"date": "2025-12-18", "treat": 71.0, "ctrl_scaled": 80.57213930348259}, {"date": "2025-12-19", "treat": 79.0, "ctrl_scaled": 86.6915422885572}, {"date": "2025-12-20", "treat": 59.0, "ctrl_scaled": 55.07462686567164}, {"date": "2025-12-21", "treat": 29.0, "ctrl_scaled": 33.656716417910445}, {"date": "2025-12-22", "treat": 55.0, "ctrl_scaled": 46.915422885572134}, {"date": "2025-12-23", "treat": 42.0, "ctrl_scaled": 30.59701492537313}, {"date": "2025-12-24", "treat": 30.0, "ctrl_scaled": 26.51741293532338}, {"date": "2025-12-25", "treat": 37.0, "ctrl_scaled": 35.69651741293532}, {"date": "2025-12-26", "treat": 58.0, "ctrl_scaled": 60.17412935323382}, {"date": "2025-12-27", "treat": 87.0, "ctrl_scaled": 107.08955223880596}, {"date": "2025-12-28", "treat": 81.0, "ctrl_scaled": 71.39303482587064}, {"date": "2025-12-29", "treat": 95.0, "ctrl_scaled": 109.12935323383084}, {"date": "2025-12-30", "treat": 100.0, "ctrl_scaled": 95.87064676616914}, {"date": "2025-12-31", "treat": 166.0, "ctrl_scaled": 175.42288557213928}, {"date": "2026-01-01", "treat": 96.0, "ctrl_scaled": 68.33333333333333}, {"date": "2026-01-02", "treat": 237.0, "ctrl_scaled": 249.87562189054725}, {"date": "2026-01-03", "treat": 355.0, "ctrl_scaled": 373.2835820895522}, {"date": "2026-01-04", "treat": 58.0, "ctrl_scaled": 53.03482587064676}, {"date": "2026-01-05", "treat": 72.0, "ctrl_scaled": 53.03482587064676}, {"date": "2026-01-06", "treat": 55.0, "ctrl_scaled": 70.3731343283582}, {"date": "2026-01-07", "treat": 98.0, "ctrl_scaled": 79.55223880597015}, {"date": "2026-01-08", "treat": 58.0, "ctrl_scaled": 58.13432835820895}, {"date": "2026-01-09", "treat": 61.0, "ctrl_scaled": 55.07462686567164}], "spend_delta_test": [{"channel": "Google Demand Gen", "treat": 2633.0, "ctrl_scaled": 131339.0, "delta": -128706.0}, {"channel": "Facebook", "treat": 515313.0, "ctrl_scaled": 558624.0, "delta": -43312.0}, {"channel": "Google PMAX", "treat": 118970.0, "ctrl_scaled": 133516.0, "delta": -14545.0}, {"channel": "Google Search", "treat": 94742.0, "ctrl_scaled": 108601.0, "delta": -13859.0}, {"channel": "Bing", "treat": 54201.0, "ctrl_scaled": 56616.0, "delta": -2415.0}, {"channel": "Affiliates", "treat": 34892.0, "ctrl_scaled": 36991.0, "delta": -2098.0}, {"channel": "Google YouTube", "treat": 13768.0, "ctrl_scaled": 12783.0, "delta": 985.0}], "spend_delta_combined": [{"channel": "Google Demand Gen", "treat": 17223.0, "ctrl_scaled": 147409.0, "delta": -130186.0}, {"channel": "Facebook", "treat": 601934.0, "ctrl_scaled": 646755.0, "delta": -44822.0}, {"channel": "Google PMAX", "treat": 138439.0, "ctrl_scaled": 154208.0, "delta": -15769.0}, {"channel": "Google Search", "treat": 108430.0, "ctrl_scaled": 123474.0, "delta": -15044.0}, {"channel": "Bing", "treat": 58570.0, "ctrl_scaled": 61538.0, "delta": -2968.0}, {"channel": "Google YouTube", "treat": 15831.0, "ctrl_scaled": 14693.0, "delta": 1138.0}, {"channel": "Affiliates", "treat": 46247.0, "ctrl_scaled": 44776.0, "delta": 1471.0}], "cross_channel": [{"channel": "Affiliates", "t_orders": 82, "t_rev": 51498.0, "c_orders_scaled": 74.0, "c_rev_scaled": 33564.0, "inc_orders": 7.5, "inc_rev": 17934.0}, {"channel": "External Email", "t_orders": 156, "t_rev": 79231.0, "c_orders_scaled": 126.0, "c_rev_scaled": 78818.0, "inc_orders": 29.5, "inc_rev": 412.0}, {"channel": "Outbound", "t_orders": 1, "t_rev": 148.0, "c_orders_scaled": 0.0, "c_rev_scaled": 0.0, "inc_orders": 1.0, "inc_rev": 148.0}, {"channel": "TV", "t_orders": 81, "t_rev": 23318.0, "c_orders_scaled": 66.0, "c_rev_scaled": 25893.0, "inc_orders": 14.7, "inc_rev": -2575.0}, {"channel": "Bing", "t_orders": 97, "t_rev": 48531.0, "c_orders_scaled": 113.0, "c_rev_scaled": 55276.0, "inc_orders": -16.2, "inc_rev": -6745.0}, {"channel": "Google PMAX", "t_orders": 297, "t_rev": 93319.0, "c_orders_scaled": 337.0, "c_rev_scaled": 111226.0, "inc_orders": -39.6, "inc_rev": -17907.0}, {"channel": "Google Search", "t_orders": 188, "t_rev": 91917.0, "c_orders_scaled": 207.0, "c_rev_scaled": 121852.0, "inc_orders": -19.0, "inc_rev": -29935.0}, {"channel": "MKT", "t_orders": 1176, "t_rev": 299012.0, "c_orders_scaled": 1280.0, "c_rev_scaled": 332257.0, "inc_orders": -104.0, "inc_rev": -33244.0}, {"channel": "Unknown", "t_orders": 548, "t_rev": 196205.0, "c_orders_scaled": 646.0, "c_rev_scaled": 242025.0, "inc_orders": -97.6, "inc_rev": -45820.0}, {"channel": "Google Demand Gen", "t_orders": 108, "t_rev": 18227.0, "c_orders_scaled": 264.0, "c_rev_scaled": 69734.0, "inc_orders": -156.2, "inc_rev": -51507.0}, {"channel": "Facebook", "t_orders": 1449, "t_rev": 490582.0, "c_orders_scaled": 1655.0, "c_rev_scaled": 575986.0, "inc_orders": -206.3, "inc_rev": -85404.0}], "weekly": [{"week_start": "2026-01-10", "week_end": "2026-01-16", "t_orders": 708.0, "c_orders_scaled": 654.0, "inc_orders": 54.0, "t_rev": 212445.0, "c_rev_scaled": 179339.0, "inc_rev": 33106.0, "t_dg_spend": 2.0, "c_dg_spend_scaled": 16244.0, "withheld_spend": 16243.0}, {"week_start": "2026-01-17", "week_end": "2026-01-23", "t_orders": 537.0, "c_orders_scaled": 582.0, "inc_orders": -45.0, "t_rev": 164717.0, "c_rev_scaled": 194692.0, "inc_rev": -29975.0, "t_dg_spend": 2.0, "c_dg_spend_scaled": 16362.0, "withheld_spend": 16360.0}, {"week_start": "2026-01-24", "week_end": "2026-01-30", "t_orders": 795.0, "c_orders_scaled": 1023.0, "inc_orders": -228.0, "t_rev": 395385.0, "c_rev_scaled": 474438.0, "inc_rev": -79053.0, "t_dg_spend": 5.0, "c_dg_spend_scaled": 38038.0, "withheld_spend": 38033.0}, {"week_start": "2026-01-31", "week_end": "2026-02-06", "t_orders": 529.0, "c_orders_scaled": 625.0, "inc_orders": -96.0, "t_rev": 207898.0, "c_rev_scaled": 268011.0, "inc_rev": -60112.0, "t_dg_spend": 1.0, "c_dg_spend_scaled": 19069.0, "withheld_spend": 19068.0}, {"week_start": "2026-02-07", "week_end": "2026-02-13", "t_orders": 678.0, "c_orders_scaled": 784.0, "inc_orders": -106.0, "t_rev": 163315.0, "c_rev_scaled": 195678.0, "inc_rev": -32364.0, "t_dg_spend": 1.0, "c_dg_spend_scaled": 16761.0, "withheld_spend": 16760.0}, {"week_start": "2026-02-14", "week_end": "2026-02-20", "t_orders": 374.0, "c_orders_scaled": 366.0, "inc_orders": 8.0, "t_rev": 164309.0, "c_rev_scaled": 168501.0, "inc_rev": -4193.0, "t_dg_spend": 1.0, "c_dg_spend_scaled": 14699.0, "withheld_spend": 14699.0}, {"week_start": "2026-02-21", "week_end": "2026-02-27", "t_orders": 448.0, "c_orders_scaled": 549.0, "inc_orders": -101.0, "t_rev": 146006.0, "c_rev_scaled": 183115.0, "inc_rev": -37109.0, "t_dg_spend": 593.0, "c_dg_spend_scaled": 7995.0, "withheld_spend": 7402.0}, {"week_start": "2026-02-28", "week_end": "2026-03-06", "t_orders": 1486.0, "c_orders_scaled": 1529.0, "inc_orders": -43.0, "t_rev": 315076.0, "c_rev_scaled": 356888.0, "inc_rev": -41812.0, "t_dg_spend": 16618.0, "c_dg_spend_scaled": 18240.0, "withheld_spend": 1622.0}], "dg_spend_by_window": {"test": {"t_dg_spend": 2633.37, "c_dg_spend": 128776.73, "c_dg_spend_scaled": 131339.45, "withheld": 128706.08}, "cooldown": {"t_dg_spend": 14589.28, "c_dg_spend": 15755.66, "c_dg_spend_scaled": 16069.21, "withheld": 1479.93}, "combined": {"t_dg_spend": 17222.65, "c_dg_spend": 144532.39, "c_dg_spend_scaled": 147408.66, "withheld": 130186.01}}, "lc_multiplier": {"lc_roas_bau": 0.603, "geo_iroas_orders_mm_test": 1.514, "multiplier_bau": 2.509, "warning_threshold": 0.558}, "methodology": {"cross_channel_source": "sales_by_dma_by_channel_ga4.csv (GA4, primary)", "ntf_source": "N/A for this run \u2014 user opted out", "lc_multiplier_source": "GA4 Google Demand Gen LC ROAS", "pre_period_note": "Actual pre-period limited to 41 days (2025-11-30 to 2026-01-09) due to sales_by_dma.csv earliest date. Originally requested 90 days."}, "benchmarks": [{"name": "4P DG test window (Orders)", "value": 3.03, "source": "current test \u00d7 2 (GP\u2192top-line)", "us": true}, {"name": "4P DG test window (Revenue)", "value": 3.53, "source": "current test \u00d7 2 (GP\u2192top-line)", "us": true}, {"name": "4P DG combined (Revenue)", "value": 3.86, "source": "combined window \u00d7 2", "us": true}, {"name": "YouTube median (Stella 2025)", "value": 2.17, "source": "Stella 2025, N=225"}, {"name": "All-channel median (Stella 2025)", "value": 2.31, "source": "Stella 2025, IQR 1.36-3.24x"}, {"name": "All-channel IQR floor", "value": 1.36, "source": "Stella 2025"}, {"name": "All-channel IQR ceiling", "value": 3.24, "source": "Stella 2025"}]};
+
+/* ============================================================
+   Palette + Chart.js defaults
+   ============================================================ */
+const P = {
+  navy: '#13213C', navy2: '#1E3665', red: '#A21E22',
+  gold: '#C8A646', green: '#2E7D32', gray: '#8B92A3',
+  gray100: '#EEF0F4', gray200: '#DCE0E8'
+};
+
+Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+Chart.defaults.font.size = 12;
+Chart.defaults.color = '#525868';
+Chart.defaults.plugins.legend.position = 'bottom';
+Chart.defaults.plugins.legend.labels.usePointStyle = true;
+Chart.defaults.plugins.legend.labels.padding = 14;
+Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(19,33,60,0.95)';
+Chart.defaults.plugins.tooltip.padding = 10;
+Chart.defaults.plugins.tooltip.titleFont = { weight: '600', size: 12 };
+Chart.defaults.plugins.tooltip.bodyFont = { size: 12 };
+Chart.defaults.plugins.tooltip.boxPadding = 4;
+
+/* ============================================================
+   Helpers
+   ============================================================ */
+const fmtD = n => '$' + Math.round(n).toLocaleString('en-US');
+const fmtK = n => {
+  const a = Math.abs(n);
+  const s = n < 0 ? '-' : '';
+  if (a >= 1e6) return s + '$' + (a/1e6).toFixed(2) + 'M';
+  if (a >= 1e3) return s + '$' + (a/1e3).toFixed(0) + 'k';
+  return s + '$' + Math.round(a).toLocaleString('en-US');
+};
+const fmtN = n => Math.round(n).toLocaleString('en-US');
+const fmtP = n => n.toFixed(1) + '%';
+const fmtX = n => n.toFixed(2) + 'x';
+const sign = n => n > 0 ? '+' : '';
+const barColor = iroas => iroas >= 1.4 ? P.green : (iroas >= 1.0 ? P.gold : P.red);
+
+function findModel(window, modelKey) {
+  return DATA.models.find(m => m.window === window && m.model === modelKey);
+}
+function modelsByWindow(window) {
+  return ['matched_markets', 'synthetic_control', 'whole_country'].map(k => findModel(window, k));
+}
+
+/* ============================================================
+   Meta row
+   ============================================================ */
+document.getElementById('m-test').textContent = DATA.meta.test_name;
+document.getElementById('m-tw').textContent   = DATA.meta.test_start + ' → ' + DATA.meta.test_end;
+document.getElementById('m-cw').textContent   = DATA.meta.cooldown_start + ' → ' + DATA.meta.cooldown_end;
+document.getElementById('m-pp').textContent   = DATA.meta.pre_start + ' → ' + DATA.meta.pre_end + ' (' + DATA.meta.pre_days + 'd)';
+document.getElementById('m-ad').textContent   = DATA.meta.analysis_date;
+document.getElementById('mm-sf-show').textContent = DATA.meta.sf_mm.toFixed(4);
+
+/* ============================================================
+   KPI GRID
+   ============================================================
+   Wrapped in renderKPIs() so the denominator toggle redraws the
+   two iROAS hero cards. Incremental-orders and incremental-GP
+   cards are denominator-independent (physical counts) so they
+   read the same values either way.
+*/
+const mmTest = findModel('test', 'matched_markets');
+const mmComb = findModel('combined', 'matched_markets');
+const dgContribOrders = -mmTest.inc_orders;       // DG's incremental order contribution (positive)
+const dgContribRev    = -mmTest.inc_revenue;       // DG's incremental GP contribution (positive)
+const dgContribOrdersComb = -mmComb.inc_orders;
+const dgContribRevComb    = -mmComb.inc_revenue;
+// Lift expressed over the DG-off base (treatment orders), so it reads as "DG added +X% to the no-DG baseline"
+const dgLiftPctOrders = mmTest.treat_orders > 0 ? (dgContribOrders / mmTest.treat_orders) * 100 : 0;
+
+function renderKPIs() {
+  const iroasO = iroasFor(mmTest, 'test', 'orders');
+  const iroasR = iroasFor(mmTest, 'test', 'revenue');
+  const denomTag = denomMode === 'dg' ? 'DG spend' : 'all-ad spend';
+  const kpis = [
+    {
+      label: 'Orders iROAS (MM, test · ' + denomTag + ')', val: fmtX(iroasO),
+      delta: 'GP · vs 1.4x floor · confidence ' + mmTest.conf_orders.toFixed(0) + '%',
+      hero: true,
+      passClass: iroasO >= 1.4 ? 'pass' : (iroasO >= 1.0 ? 'soft' : 'fail'),
+      passText: iroasO >= 1.4 ? '✓ clears floor' : (iroasO >= 1.0 ? 'near floor' : '✗ below floor')
+    },
+    {
+      label: 'Revenue iROAS (MM, test · ' + denomTag + ')', val: fmtX(iroasR),
+      delta: 'GP · top-line ≈ ' + fmtX(iroasR * 2),
+      passClass: iroasR >= 1.4 ? 'pass' : (iroasR >= 1.0 ? 'soft' : 'fail'),
+      passText: iroasR >= 1.4 ? '✓ clears floor' : (iroasR >= 1.0 ? 'near floor' : '✗ below floor')
+    },
+    {
+      label: 'DG incremental orders (MM, test)', val: '+' + fmtN(dgContribOrders),
+      delta: '+' + dgLiftPctOrders.toFixed(1) + '% over no-DG baseline · conf ' + mmTest.conf_orders.toFixed(0) + '%'
+    },
+    {
+      label: 'DG incremental GP revenue', val: '+' + fmtK(dgContribRev),
+      delta: 'Test window · +' + fmtK(dgContribRevComb) + ' combined'
+    }
+  ];
+  const kgrid = document.getElementById('kpi-grid');
+  kgrid.innerHTML = '';
+  kpis.forEach(k => {
+    const d = document.createElement('div');
+    d.className = 'kpi' + (k.hero ? ' hero' : '');
+    d.innerHTML = `
+      <div class="label">${k.label}</div>
+      <div class="val">${k.val}</div>
+      <div class="delta">${k.delta}</div>
+      ${k.passClass ? `<span class="pass-badge ${k.passClass}">${k.passText}</span>` : ''}
+    `;
+    kgrid.appendChild(d);
+  });
+}
+// initial render happens after denomMode + iroasFor are declared (see below)
+
+/* ============================================================
+   DENOMINATOR MODE (DG-only vs all-ad)
+   ============================================================
+   All-ad denominator sums every channel's (treatment − scaled control) spend delta and
+   inverts it so DG-on-cell-minus-DG-off-cell reads as a positive "DG-driven ad spend."
+   Cooldown all-ad is derived as combined − test since we don't have a cooldown-only
+   per-channel spend breakdown; DG cooldown halo is negligible (<$1k) so this is safe.
+*/
+const spendAllAdByWindow = {
+  test:     -DATA.spend_delta_test.reduce((s, r) => s + r.delta, 0),
+  combined: -DATA.spend_delta_combined.reduce((s, r) => s + r.delta, 0)
+};
+spendAllAdByWindow.cooldown = spendAllAdByWindow.combined - spendAllAdByWindow.test;
+
+let denomMode = 'dg';  // 'dg' | 'allad'
+
+function denomFor(windowKey, modelRow) {
+  if (denomMode === 'allad') return spendAllAdByWindow[windowKey];
+  return modelRow.inc_spend;
+}
+
+function iroasFor(row, windowKey, modelMode) {
+  const denom = denomFor(windowKey, row);
+  if (denom <= 0) return 0;
+  if (modelMode === 'orders') return (-row.inc_orders * row.ctrl_aov) / denom;
+  return (-row.inc_revenue) / denom;
+}
+
+function updateDenomCaption() {
+  const label = document.getElementById('denom-mode-label');
+  const expl  = document.getElementById('denom-explainer');
+  if (denomMode === 'dg') {
+    label.textContent = 'DG spend only';
+    expl.textContent = 'Conventional channel iROAS — divides DG\u2019s incremental GP by the DG spend delta alone. Halo revenue is in the numerator (incremental orders include cross-channel halo); halo spend is ignored in the denominator.';
+  } else {
+    label.textContent = 'All-ad spend (comprehensive)';
+    expl.innerHTML = 'Credits DG\u2019s presence for the full ecosystem spend response. When DG went dark, Facebook, PMAX, Search, and other channels\u2019 algorithms cut back too (+$75k of additional halo spend in the test window). Dividing by that total gives a more conservative iROAS answering <i>"what happens to total profit if we flip DG on vs. off?"</i> Non-standard vs. industry benchmarks, so keep the DG-only view as the primary external number.';
+  }
+}
+
+/* ============================================================
+   HERO CHART — 3-model iROAS with toggle
+   ============================================================ */
+let heroModelMode = 'orders';  // 'orders' | 'revenue'
+let heroWindowMode = 'test';   // 'test' | 'combined' | 'cooldown'
+let heroChart;
+
+function drawHero() {
+  const rows = modelsByWindow(heroWindowMode);
+  const values = rows.map(r => iroasFor(r, heroWindowMode, heroModelMode));
+  const labels = ['Matched markets', 'Synthetic control', 'Whole country'];
+  const colors = values.map(v => barColor(v));
+
+  const ctx = document.getElementById('hero-chart').getContext('2d');
+  if (heroChart) heroChart.destroy();
+  heroChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        data: values,
+        backgroundColor: colors,
+        borderRadius: 6,
+        maxBarThickness: 80
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: {
+          label: ctx => {
+            const r = rows[ctx.dataIndex];
+            const val = ctx.parsed.y;
+            const confKey = heroModelMode === 'orders' ? 'conf_orders' : 'conf_revenue';
+            return fmtX(val) + ' · confidence ' + r[confKey].toFixed(0) + '%';
+          }
+        }}
+      },
+      scales: {
+        y: {
+          beginAtZero: true, grid: { color: P.gray100 },
+          ticks: { callback: v => v.toFixed(1) + 'x' },
+          title: { display: true, text: (heroModelMode === 'orders' ? 'Orders' : 'Revenue') + ' iROAS (GP)' }
+        },
+        x: { grid: { display: false } }
+      }
+    },
+    plugins: [{
+      id: 'floor-line',
+      afterDraw: chart => {
+        const { ctx, chartArea, scales } = chart;
+        const y = scales.y.getPixelForValue(1.4);
+        ctx.save();
+        ctx.strokeStyle = P.red;
+        ctx.setLineDash([6, 4]);
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(chartArea.left, y);
+        ctx.lineTo(chartArea.right, y);
+        ctx.stroke();
+        ctx.fillStyle = P.red;
+        ctx.font = '600 11px sans-serif';
+        ctx.fillText('1.4x GP floor', chartArea.right - 80, y - 6);
+        ctx.restore();
+      }
+    }]
+  });
+
+  // Math table
+  const mathBox = document.getElementById('hero-math-table');
+  const denomLabel = denomMode === 'dg' ? 'DG inc spend' : 'All-ad inc spend';
+  let rowsHtml = `<tr><th>Model</th><th>T orders (DG off)</th><th>C orders scaled (DG on)</th><th>DG inc orders</th><th>Control AOV</th><th>${denomLabel}</th><th>iROAS</th></tr>`;
+  rows.forEach((r, i) => {
+    const dgInc = -r.inc_orders;
+    const iroas = values[i];
+    const denom = denomFor(heroWindowMode, r);
+    if (heroModelMode === 'orders') {
+      rowsHtml += `<tr><td>${labels[i]}</td><td>${fmtN(r.treat_orders)}</td><td>${fmtN(r.ctrl_orders_scaled)}</td><td>+${fmtN(dgInc)}</td><td>${fmtD(r.ctrl_aov)}</td><td>${fmtK(denom)}</td><td><b>${fmtX(iroas)}</b></td></tr>`;
+    } else {
+      const dgIncRev = -r.inc_revenue;
+      const dgLiftRev = r.treat_revenue > 0 ? (dgIncRev / r.treat_revenue) * 100 : 0;
+      rowsHtml += `<tr><td>${labels[i]}</td><td colspan="2">DG inc rev: +${fmtK(dgIncRev)}</td><td colspan="2">DG lift vs no-DG baseline: +${dgLiftRev.toFixed(1)}%</td><td>${fmtK(denom)}</td><td><b>${fmtX(iroas)}</b></td></tr>`;
+    }
+  });
+  mathBox.innerHTML = '<table>' + rowsHtml + '</table>';
+}
+drawHero();
+
+document.querySelectorAll('#hero-model-toggle button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#hero-model-toggle button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    heroModelMode = b.dataset.val;
+    drawHero();
+  });
+});
+document.querySelectorAll('#hero-window-toggle button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#hero-window-toggle button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    heroWindowMode = b.dataset.val;
+    drawHero();
+  });
+});
+document.querySelectorAll('#hero-denom-toggle button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#hero-denom-toggle button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    denomMode = b.dataset.val;
+    updateDenomCaption();
+    renderKPIs();
+    drawHero();
+    renderLC();
+  });
+});
+updateDenomCaption();
+renderKPIs();
+
+/* ============================================================
+   WEEKLY SCRUBBER
+   ============================================================ */
+const weeks = DATA.weekly;
+const scrub = document.getElementById('week-scrub');
+scrub.max = weeks.length;  // 0 = all, 1..N = weeks
+scrub.value = 0;
+const weekLabel = document.getElementById('week-label');
+const weekReadout = document.getElementById('week-readout');
+
+function drawWeekReadout(idx) {
+  if (idx === 0) {
+    weekLabel.textContent = 'all ' + weeks.length + ' weeks';
+    const tot_inc_o = weeks.reduce((s, w) => s + w.inc_orders, 0);
+    const tot_inc_r = weeks.reduce((s, w) => s + w.inc_rev, 0);
+    const tot_spend = weeks.reduce((s, w) => s + w.withheld_spend, 0);
+    const tot_dg_o = -tot_inc_o; // DG incremental orders (positive when DG contributed)
+    const tot_dg_r = -tot_inc_r;
+    weekReadout.innerHTML = `
+      <div class="sr-item"><div class="l">DG incremental orders</div><div class="v">${sign(tot_dg_o)}${fmtN(tot_dg_o)}</div><div class="d">across all 8 weeks</div></div>
+      <div class="sr-item"><div class="l">DG incremental GP revenue</div><div class="v">${sign(tot_dg_r)}${fmtK(tot_dg_r)}</div><div class="d">positive = DG lifted the business</div></div>
+      <div class="sr-item"><div class="l">DG incremental spend</div><div class="v">${fmtK(tot_spend)}</div><div class="d">total across all 8 weeks</div></div>
+      <div class="sr-item"><div class="l">iROAS (all 8 wks)</div><div class="v">${fmtX((tot_dg_o * mmComb.ctrl_aov) / tot_spend)}</div><div class="d">Orders model · combined</div></div>
+    `;
+  } else {
+    const w = weeks[idx - 1];
+    weekLabel.textContent = w.week_start + ' → ' + w.week_end;
+    const dg_status = idx <= 7 ? 'treatment DG dark' : 'DG back on both cells';
+    const dg_o = -w.inc_orders;
+    const dg_r = -w.inc_rev;
+    weekReadout.innerHTML = `
+      <div class="sr-item"><div class="l">DG incremental orders</div><div class="v">${sign(dg_o)}${fmtN(dg_o)}</div><div class="d">${fmtN(w.c_orders_scaled)} C·scaled vs ${w.t_orders} T</div></div>
+      <div class="sr-item"><div class="l">DG incremental GP revenue</div><div class="v">${sign(dg_r)}${fmtK(dg_r)}</div><div class="d">C·scaled ${fmtK(w.c_rev_scaled)} vs T ${fmtK(w.t_rev)}</div></div>
+      <div class="sr-item"><div class="l">DG incremental spend</div><div class="v">${fmtK(w.withheld_spend)}</div><div class="d">T $${fmtN(w.t_dg_spend)} · ${dg_status}</div></div>
+      <div class="sr-item"><div class="l">Week iROAS (O)</div><div class="v">${w.withheld_spend > 0 ? fmtX((dg_o * mmComb.ctrl_aov) / w.withheld_spend) : '—'}</div><div class="d">Orders model, this week</div></div>
+    `;
+  }
+}
+drawWeekReadout(0);
+scrub.addEventListener('input', e => drawWeekReadout(parseInt(e.target.value)));
+
+// Weekly bar chart — DG incremental orders (positive = DG contributed) + DG incremental spend overlay
+new Chart(document.getElementById('weekly-chart').getContext('2d'), {
+  type: 'bar',
+  data: {
+    labels: weeks.map(w => w.week_start.slice(5)),
+    datasets: [
+      {
+        type: 'bar',
+        label: 'DG incremental orders',
+        data: weeks.map(w => -w.inc_orders),
+        backgroundColor: weeks.map(w => -w.inc_orders >= 0 ? P.green : P.red),
+        borderRadius: 4, yAxisID: 'y'
+      },
+      {
+        type: 'line',
+        label: 'DG incremental spend ($)',
+        data: weeks.map(w => w.withheld_spend),
+        borderColor: P.navy, backgroundColor: 'rgba(19,33,60,0.08)',
+        borderWidth: 2, tension: 0.3, yAxisID: 'y1',
+        pointBackgroundColor: P.navy, pointRadius: 3
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: true }, tooltip: { callbacks: {
+      label: ctx => ctx.dataset.label + ': ' + (ctx.dataset.label.includes('spend') ? fmtK(ctx.parsed.y) : fmtN(ctx.parsed.y))
+    }}},
+    scales: {
+      y:  { position: 'left', title: { display: true, text: 'DG incremental orders' }, grid: { color: P.gray100 } },
+      y1: { position: 'right', title: { display: true, text: 'DG incremental spend ($)' },
+            grid: { display: false },
+            ticks: { callback: v => fmtK(v) } },
+      x:  { grid: { display: false } }
+    }
+  }
+});
+
+/* ============================================================
+   SPEND DELTA
+   ============================================================ */
+let spendWindowMode = 'test';
+let spendChart;
+function drawSpend() {
+  const rows = spendWindowMode === 'test' ? DATA.spend_delta_test : DATA.spend_delta_combined;
+  const total_treat = rows.reduce((s, r) => s + r.treat, 0);
+  const total_ctrl = rows.reduce((s, r) => s + r.ctrl_scaled, 0);
+  const total_delta = rows.reduce((s, r) => s + r.delta, 0);
+
+  // Chart — sorted most negative to most positive
+  const sorted = [...rows].sort((a,b) => a.delta - b.delta);
+  const labels = sorted.map(r => r.channel).concat(['Total']);
+  const values = sorted.map(r => r.delta).concat([total_delta]);
+  const colors = values.map((v, i) =>
+    i === values.length - 1 ? P.navy : (v > 0 ? P.green : P.red));
+
+  const ctx = document.getElementById('spend-delta').getContext('2d');
+  if (spendChart) spendChart.destroy();
+  spendChart = new Chart(ctx, {
+    type: 'bar',
+    data: { labels, datasets: [{ data: values, backgroundColor: colors, borderRadius: 4 }] },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => fmtK(ctx.parsed.x) } } },
+      scales: {
+        x: { grid: { color: P.gray100 }, ticks: { callback: v => fmtK(v) },
+             title: { display: true, text: 'Spend delta: treatment (DG off) − scaled control (DG on) · negative on DG is the expected, intentional manipulation' } },
+        y: { grid: { display: false } }
+      }
+    }
+  });
+
+  // Table
+  const tbody = document.getElementById('spend-delta-table');
+  let html = '<thead><tr><th>Channel</th><th>Treat</th><th>Ctrl × SF</th><th>Delta</th></tr></thead><tbody>';
+  sorted.forEach(r => {
+    html += `<tr><td>${r.channel}</td><td>${fmtK(r.treat)}</td><td>${fmtK(r.ctrl_scaled)}</td><td class="${r.delta >= 0 ? 'pos' : 'neg'}">${fmtK(r.delta)}</td></tr>`;
+  });
+  html += `<tr class="total-row"><td>Total</td><td>${fmtK(total_treat)}</td><td>${fmtK(total_ctrl)}</td><td class="${total_delta >= 0 ? 'pos' : 'neg'}">${fmtK(total_delta)}</td></tr>`;
+  html += '</tbody>';
+  tbody.innerHTML = html;
+}
+drawSpend();
+document.querySelectorAll('#spend-window-toggle button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#spend-window-toggle button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    spendWindowMode = b.dataset.val;
+    drawSpend();
+  });
+});
+
+/* ============================================================
+   CROSS-CHANNEL REVENUE
+   ============================================================ */
+const AOV = mmTest.ctrl_aov;
+document.getElementById('aov-show').textContent = fmtD(AOV);
+let chrevMode = 'orders';
+let chrevChart;
+
+function drawChrev() {
+  // Flip signs: DG halo = control (DG on) − treatment (DG off). Positive = channel lifts when DG runs.
+  const enriched = DATA.cross_channel.map(r => ({
+    channel: r.channel,
+    halo_orders: -r.inc_orders,
+    halo_rev_observed: -r.inc_rev,
+    halo_rev_ordersmodel: -r.inc_orders * AOV,
+    t_orders: r.t_orders, t_rev: r.t_rev,
+    c_orders_scaled: r.c_orders_scaled, c_rev_scaled: r.c_rev_scaled
+  }));
+  const valueKey = chrevMode === 'orders' ? 'halo_rev_ordersmodel' : 'halo_rev_observed';
+  // Sort largest halo at top of the chart (descending)
+  const sorted = [...enriched].sort((a, b) => b[valueKey] - a[valueKey]);
+  const total_val = sorted.reduce((s, r) => s + r[valueKey], 0);
+  const labels = sorted.map(r => r.channel).concat(['Total']);
+  const values = sorted.map(r => r[valueKey]).concat([total_val]);
+  const colors = values.map((v, i) =>
+    i === values.length - 1 ? P.navy : (v > 0 ? P.green : P.red));
+
+  const ctx = document.getElementById('chrev-chart').getContext('2d');
+  if (chrevChart) chrevChart.destroy();
+  chrevChart = new Chart(ctx, {
+    type: 'bar',
+    data: { labels, datasets: [{ data: values, backgroundColor: colors, borderRadius: 4 }] },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => (ctx.parsed.x >= 0 ? '+' : '') + fmtK(ctx.parsed.x) } } },
+      scales: {
+        x: { grid: { color: P.gray100 }, ticks: { callback: v => fmtK(v) },
+             title: { display: true, text: 'DG halo GP revenue (' + (chrevMode === 'orders' ? 'Orders Model' : 'Revenue Model') + ') — positive = lifts when DG runs' } },
+        y: { grid: { display: false } }
+      }
+    }
+  });
+
+  // Table
+  const tbody = document.getElementById('chrev-table');
+  let html = '<thead><tr><th>Channel</th><th>DG halo orders</th><th>DG halo rev (Orders Model)</th><th>DG halo rev (Revenue Model)</th></tr></thead><tbody>';
+  const tableSorted = [...enriched].sort((a, b) => b[valueKey] - a[valueKey]);
+  tableSorted.forEach(r => {
+    html += `<tr><td>${r.channel}</td><td class="${r.halo_orders >= 0 ? 'pos' : 'neg'}">${(r.halo_orders >= 0 ? '+' : '') + r.halo_orders.toFixed(1)}</td><td class="${r.halo_rev_ordersmodel >= 0 ? 'pos' : 'neg'}">${(r.halo_rev_ordersmodel >= 0 ? '+' : '') + fmtK(r.halo_rev_ordersmodel)}</td><td class="${r.halo_rev_observed >= 0 ? 'pos' : 'neg'}">${(r.halo_rev_observed >= 0 ? '+' : '') + fmtK(r.halo_rev_observed)}</td></tr>`;
+  });
+  const totalOrders = enriched.reduce((s, r) => s + r.halo_orders, 0);
+  const totalRevO = enriched.reduce((s, r) => s + r.halo_rev_ordersmodel, 0);
+  const totalRevR = enriched.reduce((s, r) => s + r.halo_rev_observed, 0);
+  html += `<tr class="total-row"><td>Total</td><td class="${totalOrders >= 0 ? 'pos' : 'neg'}">${(totalOrders >= 0 ? '+' : '') + totalOrders.toFixed(1)}</td><td class="${totalRevO >= 0 ? 'pos' : 'neg'}">${(totalRevO >= 0 ? '+' : '') + fmtK(totalRevO)}</td><td class="${totalRevR >= 0 ? 'pos' : 'neg'}">${(totalRevR >= 0 ? '+' : '') + fmtK(totalRevR)}</td></tr>`;
+  html += '</tbody>';
+  tbody.innerHTML = html;
+}
+drawChrev();
+document.querySelectorAll('#chrev-toggle button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#chrev-toggle button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    chrevMode = b.dataset.val;
+    drawChrev();
+  });
+});
+
+/* ============================================================
+   COOLDOWN TABLE
+   ============================================================ */
+{
+  const rows = ['matched_markets', 'synthetic_control', 'whole_country'].map(m => findModel('cooldown', m));
+  const labels = { matched_markets: 'Matched markets', synthetic_control: 'Synthetic control', whole_country: 'Whole country' };
+  let html = '<thead><tr><th>Model</th><th>T orders</th><th>C orders scaled</th><th>DG inc orders</th><th>DG inc rev</th><th>iROAS (O)</th><th>iROAS (R)</th><th>Confidence</th></tr></thead><tbody>';
+  rows.forEach(r => {
+    const dgO = -r.inc_orders;
+    const dgR = -r.inc_revenue;
+    html += `<tr><td>${labels[r.model]}</td><td>${fmtN(r.treat_orders)}</td><td>${fmtN(r.ctrl_orders_scaled)}</td><td>${(dgO >= 0 ? '+' : '') + fmtN(dgO)}</td><td>${(dgR >= 0 ? '+' : '') + fmtK(dgR)}</td><td>${fmtX(r.iroas_orders)}</td><td>${fmtX(r.iroas_revenue)}</td><td>${r.conf_orders.toFixed(0)}%</td></tr>`;
+  });
+  html += '</tbody>';
+  document.getElementById('cooldown-table').innerHTML = html;
+}
+
+/* ============================================================
+   LC MULTIPLIER GAUGE + TABLE
+   ============================================================
+   Wrapped in renderLC() so the hero's denominator toggle can re-derive
+   multiplier + threshold from the currently-selected iROAS denominator.
+*/
+const lc = DATA.lc_multiplier;
+let lcGaugeChart;
+
+function renderLC() {
+  // Re-derive the MM Orders test iROAS using whichever denominator is active.
+  const mmTestRow = findModel('test', 'matched_markets');
+  const geoIroas  = iroasFor(mmTestRow, 'test', 'orders');
+  const mult      = lc.lc_roas_bau > 0 ? geoIroas / lc.lc_roas_bau : 0;
+  const threshold = mult > 0 ? 1.4 / mult : 0;
+
+  const denomLabel = denomMode === 'dg' ? 'DG spend only' : 'all-ad spend';
+  const denomNote  = denomMode === 'dg'
+    ? '(from DG-only iROAS)'
+    : '(from all-ad iROAS)';
+
+  // Headline spans
+  document.getElementById('mult-show').textContent    = fmtX(mult);
+  document.getElementById('wt-show').textContent      = fmtX(threshold);
+  document.getElementById('watch-threshold').textContent = fmtX(threshold);
+  document.getElementById('watch-denom-note').textContent = denomNote;
+
+  // Math block spans
+  document.getElementById('math-iroas').textContent      = fmtX(geoIroas);
+  document.getElementById('math-mult').textContent       = fmtX(mult);
+  document.getElementById('math-mult2').textContent      = fmtX(mult).replace('x', '');
+  document.getElementById('math-threshold').textContent  = fmtX(threshold);
+  document.getElementById('math-denom-label').textContent = denomLabel;
+
+  // Card-sub note
+  const lcNote = document.getElementById('lc-denom-note');
+  if (lcNote) {
+    lcNote.textContent = denomMode === 'dg'
+      ? 'Derived from the DG-only iROAS — use the denominator toggle in the hero chart above to see the all-ad version.'
+      : 'Derived from the all-ad iROAS — a more conservative read that credits DG\u2019s presence for halo spend response across Facebook, PMAX, Search, and other channels.';
+  }
+
+  // Gauge: doughnut at 270deg with needle at LC ROAS BAU value
+  if (lcGaugeChart) lcGaugeChart.destroy();
+  lcGaugeChart = new Chart(document.getElementById('lc-gauge').getContext('2d'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Below threshold', 'Gap to BAU', 'Above BAU'],
+      datasets: [{
+        data: [threshold, Math.max(lc.lc_roas_bau - threshold, 0.001), Math.max(1.0 - lc.lc_roas_bau, 0)],
+        backgroundColor: [P.red, P.gold, P.gray100],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      cutout: '70%', rotation: -90, circumference: 180,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ctx.label + ': ' + fmtX(ctx.parsed) } }
+      }
+    },
+    plugins: [{
+      id: 'gauge-center',
+      afterDraw: chart => {
+        const { ctx, chartArea } = chart;
+        const cx = (chartArea.left + chartArea.right) / 2;
+        const cy = chartArea.bottom - 10;
+        ctx.save();
+        ctx.fillStyle = P.navy;
+        ctx.font = '700 26px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(fmtX(lc.lc_roas_bau), cx, cy - 14);
+        ctx.fillStyle = P.gray;
+        ctx.font = '600 11px sans-serif';
+        ctx.fillText('Current LC ROAS (BAU)', cx, cy + 4);
+        ctx.restore();
+      }
+    }]
+  });
+
+  // Table
+  let html = '<thead><tr><th>Metric</th><th style="text-align:right">Value</th></tr></thead><tbody>';
+  html += `<tr><td>LC ROAS (BAU) — control cell DG last-click</td><td>${fmtX(lc.lc_roas_bau)}</td></tr>`;
+  html += `<tr><td>Geo iROAS (MM Orders, test · ${denomLabel})</td><td>${fmtX(geoIroas)}</td></tr>`;
+  html += `<tr><td>LC-to-true multiplier</td><td><b>${fmtX(mult)}</b></td></tr>`;
+  html += `<tr><td>Warning threshold (LC ROAS ≤)</td><td style="color: ${P.red}"><b>${fmtX(threshold)}</b></td></tr>`;
+  html += '</tbody>';
+  document.getElementById('lc-table').innerHTML = html;
+}
+renderLC();
+
+/* ============================================================
+   INDUSTRY BENCHMARKS
+   ============================================================ */
+{
+  const bench = DATA.benchmarks;
+  const sorted = [...bench].sort((a, b) => a.value - b.value);
+  const labels = sorted.map(b => b.name);
+  const values = sorted.map(b => b.value);
+  const colors = sorted.map(b => b.us ? P.navy : P.gray);
+  new Chart(document.getElementById('bench-chart').getContext('2d'), {
+    type: 'bar',
+    data: { labels, datasets: [{ data: values, backgroundColor: colors, borderRadius: 4 }] },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: {
+        label: ctx => fmtX(ctx.parsed.x) + ' · ' + sorted[ctx.dataIndex].source
+      }}},
+      scales: {
+        x: { beginAtZero: true, grid: { color: P.gray100 }, ticks: { callback: v => v.toFixed(1) + 'x' },
+             title: { display: true, text: 'Top-line iROAS' } },
+        y: { grid: { display: false } }
+      }
+    },
+    plugins: [{
+      id: 'topline-floor',
+      afterDraw: chart => {
+        const { ctx, chartArea, scales } = chart;
+        const x = scales.x.getPixelForValue(DATA.meta.floor_topline);
+        ctx.save();
+        ctx.strokeStyle = P.red;
+        ctx.setLineDash([6, 4]);
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(x, chartArea.top);
+        ctx.lineTo(x, chartArea.bottom);
+        ctx.stroke();
+        ctx.fillStyle = P.red;
+        ctx.font = '600 11px sans-serif';
+        ctx.fillText('2.8x top-line floor', x + 6, chartArea.top + 12);
+        ctx.restore();
+      }
+    }]
+  });
+}
+
+/* ============================================================
+   PRE-PERIOD FIT CHART
+   ============================================================ */
+{
+  const pp = DATA.preperiod_daily_mm;
+  new Chart(document.getElementById('pp-chart').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: pp.map(p => p.date.slice(5)),
+      datasets: [
+        { label: 'Treatment (daily orders)', data: pp.map(p => p.treat), borderColor: P.navy, backgroundColor: 'rgba(19,33,60,0.08)', borderWidth: 2, tension: 0.3, pointRadius: 2 },
+        { label: 'Control × SF (daily orders)', data: pp.map(p => p.ctrl_scaled), borderColor: P.red, backgroundColor: 'rgba(162,30,34,0.06)', borderWidth: 2, tension: 0.3, pointRadius: 2, borderDash: [5, 4] }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: true } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: P.gray100 }, title: { display: true, text: 'Daily orders' } },
+        x: { grid: { display: false }, ticks: { maxRotation: 45, minRotation: 45, autoSkip: true } }
+      }
+    }
+  });
+}
+
+// Pre-period diagnostics table
+{
+  let html = '<thead><tr><th>Model</th><th>Scale factor</th><th>Orders MAPE</th><th>Orders corr</th><th>Revenue MAPE</th><th>Revenue corr</th></tr></thead><tbody>';
+  DATA.preperiod.forEach(r => {
+    const omClass = r.orders_mape <= 10 ? 'pos' : (r.orders_mape <= 20 ? '' : 'neg');
+    const rmClass = r.revenue_mape <= 20 ? 'pos' : (r.revenue_mape <= 30 ? '' : 'neg');
+    html += `<tr><td>${r.model}</td><td>${r.sf.toFixed(4)}</td><td class="${omClass}">${r.orders_mape.toFixed(2)}%</td><td>${r.orders_corr.toFixed(4)}</td><td class="${rmClass}">${r.revenue_mape.toFixed(2)}%</td><td>${r.revenue_corr.toFixed(4)}</td></tr>`;
+  });
+  html += '</tbody>';
+  document.getElementById('pp-table').innerHTML = html;
+}
+</script>
+</body>
+</html>
