@@ -33,17 +33,33 @@ header .sub{color:var(--grey-600);font-size:15px;}
 .group-label:first-of-type{margin-top:8px;}
 
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;}
-.card{background:white;border:1px solid var(--grey-200);border-radius:8px;padding:20px 22px;box-shadow:0 1px 3px rgba(0,0,0,0.06);text-decoration:none;color:inherit;display:block;transition:all 0.15s;}
-.card:hover{border-color:var(--navy-light);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.08);}
+
+.card{background:white;border:1px solid var(--grey-200);border-radius:8px;padding:20px 22px;box-shadow:0 1px 3px rgba(0,0,0,0.06);transition:all 0.15s;display:flex;flex-direction:column;}
+.card:hover{border-color:var(--navy-light);box-shadow:0 4px 12px rgba(0,0,0,0.08);}
+.card .head{text-decoration:none;color:inherit;display:block;}
+.card .head:hover h3{color:var(--navy-light);}
 .card .tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px;}
 .card .tag.pre{background:#ebf8ff;color:var(--navy);}
 .card .tag.completed{background:#f0fff4;color:var(--green);}
 .card .tag.updated{background:#fffaf0;color:var(--gold);}
-.card h3{margin:0 0 6px;color:var(--navy);font-size:17px;letter-spacing:-0.2px;}
-.card .desc{font-size:13px;color:var(--grey-600);margin:4px 0 10px;line-height:1.45;}
-.card .meta{font-size:12px;color:var(--grey-600);display:flex;gap:14px;flex-wrap:wrap;}
-.card .meta .chan{color:var(--navy);font-weight:600;}
 .card .arrow{float:right;color:var(--navy-light);font-size:18px;margin-top:-2px;}
+.card h3{margin:0 0 6px;color:var(--navy);font-size:17px;letter-spacing:-0.2px;transition:color 0.15s;}
+.card .desc{font-size:13px;color:var(--grey-600);margin:4px 0 10px;line-height:1.45;}
+.card .meta{font-size:12px;color:var(--grey-600);display:flex;gap:14px;flex-wrap:wrap;align-items:center;}
+.card .meta .chan{color:var(--navy);font-weight:600;}
+.card .meta .updated-on{color:var(--grey-600);}
+
+.history{margin-top:14px;padding-top:12px;border-top:1px dashed var(--grey-200);}
+.history summary{cursor:pointer;font-size:12px;color:var(--grey-600);font-weight:600;list-style:none;outline:none;user-select:none;}
+.history summary::-webkit-details-marker{display:none;}
+.history summary::before{content:"\25b8";display:inline-block;margin-right:6px;transition:transform 0.15s;color:var(--navy-light);}
+.history[open] summary::before{transform:rotate(90deg);}
+.history summary:hover{color:var(--navy);}
+.history ul{list-style:none;margin:8px 0 0;padding:0;}
+.history li{margin:6px 0;font-size:12px;}
+.history li a{color:var(--navy-light);text-decoration:none;}
+.history li a:hover{text-decoration:underline;color:var(--navy);}
+.history li .date{color:var(--grey-600);font-weight:600;margin-right:8px;}
 
 .footnote{color:var(--grey-600);font-size:12px;font-style:italic;margin-top:30px;text-align:center;}
 </style>
@@ -57,61 +73,90 @@ header .sub{color:var(--grey-600);font-size:15px;}
   <div class="sub">Geo test results, pre-test designs, and cross-channel validation reads. Most recent and primary tests are at the top.</div>
 </header>
 
-<div class="group-label">Pre-test designs</div>
+<div class="group-label">Pre-Study</div>
 <div class="grid">
-  <a class="card" href="brand_test_202605_viability.html">
-    <span class="arrow">→</span>
-    <span class="tag pre">Pre-study · 2026-04-23</span>
-    <h3>Brand 2026 Viability Pre-Study</h3>
-    <div class="desc">Multi-channel brand video geo test design across Cox TV, YouTube, Facebook, and CTV. Executive-ready viability brief with spend tradeoffs, detection timing, ROI expectations, benchmarks, and rollout plan. Toggle across Matched Market / Synthetic / Whole Country models.</div>
-    <div class="meta">
-      <span class="chan">Cox · YouTube · Facebook · CTV</span>
-      <span>12-week spend + 6-month cooldown</span>
-    </div>
-  </a>
+
+  <div class="card">
+    <a class="head" href="brand_test_202605_viability.html">
+      <span class="arrow">→</span>
+      <span class="tag pre">Pre-study</span>
+      <h3>Brand 2026 Viability Pre-Study</h3>
+      <div class="desc">Multi-channel brand video geo test design across Cox TV, YouTube, Facebook, and CTV. Executive-ready viability brief with spend tradeoffs, detection timing, ROI expectations, benchmarks, and rollout plan. Toggle across Matched Market / Synthetic / Whole Country models.</div>
+      <div class="meta">
+        <span class="chan">Cox · YouTube · Facebook · CTV</span>
+        <span class="updated-on">Updated 2026-04-23</span>
+      </div>
+    </a>
+  </div>
+
 </div>
 
-<div class="group-label">Completed geo tests</div>
+<div class="group-label">Active</div>
 <div class="grid">
-  <a class="card" href="demand_gen_heavyupdate-20260427.html">
-    <span class="arrow">→</span>
-    <span class="tag updated">Update · 2026-04-27</span>
-    <h3>Demand Gen Heavy-Up</h3>
-    <div class="desc">Latest read on the Google Demand Gen heavy-up test. Both windows still clear the 1.4x floor (clean 1.51x, full 1.42x) but buffer is thin. Sub-network bias verdict: YouTube majority is supported. Last 7 days confounded by FB API outage and Gmail mix shift.</div>
-    <div class="meta"><span class="chan">Google Demand Gen</span></div>
-  </a>
 
-  <a class="card" href="demand_gen_heavyupdate-20260420.html">
-    <span class="arrow">→</span>
-    <span class="tag completed">Prior · 2026-04-20</span>
-    <h3>Demand Gen Heavy-Up (prior run)</h3>
-    <div class="desc">Last week's readout. Marginal iROAS 1.46x cleared floor for the first time. Kept for reference.</div>
-    <div class="meta"><span class="chan">Google Demand Gen</span></div>
-  </a>
+  <div class="card">
+    <a class="head" href="demand_gen_heavyupdate-20260427.html">
+      <span class="arrow">→</span>
+      <span class="tag updated">Active</span>
+      <h3>Demand Gen Heavy-Up</h3>
+      <div class="desc">Latest read on the Google Demand Gen heavy-up test. Both windows still clear the 1.4x floor (clean 1.51x, full 1.42x) but buffer is thin. Sub-network bias verdict: YouTube majority is supported. Last 7 days confounded by FB API outage and Gmail mix shift.</div>
+      <div class="meta">
+        <span class="chan">Google Demand Gen</span>
+        <span class="updated-on">Updated 2026-04-27</span>
+      </div>
+    </a>
+    <details class="history">
+      <summary>Previous updates (1)</summary>
+      <ul>
+        <li><span class="date">2026-04-20</span><a href="demand_gen_heavyupdate-20260420.html">Marginal iROAS 1.46x — first run to clear floor</a></li>
+      </ul>
+    </details>
+  </div>
 
-  <a class="card" href="demand-gen-holdout-20260306.html">
-    <span class="arrow">→</span>
-    <span class="tag completed">Completed · 2026-03-06</span>
-    <h3>Demand Gen Holdout</h3>
-    <div class="desc">Holdout test validating Google Demand Gen incrementality. Primary headline iROAS and cross-channel breakdown.</div>
-    <div class="meta"><span class="chan">Google Demand Gen</span></div>
-  </a>
+  <div class="card">
+    <a class="head" href="search_pmax_holdout_update-20260427.html">
+      <span class="arrow">→</span>
+      <span class="tag updated">Active</span>
+      <h3>Search / PMAX Holdout</h3>
+      <div class="desc">Latest read on the Search &amp; PMax holdout. Two windows side by side (clean 3/14–4/19 and extended 3/14–4/26). Both clear the 1.4x GP floor on S&amp;P spend; extended pushes revenue iROAS to 1.55x. Adds weekly OLS regressions of business orders/revenue vs Search and PMAX spend. Backfill remains the dominant story.</div>
+      <div class="meta">
+        <span class="chan">Google Search · PMax</span>
+        <span class="updated-on">Updated 2026-04-27</span>
+      </div>
+    </a>
+  </div>
 
-  <a class="card" href="search_pmax_holdout_update-20260427.html">
-    <span class="arrow">→</span>
-    <span class="tag updated">Update · 2026-04-27</span>
-    <h3>Search / PMax Holdout</h3>
-    <div class="desc">Latest read on the Search &amp; PMax holdout. Two windows side by side (clean 3/14–4/19 and extended 3/14–4/26). Both clear the 1.4x GP floor on S&amp;P spend; extended pushes revenue iROAS to 1.55x. Adds weekly OLS regressions of business orders/revenue vs Search and PMAX spend. Backfill remains the dominant story.</div>
-    <div class="meta"><span class="chan">Google Search · PMax</span></div>
-  </a>
+</div>
 
-  <a class="card" href="audiohook_holdout_20260306.html">
-    <span class="arrow">→</span>
-    <span class="tag completed">Completed · 2026-03-06</span>
-    <h3>AudioHook Holdout</h3>
-    <div class="desc">AudioHook (streaming audio) holdout test. Primary iROAS and proxy-signal read.</div>
-    <div class="meta"><span class="chan">AudioHook</span></div>
-  </a>
+<div class="group-label">Completed</div>
+<div class="grid">
+
+  <div class="card">
+    <a class="head" href="demand-gen-holdout-20260306.html">
+      <span class="arrow">→</span>
+      <span class="tag completed">Completed</span>
+      <h3>Demand Gen Holdout</h3>
+      <div class="desc">Holdout test validating Google Demand Gen incrementality. Primary headline iROAS and cross-channel breakdown.</div>
+      <div class="meta">
+        <span class="chan">Google Demand Gen</span>
+        <span class="updated-on">Updated 2026-03-06</span>
+      </div>
+    </a>
+  </div>
+
+  <div class="card">
+    <a class="head" href="audiohook_holdout_20260306.html">
+      <span class="arrow">→</span>
+      <span class="tag completed">Completed</span>
+      <h3>AudioHook Holdout</h3>
+      <div class="desc">AudioHook (streaming audio) holdout test. Primary iROAS and proxy-signal read.</div>
+      <div class="meta">
+        <span class="chan">AudioHook</span>
+        <span class="updated-on">Updated 2026-03-06</span>
+      </div>
+    </a>
+  </div>
+
 </div>
 
 <div class="footnote">Maintained by the A-Team · Director of Advertising, Channel Strategy &amp; Innovation, 4Patriots</div>

@@ -1,2 +1,7 @@
-Eric — your comments and notes go here. Anything you type below shows up at the top of the dashboard.
+Our brand-heavy Search & PMAX strategy: "protect the downside." ✅ Keeps AOV up by pushing biggest & best offers. ✅ Saves money by preventing other channels from spending higher and less efficiently. ✅ Intuitive brand defense on search results.
 
+What doesn't it do? 🟡 It's so-so at driving efficient incremental volume, at 1.34x iROAS (March 14-April 19) coming in just short of iROAS target of 1.40x despite a Tableau result of 1.42x. 
+
+What's the right Tableau multiplier? 90%. And if our goal iROAS is 1.4x, technically the Tableau goal would be 1.56x (Tableau 1.49x in treatment cell / [1.34x iROAS / 1.4x iROAS target]). We can err on the side of caution by being more present than not, especially if we think its role is more cost savings: so we could keep our Tableau goal at 1.30x.
+
+What's next for Search & PMAX? Well, we can keep what we're doing and try layering in a different strategy, one focused more on cold & competitor terms. Doing this is expected to have less interactivity with our other channels and higher incremental gains.

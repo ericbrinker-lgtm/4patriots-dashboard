@@ -2297,8 +2297,8 @@ new Chart(document.getElementById('weekly-dose').getContext('2d'), {
   data: {
     labels: weeks.map(w => w.label),
     datasets: [
-      {label: 'DG spend (treat)', data: weeks.map(w => w.t_dg_spend), backgroundColor: P.navy2, yAxisID: 'y'},
-      {label: 'Inc orders (MM)', type: 'line', data: weeks.map(w => w.inc_orders), borderColor: P.red, backgroundColor: P.red, yAxisID: 'y2', tension: 0.2}
+      {label: 'DG spend (treat)', data: weeks.map(w => w.t_dg_spend), backgroundColor: P.navy2, yAxisID: 'y', order: 2},
+      {label: 'Inc orders (MM)', type: 'line', data: weeks.map(w => w.inc_orders), borderColor: P.red, backgroundColor: P.red, yAxisID: 'y2', tension: 0.2, order: 0, borderWidth: 3, pointRadius: 5, pointHoverRadius: 7, pointBackgroundColor: P.red, pointBorderColor: '#fff', pointBorderWidth: 2}
     ]
   },
   options: {responsive: true, maintainAspectRatio: false, interaction: {intersect: false, mode: 'index'},
