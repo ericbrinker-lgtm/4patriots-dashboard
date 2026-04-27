@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brand Video 2026 — Two-Cell Viability Pre-Study</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --navy:#1a365d; --navy-light:#2c5282;
+  --red:#c53030; --gold:#d69e2e; --green:#2f855a;
+  --cox:#1a365d; --yt:#2f855a;
+  --grey-50:#f7fafc; --grey-100:#edf2f7; --grey-200:#e2e8f0;
+  --grey-400:#a0aec0; --grey-600:#4a5568; --grey-800:#2d3748;
+  --text:#1a202c;
+  --warn-bg:#fffaf0; --warn-border:#d69e2e;
+  --good-bg:#f0fff4; --good-border:#2f855a;
+}
+*{box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;margin:0;background:var(--grey-50);color:var(--text);line-height:1.55;}
+.container{max-width:1180px;margin:0 auto;padding:32px 28px 80px;}
+header{border-bottom:3px solid var(--navy);padding-bottom:20px;margin-bottom:28px;}
+header .eyebrow{color:var(--red);font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;}
+header h1{font-size:30px;margin:6px 0 4px;color:var(--navy);letter-spacing:-0.5px;}
+header .sub{color:var(--grey-600);font-size:15px;}
+header .meta{display:flex;gap:24px;margin-top:12px;font-size:13px;color:var(--grey-600);flex-wrap:wrap;}
+header .meta span strong{color:var(--navy);}
+
+.tldr{background:white;border-left:4px solid var(--red);border-radius:4px;padding:20px 24px;margin-bottom:28px;box-shadow:0 1px 3px rgba(0,0,0,0.06);}
+.tldr h2{margin:0 0 8px;color:var(--navy);font-size:14px;text-transform:uppercase;letter-spacing:1px;}
+.tldr-body{white-space:pre-wrap;font-size:15px;color:var(--grey-800);}
+
+.cell-badges{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+.cell-badge{flex:1;min-width:260px;background:white;border-radius:8px;padding:16px 20px;border-left:5px solid;box-shadow:0 1px 3px rgba(0,0,0,0.06);}
+.cell-badge.cox{border-color:var(--cox);}
+.cell-badge.yt{border-color:var(--yt);}
+.cell-badge h3{margin:0 0 4px;font-size:15px;color:var(--navy);}
+.cell-badge .size{font-size:13px;color:var(--grey-600);margin-bottom:6px;}
+.cell-badge .spend{font-size:22px;font-weight:700;color:var(--navy);margin:4px 0;}
+.cell-badge .detail{font-size:12px;color:var(--grey-600);}
+
+section{background:white;border-radius:8px;padding:24px 28px;margin-bottom:22px;box-shadow:0 1px 3px rgba(0,0,0,0.06);}
+section h2{margin:0 0 4px;color:var(--navy);font-size:20px;}
+section h2 .num{color:var(--red);font-weight:400;margin-right:8px;}
+section .lede{color:var(--grey-600);font-size:14px;margin-bottom:18px;}
+section h3{margin:20px 0 8px;color:var(--grey-800);font-size:15px;}
+section p{margin:0 0 10px;font-size:15px;}
+
+.chart-wrap{position:relative;height:340px;margin:18px 0 10px;}
+.chart-wrap.short{height:280px;}
+.chart-wrap.tall{height:400px;}
+
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13.5px;}
+th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--grey-100);}
+th{background:var(--grey-50);color:var(--grey-600);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;}
+td.num{text-align:right;font-variant-numeric:tabular-nums;}
+tr.highlight td{background:#fffbeb;font-weight:600;}
+tr.cox-row td:first-child{border-left:3px solid var(--cox);}
+tr.yt-row td:first-child{border-left:3px solid var(--yt);}
+
+.callout{padding:14px 18px;border-radius:6px;margin:14px 0;}
+.callout.warn{background:var(--warn-bg);border-left:4px solid var(--warn-border);}
+.callout.good{background:var(--good-bg);border-left:4px solid var(--good-border);}
+.callout.info{background:#ebf8ff;border-left:4px solid var(--navy-light);}
+.callout.cox{background:#ebf3ff;border-left:4px solid var(--cox);}
+.callout.yt{background:#f0fff4;border-left:4px solid var(--yt);}
+.callout strong{color:var(--navy);}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+@media(max-width:780px){.two-col{grid-template-columns:1fr;}}
+
+.concept{display:grid;grid-template-columns:1.15fr 1fr;gap:24px;align-items:start;}
+@media(max-width:900px){.concept{grid-template-columns:1fr;}}
+.concept .video-wrap{position:relative;width:100%;padding-top:56.25%;background:#000;border-radius:8px;overflow:hidden;}
+.concept .video-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0;}
+.concept .video-label{font-size:12px;color:var(--grey-600);text-align:center;margin-top:8px;font-style:italic;}
+
+.benefits{list-style:none;padding:0;margin:10px 0 0;}
+.benefits li{padding:10px 12px 10px 42px;position:relative;margin-bottom:8px;background:var(--good-bg);border-radius:6px;border-left:3px solid var(--good-border);font-size:14px;line-height:1.4;}
+.benefits li::before{content:"";position:absolute;left:14px;top:12px;width:18px;height:18px;background:var(--good-border);border-radius:50%;}
+.benefits li::after{content:"✓";position:absolute;left:14px;top:10px;width:18px;height:18px;color:white;text-align:center;font-weight:700;font-size:13px;line-height:18px;}
+.benefits li strong{color:var(--navy);}
+
+.time-callout{background:linear-gradient(to right, #fffaf0, white);border:1px solid var(--warn-border);border-left:5px solid var(--warn-border);border-radius:6px;padding:16px 22px;margin:18px 0;display:flex;gap:16px;align-items:center;}
+.time-callout .icon{font-size:28px;line-height:1;flex-shrink:0;color:var(--warn-border);font-weight:700;}
+.time-callout .body{font-size:14px;}
+.time-callout .body strong{display:block;color:var(--navy);font-size:15px;margin-bottom:2px;}
+
+.risk-list{list-style:none;padding:0;margin:14px 0;}
+.risk-list li{padding:12px 14px 12px 40px;border-radius:6px;margin-bottom:8px;background:var(--warn-bg);border-left:4px solid var(--warn-border);position:relative;font-size:14px;}
+.risk-list li::before{content:"!";position:absolute;left:14px;top:12px;width:18px;height:18px;background:var(--warn-border);color:white;border-radius:50%;text-align:center;font-weight:700;font-size:12px;line-height:18px;}
+.risk-list strong{color:var(--navy);}
+
+.next-steps{counter-reset:step;list-style:none;padding:0;}
+.next-steps li{counter-increment:step;padding:14px 16px 14px 52px;position:relative;margin-bottom:10px;background:var(--grey-50);border-radius:6px;border:1px solid var(--grey-100);}
+.next-steps li::before{content:counter(step);position:absolute;left:14px;top:14px;width:26px;height:26px;background:var(--navy);color:white;border-radius:50%;text-align:center;font-weight:700;line-height:26px;font-size:13px;}
+
+.footnote{color:var(--grey-600);font-size:12px;font-style:italic;margin-top:12px;}
+
+.chart-legend{display:flex;gap:16px;font-size:13px;color:var(--grey-600);margin:4px 0 8px;}
+.chart-legend span{display:flex;align-items:center;gap:6px;}
+.chart-legend .sw{width:14px;height:14px;border-radius:3px;display:inline-block;}
+.chart-legend .sw.cox{background:var(--cox);}
+.chart-legend .sw.yt{background:var(--yt);}
+
+.cases{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:12px 0;}
+@media(max-width:780px){.cases{grid-template-columns:1fr;}}
+.case{background:var(--grey-50);border-radius:6px;padding:14px 16px;border:1px solid var(--grey-100);}
+.case .tag{font-size:11px;font-weight:700;text-transform:uppercase;color:var(--red);letter-spacing:0.5px;margin-bottom:4px;}
+.case h4{margin:2px 0 6px;font-size:14px;color:var(--navy);}
+.case p{font-size:13px;margin:0;line-height:1.4;}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <div class="eyebrow">Geo Incrementality — Two-Cell Pre-Test Design</div>
+  <h1>Brand video 2026: two-cell viability pre-study</h1>
+  <div class="sub">Parallel geo tests for the full-bundle (Cox TV + YouTube + Facebook + CTV) and the 3-channel bundle (YouTube + Facebook + CTV only). Does brand video work, and does Cox TV pull its weight?</div>
+  <div class="meta">
+    <span><strong>Cox+ cell:</strong> 20 Cox DMAs (9.9% of national)</span>
+    <span><strong>YT/FB/CTV cell:</strong> 12 non-Cox DMAs (15.9% of national)</span>
+    <span><strong>Design:</strong> 12 weeks spend + 6-month cooldown minimum</span>
+    <span><strong>Brief date:</strong> 2026-04-23 (v3, two-cell)</span>
+  </div>
+</header>
+
+<div class="tldr">
+  <h2>Eric's TL;DR comments</h2>
+  <div class="tldr-body" id="tldr-body">Loading…</div>
+</div>
+
+<div class="cell-badges">
+  <div class="cell-badge cox">
+    <h3>Cox+ cell (full bundle)</h3>
+    <div class="size">20 DMAs · 9.9% of national orders</div>
+    <div class="spend">$1,500 / day</div>
+    <div class="detail">Cox TV + YouTube + Facebook + CTV. MDE at 6-month read: <strong>1.05x iROAS</strong>. Reads cleanly at month 6.</div>
+  </div>
+  <div class="cell-badge yt">
+    <h3>YT/FB/CTV cell (3-channel bundle)</h3>
+    <div class="size">12 DMAs · 15.9% of national orders</div>
+    <div class="spend">$2,500 / day</div>
+    <div class="detail">YouTube + Facebook + CTV only. MDE at 6-month read: 1.41x iROAS. Primary read deferred to <strong>month 12</strong>.</div>
+  </div>
+</div>
+
+<section>
+  <h2><span class="num">0.</span>What is this test?</h2>
+  <div class="lede">Two parallel brand-video geo tests, measured against matched control DMAs, to isolate the full-bundle effect from the 3-channel effect.</div>
+
+  <div class="concept">
+    <div>
+      <p>We stand up two brand video campaigns at the same time. The first runs the <strong>full bundle</strong> — Cox TV + YouTube + Facebook + CTV — in the 20 Cox-deliverable DMAs. The second runs a <strong>3-channel bundle</strong> — YouTube + Facebook + CTV only, no TV — in a matched set of 12 non-Cox DMAs chosen to cover regional gaps in the Cox footprint (Northeast, Midwest, Pacific NW).</p>
+      <p>Measuring both in parallel does three things at once: it tests whether brand video works in our mix, it tests whether it works without Cox TV in markets Cox can't reach, and it tells us how much of the full-bundle effect is specifically Cox TV. The answer drives the national rollout decision.</p>
+
+      <h3 style="margin-top:18px;">What this strategy should deliver</h3>
+      <ul class="benefits">
+        <li><strong>Reach more of our 55+ homeowner target outside our normal digital reach.</strong> Linear TV indexes heavily on 55+ homeowners; YouTube and CTV also reach this demo but less concentrated.</li>
+        <li><strong>Improve conversion rates and order volume over time.</strong> Brand-built audiences convert at higher rates on DR channels (Binet &amp; Field / IPA).</li>
+        <li><strong>Reduce price sensitivity.</strong> Pricing power is a classic outcome of sustained brand investment.</li>
+        <li><strong>Increase share of market.</strong> Les Binet's SOV/SOM research: brand spend above category SOV grows SOM over 12–24 months.</li>
+        <li><strong>Increase organic / untracked orders.</strong> Brand lift shows up as direct traffic, organic search, and phone orders that last-click can't credit back.</li>
+      </ul>
+
+      <div class="time-callout">
+        <div class="icon">⏱</div>
+        <div class="body">
+          <strong>The major ask here is time, not money.</strong>
+          Cox+ reads at <strong>6 months</strong>. YT/FB/CTV needs <strong>12 months</strong> because brand-only channels accumulate effect more slowly and the 3-channel cell has a higher statistical noise floor. Plan for a staggered read.
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="video-wrap">
+        <iframe src="https://www.youtube.com/embed/Pz4Ovzrm9TI?rel=0" title="4Patriots brand video example" allowfullscreen></iframe>
+      </div>
+      <div class="video-label">Example of the type of brand video this campaign would run</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">1.</span>Spend plan and what it buys</h2>
+  <div class="lede">$4,000/day total test spend — $15,688/day national-equivalent when prorated to a national rollout. Fits the $10-20k/day target.</div>
+
+  <p>The recommended spend is asymmetric across cells because the cells have different noise profiles. The Cox+ cell is cleaner (σ=7.9 orders/day) so each dollar detects more. The YT/FB/CTV cell is noisier (σ=16.2 orders/day) so we need more spend to clear the detection floor — but even at higher spend, the 6-month MDE stays above realistic brand-decay levels. That's the reason YT/FB/CTV primary adjudication is deferred to month 12.</p>
+
+  <div class="chart-legend">
+    <span><span class="sw cox"></span>Cox+ cell</span>
+    <span><span class="sw yt"></span>YT/FB/CTV cell</span>
+  </div>
+  <div class="chart-wrap">
+    <canvas id="chart-mde"></canvas>
+  </div>
+  <p class="footnote">Minimum detectable iROAS (80% power) by daily spend, per cell, at 12w spend + 6mo cooldown. Lower is better. The green dashed line marks the realistic month-12 running iROAS (0.70x); the orange dashed line marks the month-6 period iROAS (0.77x). An MDE below the line means the cell can detect that iROAS level.</p>
+
+  <h3>Two-cell spend translates to national rollout like this</h3>
+  <p>Q1 2026 ad spend was $11.19M, or $124k/day nationally. Under a national rollout of the same per-capita rates, Cox+ spend stays the same (test already covers the entire Cox rollout universe), while YT/FB/CTV spend scales up by ~5.68x to cover the rest of the country. The chart below shows combined national-equivalent for several spend options.</p>
+
+  <div class="chart-wrap short">
+    <canvas id="chart-spend-combos"></canvas>
+  </div>
+  <p class="footnote">Each bar is a Cox+ + YT/FB/CTV spend combo, showing total national-equivalent daily. Green bars fit the $10-20k/day target. The recommended plan (Cox+ $1.5k + YT $2.5k) is highlighted.</p>
+</section>
+
+<section>
+  <h2><span class="num">2.</span>When do we detect each cell?</h2>
+  <div class="lede">Running signal-to-noise ratio over the measurement window, at the recommended spend, for both cells.</div>
+
+  <p>80% confidence (S/N ≥ 1.28) is our directional floor. 95% confidence (S/N ≥ 1.96) is a conclusive read. The Cox+ cell crosses both thresholds well inside the 6-month cooldown. The YT/FB/CTV cell crosses 80% around month 9 and 95% between month 12 and 15 — which is why YT/FB/CTV primary adjudication is deferred.</p>
+
+  <div class="chart-legend">
+    <span><span class="sw cox"></span>Cox+ cell ($1.5k/day)</span>
+    <span><span class="sw yt"></span>YT/FB/CTV cell ($2.5k/day)</span>
+  </div>
+  <div class="chart-wrap">
+    <canvas id="chart-detection"></canvas>
+  </div>
+  <p class="footnote">Running S/N at each month, at the recommended per-cell spend, using the brand-decay curve for expected realized iROAS. Orange dashed: 80% confidence. Green dashed: 95% confidence.</p>
+</section>
+
+<section>
+  <h2><span class="num">3.</span>When does each cell pay back?</h2>
+  <div class="lede">Cumulative iROAS over time. Brand video pays back slowly regardless of cell — the decay curve is the same.</div>
+
+  <p>The underlying brand-decay curve is the same for both cells (same category, same creative, same customer). What differs is when the effect becomes detectable through the statistical noise. Running iROAS climbs toward 1.0x by month 24 and toward the long-run 1.4x asymptote only past month 30.</p>
+
+  <div class="chart-wrap">
+    <canvas id="chart-running-iroas"></canvas>
+  </div>
+  <p class="footnote">Running (cumulative) iROAS under the Binet &amp; Field / Nielsen blended decay curve assumption. Same curve for both cells. Green dashed: 1.4x floor (long-run target, not a 6-month bar).</p>
+
+  <div class="callout warn"><strong>Important framing for stakeholders:</strong> Brand video is not a 6-month investment. The right bar at M6 is "is Cox+ tracking the curve?" (≥0.77x period, ≥0.37x running). The right bar at M12 is "are both cells tracking?" (≥1.15x period, ≥0.70x running). The 1.4x floor is a month-30+ reality.</div>
+</section>
+
+<section>
+  <h2><span class="num">4.</span>When is ramp-up over?</h2>
+  <div class="lede">Period iROAS (monthly rate) vs. the long-run target. Ramp-up ends around month 18–24.</div>
+
+  <div class="chart-wrap">
+    <canvas id="chart-period-iroas"></canvas>
+  </div>
+  <p class="footnote">Period iROAS (each month standing alone). Crossing the 1.4x line = steady-state performance. Before that, this is a learning investment; after that, evaluate like any mature channel.</p>
+
+  <div class="two-col">
+    <div class="callout info"><strong>Ramp-up (months 1–12):</strong> Hold both cells to decay-curve milestones, not to the 1.4x floor. Cox+ gets adjudicated at M6. YT/FB/CTV waits to M12.</div>
+    <div class="callout good"><strong>Steady state (month 18+):</strong> Hold both cells to 1.4x period iROAS. If either fails here, that cell's channel mix gets pulled back.</div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">5.</span>What have other companies found?</h2>
+  <div class="lede">Published incrementality benchmarks for brand video, separated by channel mix where possible.</div>
+
+  <div class="two-col">
+    <div class="callout info"><strong>Linear TV + digital bundle (Nielsen, MMA Analytic Partners):</strong> Short-term iROAS 0.4–0.8x; long-run 1.8–2.5x. Cox+ full-bundle target sits here.</div>
+    <div class="callout info"><strong>Digital-only brand video, no TV (Binet &amp; Field, IPA):</strong> Short-term iROAS 0.3–0.5x; long-run 2.0–3.0x. Takes longer to reach steady state without TV's front-loaded reach. YT/FB/CTV target sits here.</div>
+  </div>
+
+  <table>
+    <thead><tr><th>Source</th><th>Mix</th><th>Short-term iROAS</th><th>Long-run iROAS</th><th>Payback window</th></tr></thead>
+    <tbody>
+      <tr><td>Nielsen CMO 2023</td><td>TV + digital — durable goods</td><td class="num">0.5x–0.8x</td><td class="num">2.0x–2.8x</td><td>12–24 mo</td></tr>
+      <tr><td>Binet &amp; Field (IPA)</td><td>Brand video — multi-channel</td><td class="num">0.3x–0.5x</td><td class="num">2.0x–3.0x</td><td>18–24 mo</td></tr>
+      <tr><td>MMA / Analytic Partners</td><td>TV brand (standalone)</td><td class="num">0.4x–0.7x</td><td class="num">1.8x–2.5x</td><td>12–24 mo</td></tr>
+      <tr><td>VideoAmp / ThinkTV</td><td>Digital brand video only</td><td class="num">0.3x–0.6x</td><td class="num">1.5x–2.4x</td><td>18–24 mo</td></tr>
+      <tr class="highlight cox-row"><td><strong>4P Cox+ target</strong></td><td>Full bundle (TV + digital)</td><td class="num"><strong>~0.5x–0.8x</strong></td><td class="num"><strong>1.4x GP (~2.8x top-line)</strong></td><td><strong>18–24 mo</strong></td></tr>
+      <tr class="highlight yt-row"><td><strong>4P YT/FB/CTV target</strong></td><td>3-channel digital</td><td class="num"><strong>~0.4x–0.6x</strong></td><td class="num"><strong>1.4x GP (~2.8x top-line)</strong></td><td><strong>18–24 mo</strong></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2><span class="num">6.</span>Warnings: how to do this wrong</h2>
+  <div class="lede">Risks specific to the two-cell design plus the usual brand-video traps.</div>
+  <ul class="risk-list">
+    <li><strong>Calling YT/FB/CTV too early.</strong> The 6-month MDE on YT/FB/CTV is 1.41x. If we look at that cell at 6 months and see 0.4x, that's statistically meaningless. It doesn't mean the 3-channel bundle failed. Primary read is month 12.</li>
+    <li><strong>Channel-level spend contamination across cells.</strong> If any non-test YouTube/Facebook/CTV spend lands in either cell's DMAs during the test, the 3-channel attribution gets muddy. Lock channel-level DMA allocations for 12 weeks, both cells.</li>
+    <li><strong>Asymmetric promos.</strong> A July 4 promo concentrated in one cell but not the other will bias that cell's iROAS. Confirm with Marketing that promo distribution stays DMA-neutral across both Cox+ and YT/FB/CTV cells and their controls.</li>
+    <li><strong>Wrong threshold.</strong> Do not hold ramp-up period iROAS to the 1.4x floor. Use decay-curve-adjusted milestones: M6 ≈ 0.77x (period), M12 ≈ 1.15x, M24 ≈ 1.39x.</li>
+    <li><strong>Ignoring Whole Country on YT/FB/CTV.</strong> Unlike Cox+ WC (pre-period trend p=0.0007), the YT/FB/CTV WC has no significant trend (p=0.73). For the YT/FB/CTV cell, WC is a respectable validator, not just directional. Check it.</li>
+    <li><strong>YT/FB/CTV CPM heterogeneity.</strong> Different CPMs across Boston vs Minneapolis vs Seattle could shift effective treatment intensity per DMA. Track delivered impressions by DMA to confirm homogeneous delivery.</li>
+    <li><strong>Data gaps.</strong> Pre-period covers winter/spring only. Rerun match validation on 2026 Q2–Q3 data before launch if available.</li>
+  </ul>
+</section>
+
+<section>
+  <h2><span class="num">7.</span>Check your progress: KPIs and when to expect them</h2>
+
+  <table>
+    <thead><tr><th>Timing</th><th>What to watch</th><th>Cox+ "on track"</th><th>YT/FB/CTV "on track"</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Week 1–4</strong></td><td>Google search volume / GSC sessions in treatment DMAs</td><td>Rising queries in Cox+ DMAs</td><td>Rising queries in YT/FB/CTV DMAs</td></tr>
+      <tr><td><strong>Week 3–8</strong></td><td>Site sessions and add-to-cart in treatment DMAs vs scaled control</td><td>Sessions up 3–8%</td><td>Sessions up 2–5%</td></tr>
+      <tr><td><strong>Month 3 interim</strong></td><td>Running iROAS (rolling)</td><td>SC read only, directional</td><td>Too noisy — not called</td></tr>
+      <tr><td><strong>Month 6 primary (Cox+)</strong></td><td>Running iROAS across all 3 Cox+ models</td><td><strong>0.30x–0.45x (convergent) → PASS</strong></td><td>Interim only — directional</td></tr>
+      <tr><td><strong>Month 12 primary (YT/FB/CTV)</strong></td><td>Running iROAS across all 3 YT/FB/CTV models</td><td>0.65x–0.80x — confirmation</td><td><strong>0.55x–0.80x (convergent) → PASS</strong></td></tr>
+      <tr><td><strong>Month 18 retest</strong></td><td>Period iROAS</td><td>1.2x+</td><td>1.1x+</td></tr>
+      <tr><td><strong>Month 24+</strong></td><td>Period iROAS vs 1.4x floor</td><td>1.4x+</td><td>1.3x+</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2><span class="num">8.</span>Four scenarios and what to do about them</h2>
+  <div class="lede">The two-cell design gives four possible outcomes. Each has a different rollout implication.</div>
+
+  <div class="cases">
+    <div class="case">
+      <div class="tag">Case 1 — ideal</div>
+      <h4>Both pass. Full bundle and 3-channel both clear decay curve.</h4>
+      <p>National rollout viable across the whole country. Cox+ in Cox markets; YT/FB/CTV in non-Cox markets. The delta (Cox+ iROAS − YT/FB/CTV iROAS) tells us Cox TV's marginal value.</p>
+    </div>
+    <div class="case">
+      <div class="tag">Case 2 — TV leads</div>
+      <h4>Cox+ passes. YT/FB/CTV misses.</h4>
+      <p>Cox TV is the lift mechanism. National rollout concentrates on Cox-deliverable markets. Retest YT/FB/CTV with different creative, daypart, or channel mix.</p>
+    </div>
+    <div class="case">
+      <div class="tag">Case 3 — broken</div>
+      <h4>Both miss floor.</h4>
+      <p>Brand video concept doesn't work at current spend or creative. Stop, diagnose, iterate before retesting. This would be a meaningful negative result.</p>
+    </div>
+    <div class="case">
+      <div class="tag">Case 4 — unusual</div>
+      <h4>Cox+ misses. YT/FB/CTV passes.</h4>
+      <p>Unlikely given 3-channel is a subset of full bundle. If observed, Cox TV may be cannibalizing or mismatched creative. Investigate before any Cox-heavy rollout.</p>
+    </div>
+  </div>
+
+  <h3>Recommended rollout path if Case 1</h3>
+  <ol class="next-steps">
+    <li><strong>Q4 2026:</strong> Complete Cox+ 6-month cooldown read. Publish interim Cox+ adjudication.</li>
+    <li><strong>Q1–Q2 2027:</strong> Complete YT/FB/CTV 12-month cooldown read. Publish full two-cell adjudication.</li>
+    <li><strong>Q3 2027:</strong> National rollout. Full bundle in Cox markets (9.9%); 3-channel bundle in non-Cox markets (90.1%). Retain small regional holdouts (5-10 DMAs each) for ongoing measurement.</li>
+    <li><strong>Month 18 from original launch:</strong> Mid-test read to confirm brand effect is building toward steady-state.</li>
+    <li><strong>Month 24+:</strong> Move brand video into regular channel mix. Evaluate period iROAS against 1.4x floor quarterly.</li>
+  </ol>
+</section>
+
+<section>
+  <h2><span class="num">9.</span>Methodology notes</h2>
+  <table>
+    <thead><tr><th>Item</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td>Pre-period</td><td>2025-12-21 → 2026-04-19 (120 days)</td></tr>
+      <tr class="cox-row"><td>Cox+ Treatment</td><td>20 Cox-deliverable DMAs, 9.93% of national</td></tr>
+      <tr class="cox-row"><td>Cox+ MM Control</td><td>79 DMAs, daily orders MAPE <strong>8.3%</strong>, corr 99.0%, rev MAPE 25.2% — passes all thresholds</td></tr>
+      <tr class="cox-row"><td>Cox+ Synthetic Control</td><td>53 donors, daily MAPE 9.3%, 7d rolling MAPE 3.2%</td></tr>
+      <tr class="cox-row"><td>Cox+ Whole Country</td><td>175 DMAs, daily MAPE 15.3% (rolling 6.7%), trend p=0.001 — directional only</td></tr>
+      <tr class="yt-row"><td>YT/FB/CTV Treatment</td><td>12 DMAs (Boston, Philadelphia, Detroit, Minneapolis, Kansas City, Seattle, Portland, Cincinnati, Cleveland, Indianapolis, Milwaukee, Columbus), 15.87% of national</td></tr>
+      <tr class="yt-row"><td>YT/FB/CTV MM Control</td><td>35 DMAs, daily MAPE 11.6%, 7d rolling MAPE <strong>5.6%</strong> — primary metric is 7d rolling (pre-registered)</td></tr>
+      <tr class="yt-row"><td>YT/FB/CTV Synthetic Control</td><td>54 donors, daily MAPE 10.8%, 7d rolling MAPE 3.4%</td></tr>
+      <tr class="yt-row"><td>YT/FB/CTV Whole Country</td><td>175 DMAs, daily MAPE 15.7%, trend p=0.73 — clean pre-period trend, respectable validator for this cell</td></tr>
+      <tr><td>Long-run iROAS target</td><td>1.4x GP (≈ 2.8x top-line equivalent)</td></tr>
+      <tr><td>Decay-curve assumption</td><td>Binet &amp; Field / Nielsen blended; ~55% of long-run by M6, ~82% by M12, ~99% by M24</td></tr>
+      <tr><td>Statistical threshold</td><td>Alpha = 0.20 two-sided (80% confidence); drift penalty 2x</td></tr>
+      <tr><td>Cox+ AOV / sigma_daily</td><td>$232.86 / σ=7.94 orders/day</td></tr>
+      <tr><td>YT/FB/CTV AOV / sigma_daily</td><td>$237.48 / σ=16.20 orders/day</td></tr>
+    </tbody>
+  </table>
+  <p class="footnote">Full workbook: <code>2026-04-23_BRD_test_design_v3_two_cell.xlsx</code>. Full memo: <code>2026-04-23_BRD_test_design_memo_v3_two_cell.md</code>. Populated cells CSV: <code>2026-04-23_brand_test_cells_populated_v3_two_cell.csv</code>.</p>
+</section>
+
+</div>
+
+<script>
+// ======== TL;DR loader ========
+(function(){
+  const el = document.getElementById('tldr-body');
+  fetch('brand_test_202605_viability.txt?v=' + Date.now(), { cache: 'no-store' })
+    .then(r => r.ok ? r.text() : Promise.reject('HTTP ' + r.status))
+    .then(t => { const b = (t||'').trim(); el.textContent = b || '(brand_test_202605_viability.txt is empty — add your TL;DR comments there.)'; if(!b) el.style.color='#a0aec0'; })
+    .catch(err => { el.textContent = '(Could not load brand_test_202605_viability.txt — ' + err + '.)'; el.style.color='#a0aec0'; });
+})();
+
+// ======== Cell parameters ========
+const CELLS = {
+  cox: { name: 'Cox+ (full bundle)', sigma: 7.94, rho: 0.0372, aov: 232.86, color: '#1a365d', share: 0.0993, recSpend: 1500 },
+  yt:  { name: 'YT/FB/CTV (3-channel)', sigma: 16.20, rho: 0.1075, aov: 237.48, color: '#2f855a', share: 0.1587, recSpend: 2500 }
+};
+const DRIFT = 2.0;
+const ALPHA = 0.20;
+const Z_A = 1.28; // inverse CDF of (1 - 0.20/2)
+const W = 84;
+const C = 180;
+
+// Helper: power calc
+function sigmaTotal(s, rho, M) {
+  return s * Math.sqrt(M * (1+rho)/(1-rho)) * DRIFT;
+}
+function normCdf(x) {
+  // Abramowitz & Stegun approximation
+  const a1=0.254829592, a2=-0.284496736, a3=1.421413741, a4=-1.453152027, a5=1.061405429, p=0.3275911;
+  const sign = x < 0 ? -1 : 1;
+  x = Math.abs(x)/Math.sqrt(2);
+  const t = 1/(1 + p*x);
+  const y = 1 - (((((a5*t + a4)*t) + a3)*t + a2)*t + a1)*t*Math.exp(-x*x);
+  return 0.5*(1 + sign*y);
+}
+function powerAt(S, W, C, cell, iroas) {
+  const M = W + C;
+  const delta = S*W*iroas/cell.aov;
+  const st = sigmaTotal(cell.sigma, cell.rho, M);
+  const z = delta/st;
+  return normCdf(z - Z_A) + normCdf(-z - Z_A);
+}
+function mdeAtSpend(S, W, C, cell, targetPower=0.80) {
+  let lo=0.01, hi=10.0;
+  for (let i=0; i<50; i++) {
+    const mid=(lo+hi)/2;
+    if (powerAt(S,W,C,cell,mid) < targetPower) lo=mid; else hi=mid;
+  }
+  return hi;
+}
+
+// ======== Decay curve & iROAS ========
+const decay = [0, 0.06, 0.13, 0.20, 0.28, 0.38, 0.55, 0.62, 0.67, 0.72, 0.77, 0.80, 0.82];
+for (let m=13; m<=24; m++) decay.push(0.82 + (0.99-0.82)*(m-12)/12);
+const periodIROAS = decay.map(d => 1.4*d);
+const runningIROAS = [0];
+let rs=0;
+for (let m=1; m<decay.length; m++) { rs += decay[m]; runningIROAS.push(1.4*rs/m); }
+
+// Running S/N for a cell at a given spend, at month t (using running iROAS through month t)
+function runningSN(t, S, cell) {
+  // measurement window = spend (84 days) + cooldown (up to t*30 - 84) if t > 3
+  const daysSpendEnded = 84;
+  const totalDays = Math.max(daysSpendEnded, t*30);
+  const cooldownDays = Math.max(0, totalDays - daysSpendEnded);
+  // Use cumulative iROAS at this monthly point (running through month t)
+  const rIROAS = runningIROAS[Math.min(t, runningIROAS.length-1)];
+  const cumOrders = S * daysSpendEnded * rIROAS / cell.aov;
+  const st = sigmaTotal(cell.sigma, cell.rho, totalDays);
+  return cumOrders / st;
+}
+
+// ======== Charts ========
+Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif";
+Chart.defaults.color = '#4a5568';
+
+const SPEND_LEVELS = [500, 1000, 1500, 2000, 3000, 5000];
+
+// Chart 1: MDE by spend (grouped bar)
+const ctxMde = document.getElementById('chart-mde').getContext('2d');
+new Chart(ctxMde, {
+  type: 'bar',
+  data: {
+    labels: SPEND_LEVELS.map(s => '$' + (s/1000).toFixed(1) + 'k/day'),
+    datasets: [
+      { label: 'Cox+ MDE', data: SPEND_LEVELS.map(s => mdeAtSpend(s,W,C,CELLS.cox)), backgroundColor: CELLS.cox.color, borderRadius: 4 },
+      { label: 'YT/FB/CTV MDE', data: SPEND_LEVELS.map(s => mdeAtSpend(s,W,C,CELLS.yt)), backgroundColor: CELLS.yt.color, borderRadius: 4 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom' },
+      tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + ctx.parsed.y.toFixed(2) + 'x' } }
+    },
+    scales: {
+      y: { beginAtZero: true, title: { display: true, text: 'Minimum detectable iROAS' }, ticks: { callback: v => v.toFixed(1) + 'x' } }
+    }
+  }
+});
+
+// Chart 2: National-equivalent spend combos
+const combos = [
+  { cox: 500, yt: 1500 }, { cox: 1000, yt: 1500 }, { cox: 500, yt: 2000 },
+  { cox: 1000, yt: 2000 }, { cox: 1500, yt: 2000 }, { cox: 1500, yt: 2500 },
+  { cox: 2000, yt: 2500 }, { cox: 2000, yt: 3000 }, { cox: 3000, yt: 3000 }
+];
+const yt_scale = (1 - CELLS.cox.share) / CELLS.yt.share;
+const ctxCombos = document.getElementById('chart-spend-combos').getContext('2d');
+new Chart(ctxCombos, {
+  type: 'bar',
+  data: {
+    labels: combos.map(c => '$' + c.cox/1000 + 'k + $' + c.yt/1000 + 'k'),
+    datasets: [
+      { label: 'Cox+ national component', data: combos.map(c => c.cox), backgroundColor: CELLS.cox.color, stack: 'n' },
+      { label: 'YT/FB/CTV national component', data: combos.map(c => c.yt * yt_scale), backgroundColor: CELLS.yt.color, stack: 'n' }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom' },
+      tooltip: {
+        callbacks: {
+          title: items => items[0].label + ' (Cox + YT test)',
+          label: ctx => ctx.dataset.label + ': $' + Math.round(ctx.parsed.y).toLocaleString(),
+          footer: items => {
+            const sum = items.reduce((a,b) => a + b.parsed.y, 0);
+            return 'Total national: $' + Math.round(sum).toLocaleString() + '/day';
+          }
+        }
+      }
+    },
+    scales: {
+      x: { stacked: true, title: { display: true, text: 'Cox+ test $/day + YT/FB/CTV test $/day' } },
+      y: { stacked: true, beginAtZero: true, title: { display: true, text: 'National-equivalent daily spend ($)' }, ticks: { callback: v => '$' + (v/1000).toFixed(0) + 'k' } }
+    }
+  }
+});
+
+// Chart 3: Detection S/N over time
+const months = Array.from({length:24},(_,i)=>i+1);
+const ctxDet = document.getElementById('chart-detection').getContext('2d');
+new Chart(ctxDet, {
+  type: 'line',
+  data: {
+    labels: months.map(m => 'M'+m),
+    datasets: [
+      { label: 'Cox+ @ $1.5k/day', data: months.map(m => runningSN(m, CELLS.cox.recSpend, CELLS.cox)), borderColor: CELLS.cox.color, backgroundColor: CELLS.cox.color+'22', borderWidth: 2.5, tension: 0.3, pointRadius: 0 },
+      { label: 'YT/FB/CTV @ $2.5k/day', data: months.map(m => runningSN(m, CELLS.yt.recSpend, CELLS.yt)), borderColor: CELLS.yt.color, backgroundColor: CELLS.yt.color+'22', borderWidth: 2.5, tension: 0.3, pointRadius: 0 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom' },
+      tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': S/N ' + ctx.parsed.y.toFixed(2) + 'x' } }
+    },
+    scales: {
+      y: { title: { display: true, text: 'Running S/N' } },
+      x: { title: { display: true, text: 'Month from launch' } }
+    }
+  }
+});
+
+// Chart 4: Running iROAS (decay curve)
+const ctxRun = document.getElementById('chart-running-iroas').getContext('2d');
+new Chart(ctxRun, {
+  type: 'line',
+  data: {
+    labels: months.map(m => 'M'+m),
+    datasets: [
+      { label: 'Running iROAS (expected, both cells)', data: months.map(m => runningIROAS[m]), borderColor: '#1a365d', backgroundColor: '#1a365d22', borderWidth: 3, tension: 0.3, pointRadius: 0, fill: true },
+      { label: '1.4x long-run target', data: months.map(() => 1.4), borderColor: '#2f855a', borderDash: [6,4], borderWidth: 2, pointRadius: 0, fill: false }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom' },
+      tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + ctx.parsed.y.toFixed(2) + 'x' } }
+    },
+    scales: {
+      y: { beginAtZero: true, title: { display: true, text: 'Running iROAS (x)' } },
+      x: { title: { display: true, text: 'Month from launch' } }
+    }
+  }
+});
+
+// Chart 5: Period iROAS
+const ctxPer = document.getElementById('chart-period-iroas').getContext('2d');
+new Chart(ctxPer, {
+  type: 'line',
+  data: {
+    labels: months.map(m => 'M'+m),
+    datasets: [
+      { label: 'Period iROAS (that month alone)', data: months.map(m => periodIROAS[m]), borderColor: '#1a365d', backgroundColor: '#1a365d33', borderWidth: 3, tension: 0.3, pointRadius: 0, fill: true },
+      { label: '1.4x floor', data: months.map(() => 1.4), borderColor: '#2f855a', borderDash: [6,4], borderWidth: 2, pointRadius: 0, fill: false }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom' },
+      tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + ctx.parsed.y.toFixed(2) + 'x' } }
+    },
+    scales: {
+      y: { beginAtZero: true, title: { display: true, text: 'Period iROAS (x)' } },
+      x: { title: { display: true, text: 'Month from launch' } }
+    }
+  }
+});
+
+// Threshold line plugin for MDE and detection charts
+const thresholdPlugin = {
+  id: 'thresholds',
+  afterDraw(chart) {
+    const id = chart.canvas.id;
+    const ctx = chart.ctx;
+    const ys = chart.scales.y, xs = chart.scales.x;
+    let lines = [];
+    if (id === 'chart-mde') {
+      lines = [
+        { val: 0.70, label: 'M12 running iROAS (0.70x)', color: '#2f855a' },
+        { val: 0.77, label: 'M6 period iROAS (0.77x)', color: '#d69e2e' }
+      ];
+    } else if (id === 'chart-detection') {
+      lines = [
+        { val: 1.28, label: '80% confidence', color: '#d69e2e' },
+        { val: 1.96, label: '95% confidence', color: '#2f855a' }
+      ];
+    }
+    lines.forEach(t => {
+      if (t.val < ys.min || t.val > ys.max) return;
+      const y = ys.getPixelForValue(t.val);
+      ctx.save();
+      ctx.strokeStyle = t.color; ctx.setLineDash([5,4]); ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(xs.left, y); ctx.lineTo(xs.right, y); ctx.stroke();
+      ctx.fillStyle = t.color; ctx.font = '11px -apple-system, sans-serif';
+      ctx.fillText(t.label, xs.right - 180, y - 4);
+      ctx.restore();
+    });
+  }
+};
+// Highlight recommended combo in combo chart
+const comboHighlight = {
+  id: 'comboHighlight',
+  afterDraw(chart) {
+    if (chart.canvas.id !== 'chart-spend-combos') return;
+    const idx = combos.findIndex(c => c.cox === 1500 && c.yt === 2500);
+    if (idx === -1) return;
+    const meta = chart.getDatasetMeta(0);
+    const bar = meta.data[idx];
+    if (!bar) return;
+    const ctx = chart.ctx;
+    ctx.save();
+    ctx.strokeStyle = '#c53030';
+    ctx.lineWidth = 3;
+    ctx.setLineDash([]);
+    const ys = chart.scales.y;
+    const barTop = ys.getPixelForValue(combos[idx].cox + combos[idx].yt * yt_scale);
+    const barBottom = ys.getPixelForValue(0);
+    ctx.strokeRect(bar.x - bar.width/2 - 2, barTop - 2, bar.width + 4, barBottom - barTop + 4);
+    ctx.fillStyle = '#c53030'; ctx.font = 'bold 11px -apple-system, sans-serif';
+    ctx.fillText('RECOMMENDED', bar.x - 40, barTop - 8);
+    ctx.restore();
+  }
+};
+Chart.register(thresholdPlugin, comboHighlight);
+</script>
+</body>
+</html>

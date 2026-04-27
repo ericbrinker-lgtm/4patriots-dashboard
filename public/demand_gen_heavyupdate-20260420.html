@@ -322,6 +322,51 @@
     Primary watch item: GA4 DG LC ROAS stayed above the <b>0.49x heavy-up threshold</b> (current 0.52x).
   </div>
 
+  <!-- ============ DMA CELL MAP ============ -->
+  <span class="layer-label layer-exec">DMA cell map</span>
+  <div class="card" id="dma-map-card">
+    <h2>DMA cell assignments</h2>
+    <div class="card-sub">Which DMAs sit in treatment vs. control across the three comparison models. Toggle to see how the control set changes.</div>
+    <div class="controls">
+      <div class="toggle-group" id="dma-map-toggle">
+        <button class="active" data-model="matched_market">Matched Markets</button>
+        <button data-model="synthetic_control">Synthetic Control</button>
+        <button data-model="whole_country">Whole Country</button>
+      </div>
+    </div>
+    <div style="width:100%;background:var(--gray-100);border-radius:8px;overflow:hidden;border:1px solid var(--gray-200);">
+      <img id="dma-map-img" src="demand_gen_map_202603_matched_market.png" alt="DMA cell map — Matched Markets" style="display:block;width:100%;height:auto;">
+    </div>
+    <div style="display:flex;gap:22px;flex-wrap:wrap;margin-top:14px;font-size:13px;color:var(--gray-900);">
+      <div style="display:flex;align-items:center;gap:8px;"><span style="width:16px;height:16px;border-radius:3px;background:#c98080;border:1px solid rgba(0,0,0,0.1);"></span>Treatment DMAs</div>
+      <div style="display:flex;align-items:center;gap:8px;"><span style="width:16px;height:16px;border-radius:3px;background:#8ecfc5;border:1px solid rgba(0,0,0,0.1);"></span>Control DMAs</div>
+      <div style="display:flex;align-items:center;gap:8px;"><span style="width:16px;height:16px;border-radius:3px;background:#d8d8d8;border:1px solid rgba(0,0,0,0.1);"></span>Not included</div>
+    </div>
+    <p id="dma-map-desc" style="margin:14px 0 0;font-size:13px;color:var(--gray-600);line-height:1.55;">Control DMAs selected to match treatment on pre-period daily orders (MAPE + correlation). Primary model for headline iROAS.</p>
+  </div>
+  <script>
+  (function(){
+    var btns = document.querySelectorAll('#dma-map-toggle button');
+    var img = document.getElementById('dma-map-img');
+    var desc = document.getElementById('dma-map-desc');
+    var NAMES = { matched_market:'Matched Markets', synthetic_control:'Synthetic Control', whole_country:'Whole Country' };
+    var DESCS = {
+      matched_market: 'Control DMAs selected to match treatment on pre-period daily orders (MAPE + correlation). Primary model for headline iROAS.',
+      synthetic_control: 'Control is a weighted portfolio of donor DMAs that reconstruct the treatment counterfactual. Any DMA with a nonzero weight is shown in the control color; weight magnitude is not encoded.',
+      whole_country: 'Treatment DMAs compared against the full rest-of-country. Directional validator; no hand-picked control set.'
+    };
+    btns.forEach(function(b){
+      b.addEventListener('click', function(){
+        var m = b.dataset.model;
+        img.src = 'demand_gen_map_202603_' + m + '.png';
+        img.alt = 'DMA cell map — ' + NAMES[m];
+        desc.textContent = DESCS[m];
+        btns.forEach(function(x){ x.classList.toggle('active', x === b); });
+      });
+    });
+  })();
+  </script>
+
   <span class="layer-label layer-exec">Layer 1 · Executive view</span>
 
   <!-- KPI GRID -->

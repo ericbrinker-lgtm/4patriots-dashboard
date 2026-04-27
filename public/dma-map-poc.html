@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DMA Map · PoC · 4Patriots Incrementality</title>
+<style>
+:root{
+  --navy:#1a365d;
+  --navy-light:#2c5282;
+  --red:#c53030;
+  --gold:#d69e2e;
+  --green:#2f855a;
+  --teal:#4fd1c5;
+  --grey-50:#f7fafc;
+  --grey-100:#edf2f7;
+  --grey-200:#e2e8f0;
+  --grey-300:#cbd5e0;
+  --grey-600:#4a5568;
+  --grey-800:#2d3748;
+  --text:#1a202c;
+}
+*{box-sizing:border-box}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  margin:0;background:var(--grey-50);color:var(--text);line-height:1.55;
+}
+.container{max-width:1180px;margin:0 auto;padding:40px 28px 80px;}
+header{border-bottom:3px solid var(--navy);padding-bottom:20px;margin-bottom:32px;}
+header .eyebrow{color:var(--red);font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;}
+header h1{font-size:30px;margin:6px 0 4px;color:var(--navy);letter-spacing:-0.5px;}
+header .sub{color:var(--grey-600);font-size:15px;}
+header .back{color:var(--navy-light);font-size:13px;text-decoration:none;display:inline-block;margin-bottom:6px;}
+header .back:hover{text-decoration:underline;}
+
+.controls{display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start;margin-bottom:24px;padding:20px 22px;background:white;border:1px solid var(--grey-200);border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,0.06);}
+.control-group{display:flex;flex-direction:column;gap:8px;}
+.control-label{font-size:11px;font-weight:700;color:var(--grey-600);text-transform:uppercase;letter-spacing:1.2px;}
+.btn-row{display:flex;gap:6px;flex-wrap:wrap;}
+.btn{padding:8px 14px;border:1px solid var(--grey-300);background:white;color:var(--grey-800);font-size:13px;font-weight:600;border-radius:6px;cursor:pointer;transition:all 0.12s;font-family:inherit;}
+.btn:hover{border-color:var(--navy-light);color:var(--navy);}
+.btn.active{background:var(--navy);border-color:var(--navy);color:white;}
+.btn.active:hover{background:var(--navy-light);}
+
+.map-card{background:white;border:1px solid var(--grey-200);border-radius:8px;padding:24px 26px;box-shadow:0 1px 3px rgba(0,0,0,0.06);}
+.map-title{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:4px;flex-wrap:wrap;}
+.map-title h2{font-size:20px;margin:0;color:var(--navy);letter-spacing:-0.2px;}
+.map-title .sub{font-size:13px;color:var(--grey-600);}
+.model-line{font-size:13px;color:var(--grey-800);margin:4px 0 16px;}
+.model-line strong{color:var(--navy);}
+
+.map-wrap{position:relative;width:100%;background:var(--grey-100);border-radius:6px;overflow:hidden;border:1px solid var(--grey-200);}
+.map-wrap img{display:block;width:100%;height:auto;}
+
+.legend{display:flex;gap:22px;flex-wrap:wrap;margin-top:18px;font-size:13px;color:var(--grey-800);}
+.legend-item{display:flex;align-items:center;gap:8px;}
+.legend-sw{width:16px;height:16px;border-radius:3px;border:1px solid rgba(0,0,0,0.1);}
+.legend-sw.treat{background:#c98080;}
+.legend-sw.ctrl{background:#8ecfc5;}
+.legend-sw.neutral{background:#d8d8d8;}
+
+.notes{margin-top:24px;padding:18px 22px;background:white;border:1px solid var(--grey-200);border-radius:8px;font-size:13px;color:var(--grey-600);line-height:1.55;}
+.notes h3{font-size:12px;margin:0 0 8px;color:var(--grey-800);text-transform:uppercase;letter-spacing:1.2px;font-weight:700;}
+.notes p{margin:0 0 8px;}
+.notes p:last-child{margin:0;}
+.notes code{background:var(--grey-100);padding:1px 5px;border-radius:3px;font-size:12px;}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <a class="back" href="index.html">← Dashboards</a>
+  <div class="eyebrow">Proof of Concept · DMA cell map</div>
+  <h1>DMA cell assignments by model</h1>
+  <div class="sub">Visual check of which DMAs sit in treatment vs. control across the three comparison models. Toggle the test and the model.</div>
+</header>
+
+<div class="controls">
+  <div class="control-group">
+    <span class="control-label">Test</span>
+    <div class="btn-row" id="test-toggle">
+      <button class="btn active" data-test="demand_gen">Demand Gen heavy-up</button>
+      <button class="btn" data-test="src_pmax">Search / PMax holdout</button>
+    </div>
+  </div>
+  <div class="control-group">
+    <span class="control-label">Model</span>
+    <div class="btn-row" id="model-toggle">
+      <button class="btn active" data-model="matched_market">Matched Markets</button>
+      <button class="btn" data-model="synthetic_control">Synthetic Control</button>
+      <button class="btn" data-model="whole_country">Whole Country</button>
+    </div>
+  </div>
+</div>
+
+<div class="map-card">
+  <div class="map-title">
+    <h2 id="map-test-name">Demand Gen heavy-up</h2>
+    <span class="sub" id="map-date">202603</span>
+  </div>
+  <div class="model-line">
+    Model: <strong id="map-model-name">Matched Markets</strong> · <span id="map-model-desc">Control DMAs selected to match treatment on pre-period daily orders (MAPE + correlation).</span>
+  </div>
+
+  <div class="map-wrap">
+    <img id="map-img" src="demand_gen_map_202603_matched_market.png" alt="DMA cell map">
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><span class="legend-sw treat"></span>Treatment DMAs</div>
+    <div class="legend-item"><span class="legend-sw ctrl"></span>Control DMAs</div>
+    <div class="legend-item"><span class="legend-sw neutral"></span>Not included</div>
+  </div>
+</div>
+
+<div class="notes">
+  <h3>Notes</h3>
+  <p><strong>Matched Markets</strong> — control is a hand-picked set of DMAs matched to treatment on pre-period daily orders (MAPE and correlation). Primary model for headline iROAS.</p>
+  <p><strong>Synthetic Control</strong> — control is a weighted portfolio of donor DMAs that reconstruct the treatment counterfactual. This view shows any DMA with a nonzero weight; weight magnitude is not encoded.</p>
+  <p><strong>Whole Country</strong> — treatment DMAs compared against the full rest-of-country. Directional validator; no hand-picked control set.</p>
+  <p style="margin-top:10px;color:var(--grey-800);"><strong>Proof of concept.</strong> Images are pre-rendered static PNGs. To adapt for a single-HTML write-up, copy the <code>&lt;img&gt;</code> and the model toggle script — or inline the PNGs as base64.</p>
+</div>
+
+</div>
+
+<script>
+(function(){
+  const testBtns = document.querySelectorAll('#test-toggle .btn');
+  const modelBtns = document.querySelectorAll('#model-toggle .btn');
+  const img = document.getElementById('map-img');
+  const testNameEl = document.getElementById('map-test-name');
+  const modelNameEl = document.getElementById('map-model-name');
+  const modelDescEl = document.getElementById('map-model-desc');
+
+  const TEST_NAMES = {
+    demand_gen: 'Demand Gen heavy-up',
+    src_pmax: 'Search / PMax holdout'
+  };
+  const MODEL_NAMES = {
+    matched_market: 'Matched Markets',
+    synthetic_control: 'Synthetic Control',
+    whole_country: 'Whole Country'
+  };
+  const MODEL_DESCS = {
+    matched_market: 'Control DMAs selected to match treatment on pre-period daily orders (MAPE + correlation).',
+    synthetic_control: 'Control is a weighted portfolio of donor DMAs. Any DMA with a nonzero weight is shown in the control color.',
+    whole_country: 'Treatment DMAs compared against the full rest-of-country. No hand-picked control set.'
+  };
+
+  let state = { test: 'demand_gen', model: 'matched_market' };
+
+  function render(){
+    const src = state.test + '_map_202603_' + state.model + '.png';
+    img.src = src;
+    img.alt = TEST_NAMES[state.test] + ' \u2014 ' + MODEL_NAMES[state.model];
+    testNameEl.textContent = TEST_NAMES[state.test];
+    modelNameEl.textContent = MODEL_NAMES[state.model];
+    modelDescEl.textContent = MODEL_DESCS[state.model];
+
+    testBtns.forEach(b => b.classList.toggle('active', b.dataset.test === state.test));
+    modelBtns.forEach(b => b.classList.toggle('active', b.dataset.model === state.model));
+  }
+
+  testBtns.forEach(b => b.addEventListener('click', () => { state.test = b.dataset.test; render(); }));
+  modelBtns.forEach(b => b.addEventListener('click', () => { state.model = b.dataset.model; render(); }));
+})();
+</script>
+
+</body>
+</html>

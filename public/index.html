@@ -1,172 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>4Patriots Studies</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4Patriots Incrementality Dashboards</title>
+<style>
+:root{
+  --navy:#1a365d;
+  --navy-light:#2c5282;
+  --red:#c53030;
+  --gold:#d69e2e;
+  --green:#2f855a;
+  --grey-50:#f7fafc;
+  --grey-100:#edf2f7;
+  --grey-200:#e2e8f0;
+  --grey-600:#4a5568;
+  --grey-800:#2d3748;
+  --text:#1a202c;
+}
+*{box-sizing:border-box}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  margin:0;background:var(--grey-50);color:var(--text);line-height:1.55;
+}
+.container{max-width:1180px;margin:0 auto;padding:40px 28px 80px;}
+header{border-bottom:3px solid var(--navy);padding-bottom:20px;margin-bottom:32px;}
+header .eyebrow{color:var(--red);font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;}
+header h1{font-size:30px;margin:6px 0 4px;color:var(--navy);letter-spacing:-0.5px;}
+header .sub{color:var(--grey-600);font-size:15px;}
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
+.group-label{margin:28px 0 10px;color:var(--grey-600);font-size:12px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;}
+.group-label:first-of-type{margin-top:8px;}
 
-        .container {
-            max-width: 800px;
-            width: 100%;
-        }
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;}
+.card{background:white;border:1px solid var(--grey-200);border-radius:8px;padding:20px 22px;box-shadow:0 1px 3px rgba(0,0,0,0.06);text-decoration:none;color:inherit;display:block;transition:all 0.15s;}
+.card:hover{border-color:var(--navy-light);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.08);}
+.card .tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px;}
+.card .tag.pre{background:#ebf8ff;color:var(--navy);}
+.card .tag.completed{background:#f0fff4;color:var(--green);}
+.card .tag.updated{background:#fffaf0;color:var(--gold);}
+.card h3{margin:0 0 6px;color:var(--navy);font-size:17px;letter-spacing:-0.2px;}
+.card .desc{font-size:13px;color:var(--grey-600);margin:4px 0 10px;line-height:1.45;}
+.card .meta{font-size:12px;color:var(--grey-600);display:flex;gap:14px;flex-wrap:wrap;}
+.card .meta .chan{color:var(--navy);font-weight:600;}
+.card .arrow{float:right;color:var(--navy-light);font-size:18px;margin-top:-2px;}
 
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            color: white;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-
-        .studies-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
-            margin-top: 30px;
-        }
-
-        .study-card {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            text-decoration: none;
-            color: inherit;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .study-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
-        }
-
-        .study-card h2 {
-            font-size: 1.5rem;
-            margin-bottom: 12px;
-            color: #333;
-        }
-
-        .study-card .date {
-            font-size: 0.85rem;
-            color: #999;
-            margin-bottom: 16px;
-        }
-
-        .study-card p {
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 24px;
-            flex-grow: 1;
-        }
-
-        .study-card .btn {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 6px;
-            font-weight: 600;
-            text-align: center;
-            transition: opacity 0.3s ease;
-        }
-
-        .study-card:hover .btn {
-            opacity: 0.9;
-        }
-
-        .icon {
-            font-size: 2rem;
-            margin-bottom: 16px;
-        }
-
-        @media (max-width: 600px) {
-            .header h1 {
-                font-size: 2rem;
-            }
-
-            .studies-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+.footnote{color:var(--grey-600);font-size:12px;font-style:italic;margin-top:30px;text-align:center;}
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>4Patriots Studies</h1>
-            <p>Incrementality Testing Results & Analysis</p>
-        </div>
+<div class="container">
 
-        <div class="studies-grid">
-            <a href="demand_gen_heavyupdate-20260420.html" class="study-card">
-                <div>
-                    <div class="icon">📊</div>
-                    <h2>Demand Gen Heavy Up</h2>
-                    <div class="date">April 20, 2026</div>
-                    <p>Analysis of demand generation heavy update campaign performance and incrementality testing results.</p>
-                </div>
-                <div class="btn">View Study →</div>
-            </a>
+<header>
+  <div class="eyebrow">4Patriots Advertising — Measurement</div>
+  <h1>Incrementality dashboards</h1>
+  <div class="sub">Geo test results, pre-test designs, and cross-channel validation reads. Most recent and primary tests are at the top.</div>
+</header>
 
-            <a href="search_pmax_holdout_update-2026040.html" class="study-card">
-                <div>
-                    <div class="icon">🔍</div>
-                    <h2>Search PMAX Holdout</h2>
-                    <div class="date">April 20, 2026</div>
-                    <p>Performance metrics and analysis for search campaigns with PMAX holdout testing approach.</p>
-                </div>
-                <div class="btn">View Study →</div>
-            </a>
-
-            <a href="audiohook_holdout_20260306.html" class="study-card">
-                <div>
-                    <div class="icon">🎙️</div>
-                    <h2>Audiohook Podcast Holdout</h2>
-                    <div class="date">April 6, 2026</div>
-                    <p>Podcast audio ad incrementality test measuring Audiohook's TOF impact across 57 treatment DMAs. Includes pre/post offer analysis and incrementality factor for billing.</p>
-                </div>
-                <div class="btn">View Study →</div>
-            </a>
-
-            <a href="demand-gen-holdout-20260306.html" class="study-card">
-                <div>
-                    <div class="icon">🌙</div>
-                    <h2>Demand Gen Holdout</h2>
-                    <div class="date">March 6, 2026</div>
-                    <p>Full go-dark holdout on Google Demand Gen across 25 treatment DMAs (Jan 10 – Feb 28, cooldown through Mar 6). Matched markets, synthetic control, and whole-country comparisons with GA4 cross-channel read.</p>
-                </div>
-                <div class="btn">View Study →</div>
-            </a>
-        </div>
+<div class="group-label">Pre-test designs</div>
+<div class="grid">
+  <a class="card" href="brand_test_202605_viability.html">
+    <span class="arrow">→</span>
+    <span class="tag pre">Pre-study · 2026-04-23</span>
+    <h3>Brand 2026 Viability Pre-Study</h3>
+    <div class="desc">Multi-channel brand video geo test design across Cox TV, YouTube, Facebook, and CTV. Executive-ready viability brief with spend tradeoffs, detection timing, ROI expectations, benchmarks, and rollout plan. Toggle across Matched Market / Synthetic / Whole Country models.</div>
+    <div class="meta">
+      <span class="chan">Cox · YouTube · Facebook · CTV</span>
+      <span>12-week spend + 6-month cooldown</span>
     </div>
+  </a>
+</div>
+
+<div class="group-label">Completed geo tests</div>
+<div class="grid">
+  <a class="card" href="demand_gen_heavyupdate-20260427.html">
+    <span class="arrow">→</span>
+    <span class="tag updated">Update · 2026-04-27</span>
+    <h3>Demand Gen Heavy-Up</h3>
+    <div class="desc">Latest read on the Google Demand Gen heavy-up test. Both windows still clear the 1.4x floor (clean 1.51x, full 1.42x) but buffer is thin. Sub-network bias verdict: YouTube majority is supported. Last 7 days confounded by FB API outage and Gmail mix shift.</div>
+    <div class="meta"><span class="chan">Google Demand Gen</span></div>
+  </a>
+
+  <a class="card" href="demand_gen_heavyupdate-20260420.html">
+    <span class="arrow">→</span>
+    <span class="tag completed">Prior · 2026-04-20</span>
+    <h3>Demand Gen Heavy-Up (prior run)</h3>
+    <div class="desc">Last week's readout. Marginal iROAS 1.46x cleared floor for the first time. Kept for reference.</div>
+    <div class="meta"><span class="chan">Google Demand Gen</span></div>
+  </a>
+
+  <a class="card" href="demand-gen-holdout-20260306.html">
+    <span class="arrow">→</span>
+    <span class="tag completed">Completed · 2026-03-06</span>
+    <h3>Demand Gen Holdout</h3>
+    <div class="desc">Holdout test validating Google Demand Gen incrementality. Primary headline iROAS and cross-channel breakdown.</div>
+    <div class="meta"><span class="chan">Google Demand Gen</span></div>
+  </a>
+
+  <a class="card" href="search_pmax_holdout_update-20260427.html">
+    <span class="arrow">→</span>
+    <span class="tag updated">Update · 2026-04-27</span>
+    <h3>Search / PMax Holdout</h3>
+    <div class="desc">Latest read on the Search &amp; PMax holdout. Two windows side by side (clean 3/14–4/19 and extended 3/14–4/26). Both clear the 1.4x GP floor on S&amp;P spend; extended pushes revenue iROAS to 1.55x. Adds weekly OLS regressions of business orders/revenue vs Search and PMAX spend. Backfill remains the dominant story.</div>
+    <div class="meta"><span class="chan">Google Search · PMax</span></div>
+  </a>
+
+  <a class="card" href="audiohook_holdout_20260306.html">
+    <span class="arrow">→</span>
+    <span class="tag completed">Completed · 2026-03-06</span>
+    <h3>AudioHook Holdout</h3>
+    <div class="desc">AudioHook (streaming audio) holdout test. Primary iROAS and proxy-signal read.</div>
+    <div class="meta"><span class="chan">AudioHook</span></div>
+  </a>
+</div>
+
+<div class="footnote">Maintained by the A-Team · Director of Advertising, Channel Strategy &amp; Innovation, 4Patriots</div>
+
+</div>
 </body>
 </html>
