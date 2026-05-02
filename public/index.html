@@ -4,176 +4,318 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>4Patriots Incrementality Dashboards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
 <style>
-:root{
-  --navy:#1a365d;
-  --navy-light:#2c5282;
-  --red:#c53030;
-  --gold:#d69e2e;
-  --green:#2f855a;
-  --grey-50:#f7fafc;
-  --grey-100:#edf2f7;
-  --grey-200:#e2e8f0;
-  --grey-600:#4a5568;
-  --grey-800:#2d3748;
-  --text:#1a202c;
-}
-*{box-sizing:border-box}
-body{
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
-  margin:0;background:var(--grey-50);color:var(--text);line-height:1.55;
-}
-.container{max-width:1180px;margin:0 auto;padding:40px 28px 80px;}
-header{border-bottom:3px solid var(--navy);padding-bottom:20px;margin-bottom:32px;}
-header .eyebrow{color:var(--red);font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;}
-header h1{font-size:30px;margin:6px 0 4px;color:var(--navy);letter-spacing:-0.5px;}
-header .sub{color:var(--grey-600);font-size:15px;}
+  :root{
+    --navy:#13213c;
+    --navy-deep:#0d1729;
+    --blue:#1a237e;
+    --red:#b71c1c;
+    --red-deep:#8a1414;
+    --white:#ffffff;
+    --paper:#f6f6f3;
+    --paper-2:#ececea;
+    --rule:#d6d6d2;
+    --ink:#13213c;
+    --ink-2:#2b3450;
+    --muted:#6b7280;
+    --good:#1e6b3a;
+    --gold:#9e7f18;
+    --headline:"Helvetica Neue","Helvetica","Arial",sans-serif;
+    --body:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--white);color:var(--ink);-webkit-font-smoothing:antialiased}
+  body{font-family:var(--body);font-size:15px;line-height:1.6}
+  a{color:var(--navy);text-decoration:none}
+  strong,b{font-weight:600;color:var(--ink)}
 
-.group-label{margin:28px 0 10px;color:var(--grey-600);font-size:12px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;}
-.group-label:first-of-type{margin-top:8px;}
+  /* ---------- Topbar ---------- */
+  .topbar{background:var(--navy);color:var(--white);border-bottom:4px solid var(--red)}
+  .topbar-inner{max-width:1280px;margin:0 auto;padding:16px 40px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+  .topbar .logo{height:40px;display:block}
+  .topbar .breadcrumbs{font-family:var(--mono);font-size:11px;letter-spacing:0.08em;color:rgba(255,255,255,0.7);text-transform:uppercase}
+  .topbar .breadcrumbs a{color:var(--white);text-decoration:none}
+  .topbar .breadcrumbs a:hover{color:#fff;text-decoration:underline}
+  .topbar .breadcrumbs .sep{margin:0 10px;opacity:0.4}
 
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;}
+  /* ---------- Stripe ---------- */
+  .stripe{display:flex;height:4px}
+  .stripe span{flex:1}
+  .stripe .r{background:var(--red)}
+  .stripe .w{background:var(--white)}
+  .stripe .b{background:var(--navy)}
 
-.card{background:white;border:1px solid var(--grey-200);border-radius:8px;padding:20px 22px;box-shadow:0 1px 3px rgba(0,0,0,0.06);transition:all 0.15s;display:flex;flex-direction:column;}
-.card:hover{border-color:var(--navy-light);box-shadow:0 4px 12px rgba(0,0,0,0.08);}
-.card .head{text-decoration:none;color:inherit;display:block;}
-.card .head:hover h3{color:var(--navy-light);}
-.card .tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px;}
-.card .tag.pre{background:#ebf8ff;color:var(--navy);}
-.card .tag.completed{background:#f0fff4;color:var(--green);}
-.card .tag.updated{background:#fffaf0;color:var(--gold);}
-.card .arrow{float:right;color:var(--navy-light);font-size:18px;margin-top:-2px;}
-.card h3{margin:0 0 6px;color:var(--navy);font-size:17px;letter-spacing:-0.2px;transition:color 0.15s;}
-.card .desc{font-size:13px;color:var(--grey-600);margin:4px 0 10px;line-height:1.45;}
-.card .meta{font-size:12px;color:var(--grey-600);display:flex;gap:14px;flex-wrap:wrap;align-items:center;}
-.card .meta .chan{color:var(--navy);font-weight:600;}
-.card .meta .updated-on{color:var(--grey-600);}
+  /* ---------- Topbar ---------- */
+  .topbar{background:var(--navy);color:var(--white);border-bottom:4px solid var(--red)}
+  .topbar-inner{max-width:1280px;margin:0 auto;padding:16px 40px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+  .topbar .logo{height:40px;display:block}
+  .topbar .breadcrumbs{font-family:var(--mono);font-size:11px;letter-spacing:0.08em;color:rgba(255,255,255,0.7);text-transform:uppercase}
 
-.history{margin-top:14px;padding-top:12px;border-top:1px dashed var(--grey-200);}
-.history summary{cursor:pointer;font-size:12px;color:var(--grey-600);font-weight:600;list-style:none;outline:none;user-select:none;}
-.history summary::-webkit-details-marker{display:none;}
-.history summary::before{content:"\25b8";display:inline-block;margin-right:6px;transition:transform 0.15s;color:var(--navy-light);}
-.history[open] summary::before{transform:rotate(90deg);}
-.history summary:hover{color:var(--navy);}
-.history ul{list-style:none;margin:8px 0 0;padding:0;}
-.history li{margin:6px 0;font-size:12px;}
-.history li a{color:var(--navy-light);text-decoration:none;}
-.history li a:hover{text-decoration:underline;color:var(--navy);}
-.history li .date{color:var(--grey-600);font-weight:600;margin-right:8px;}
+  /* ---------- Hero (hub variant) ---------- */
+  .hero{background:var(--navy);color:var(--white);padding:64px 0 0;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;top:0;right:0;bottom:0;width:8px;background:linear-gradient(180deg,var(--red) 0%,var(--red) 50%,var(--white) 50%,var(--white) 100%)}
+  .hero-inner{max-width:1280px;margin:0 auto;padding:0 40px}
+  .hero .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .hero .eyebrow .badge{background:var(--red);color:var(--white);padding:4px 10px;letter-spacing:0.1em;font-weight:600}
+  .hero h1{font-family:var(--headline);font-weight:700;font-size:clamp(36px,4.6vw,60px);line-height:1.05;letter-spacing:-0.025em;margin:0;max-width:22ch;color:var(--white)}
+  .hero h1 .underline{display:inline-block;border-bottom:5px solid var(--red);padding-bottom:2px}
+  .hero .deck{font-family:var(--body);font-size:17px;line-height:1.55;color:rgba(255,255,255,0.85);margin-top:24px;max-width:64ch;font-weight:400;padding-bottom:48px}
 
-.footnote{color:var(--grey-600);font-size:12px;font-style:italic;margin-top:30px;text-align:center;}
+  /* ---------- Portfolio status strip (signals: this is a hub) ---------- */
+  .status-strip{margin-top:0;border-top:1px solid rgba(255,255,255,0.15);display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+  @media (max-width:900px){.status-strip{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:520px){.status-strip{grid-template-columns:1fr}}
+  .status-tile{padding:24px 28px 28px;border-right:1px solid rgba(255,255,255,0.15);position:relative}
+  .status-tile:last-child{border-right:none}
+  .status-tile::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--rule);opacity:0.18}
+  .status-tile.tile-pre::before{background:var(--blue);opacity:1}
+  .status-tile.tile-active::before{background:var(--red);opacity:1}
+  .status-tile.tile-completed::before{background:#6ee7a4;opacity:1}
+  .status-tile.tile-latest::before{background:rgba(255,255,255,0.5);opacity:1}
+  .status-tile .k{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,0.55);font-weight:600;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:8px;display:block}
+  .status-tile .v{font-family:var(--headline);font-size:42px;font-weight:700;color:var(--white);letter-spacing:-0.025em;line-height:1}
+  .status-tile .sub{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.6);margin-top:6px;letter-spacing:0.04em}
+  @media (max-width:900px){.status-tile{border-right:none;border-bottom:1px solid rgba(255,255,255,0.15)} .status-tile:nth-child(2n){border-right:none}}
+  @media (min-width:901px){.status-tile:nth-child(2n){border-right:1px solid rgba(255,255,255,0.15)}}
+
+  /* ---------- Layout ---------- */
+  main{max-width:1280px;margin:0 auto;padding:0 40px 80px}
+  .group-section{padding:56px 0;border-top:1px solid var(--rule)}
+  .group-section:first-of-type{border-top:none;padding-top:48px}
+  .group-head{display:grid;grid-template-columns:240px 1fr;gap:48px;margin-bottom:32px;align-items:start}
+  .group-head .num{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;color:var(--muted);text-transform:uppercase;position:relative;padding-left:14px}
+  .group-head .num::before{content:"";position:absolute;left:0;top:6px;bottom:6px;width:3px;background:var(--red)}
+  .group-head .num strong{color:var(--navy);font-weight:700;display:block;font-size:22px;letter-spacing:-0.01em;margin-bottom:6px;font-family:var(--headline)}
+  .group-head h2{font-family:var(--headline);font-weight:700;font-size:clamp(24px,2.6vw,32px);line-height:1.1;letter-spacing:-0.02em;margin:0 0 14px;max-width:30ch;color:var(--navy)}
+  .group-head .lede{font-size:14px;line-height:1.55;color:var(--ink-2);max-width:72ch}
+  @media (max-width:900px){.group-head{grid-template-columns:1fr;gap:14px}}
+
+  /* ---------- Card grid ---------- */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:0;border:1px solid var(--rule);border-bottom:none}
+  .card{background:var(--white);border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:26px 26px 24px;display:flex;flex-direction:column;position:relative;transition:background 0.15s}
+  .card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--rule);transition:background 0.15s}
+  .card.pre::before{background:var(--blue)}
+  .card.active::before{background:var(--red)}
+  .card.completed::before{background:var(--good)}
+  .card:hover{background:var(--paper)}
+  .card .head{text-decoration:none;color:inherit;display:block;flex:1}
+  .card .tag{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:0.16em;text-transform:uppercase;font-weight:600;padding:4px 10px;margin-bottom:14px;color:var(--white)}
+  .card.pre .tag{background:var(--blue)}
+  .card.active .tag{background:var(--red)}
+  .card.completed .tag{background:var(--good)}
+  .card .arrow{float:right;color:var(--muted);font-family:var(--mono);font-size:18px;font-weight:600;transition:color 0.15s,transform 0.15s}
+  .card:hover .arrow{color:var(--red);transform:translateX(4px)}
+  .card h3{margin:0 0 8px;font-family:var(--headline);color:var(--navy);font-size:20px;letter-spacing:-0.015em;font-weight:700;line-height:1.2}
+  .card .desc{font-size:13px;color:var(--ink-2);margin:0 0 16px;line-height:1.55}
+  .card .meta{font-family:var(--mono);font-size:10px;color:var(--muted);display:flex;gap:16px;flex-wrap:wrap;align-items:center;letter-spacing:0.08em;text-transform:uppercase;border-top:1px solid var(--rule);padding-top:14px;margin-top:auto}
+  .card .meta .chan{color:var(--navy);font-weight:600}
+
+  /* ---------- History ---------- */
+  .history{margin-top:14px;border-top:1px solid var(--rule);padding-top:14px}
+  .history summary{cursor:pointer;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);list-style:none;display:flex;align-items:center;gap:10px}
+  .history summary::-webkit-details-marker{display:none}
+  .history summary::before{content:"+";color:var(--red);font-weight:700;width:14px}
+  .history[open] summary::before{content:"−"}
+  .history summary:hover{color:var(--navy)}
+  .history ul{list-style:none;margin:10px 0 0;padding:0}
+  .history li{margin:6px 0;font-size:12px}
+  .history li a{color:var(--navy);border-bottom:1px solid var(--rule)}
+  .history li a:hover{color:var(--red);border-bottom-color:var(--red)}
+  .history li .date{font-family:var(--mono);color:var(--muted);font-weight:600;margin-right:10px;font-size:11px;letter-spacing:0.05em}
+
+  /* ---------- Footer ---------- */
+  footer.foot{background:var(--navy);color:rgba(255,255,255,0.7);padding:48px 0 0;margin-top:48px}
+  footer.foot .stripe{margin-top:-48px;margin-bottom:48px}
+  .footer-inner{max-width:1280px;margin:0 auto;padding:0 40px}
+  .footer-mark{font-family:var(--headline);font-size:24px;color:var(--white);font-weight:700;letter-spacing:-0.02em;margin-bottom:6px}
+  .footer-tag{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.55);margin-bottom:12px}
+  .footer-mission{font-size:14px;color:rgba(255,255,255,0.7);max-width:48ch;line-height:1.5;margin-bottom:0}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,0.12);margin-top:36px;padding:18px 0}
+  .footer-bottom-inner{max-width:1280px;margin:0 auto;padding:0 40px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-family:var(--mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.5)}
 </style>
 </head>
 <body>
-<div class="container">
 
-<header>
-  <div class="eyebrow">4Patriots Advertising — Measurement</div>
-  <h1>Incrementality dashboards</h1>
-  <div class="sub">Geo test results, pre-test designs, and cross-channel validation reads. Most recent and primary tests are at the top.</div>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html"><img class="logo" src="assets/logo.jpg" alt="4Patriots"></a>
+    <nav class="breadcrumbs">
+      <span style="color:rgba(255,255,255,0.55);">Marketing analytics · Incrementality</span>
+    </nav>
+  </div>
 </header>
 
-<div class="group-label">Pre-Study</div>
-<div class="grid">
-
-  <div class="card">
-    <a class="head" href="brand_test_202605_viability.html">
-      <span class="arrow">→</span>
-      <span class="tag pre">Pre-study</span>
-      <h3>Brand 2026 Viability Pre-Study</h3>
-      <div class="desc">Multi-channel brand video geo test design across Cox TV, YouTube, Facebook, and CTV. Executive-ready viability brief with spend tradeoffs, detection timing, ROI expectations, benchmarks, and rollout plan. Toggle across Matched Market / Synthetic / Whole Country models.</div>
-      <div class="meta">
-        <span class="chan">Cox · YouTube · Facebook · CTV</span>
-        <span class="updated-on">Updated 2026-04-23</span>
+<section class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow"><span class="badge">Command center</span> 4Patriots advertising · Measurement portfolio</div>
+    <h1>Incrementality <span class="underline">dashboards</span>.</h1>
+    <p class="deck">Geo test results, pre-test designs, and cross-channel validation reads. Most recent and primary tests are at the top.</p>
+    <div class="status-strip">
+      <div class="status-tile tile-active">
+        <span class="k">Active tests</span>
+        <span class="v">2</span>
+        <span class="sub">In flight · weekly refresh</span>
       </div>
-    </a>
-  </div>
-
-</div>
-
-<div class="group-label">Active</div>
-<div class="grid">
-
-  <div class="card">
-    <a class="head" href="demand_gen_heavyupdate-20260427.html">
-      <span class="arrow">→</span>
-      <span class="tag updated">Active</span>
-      <h3>Demand Gen Heavy-Up</h3>
-      <div class="desc">Latest read on the Google Demand Gen heavy-up test. Both windows still clear the 1.4x floor (clean 1.51x, full 1.42x) but buffer is thin. Sub-network bias verdict: YouTube majority is supported. Last 7 days confounded by FB API outage and Gmail mix shift.</div>
-      <div class="meta">
-        <span class="chan">Google Demand Gen</span>
-        <span class="updated-on">Updated 2026-04-27</span>
+      <div class="status-tile tile-completed">
+        <span class="k">Completed</span>
+        <span class="v">3</span>
+        <span class="sub">Archived for reference</span>
       </div>
-    </a>
-    <details class="history">
-      <summary>Previous updates (1)</summary>
-      <ul>
-        <li><span class="date">2026-04-20</span><a href="demand_gen_heavyupdate-20260420.html">Marginal iROAS 1.46x — first run to clear floor</a></li>
-      </ul>
-    </details>
-  </div>
-
-  <div class="card">
-    <a class="head" href="search_pmax_holdout_update-20260427.html">
-      <span class="arrow">→</span>
-      <span class="tag updated">Active</span>
-      <h3>Search / PMAX Holdout</h3>
-      <div class="desc">Latest read on the Search &amp; PMax holdout. Two windows side by side (clean 3/14–4/19 and extended 3/14–4/26). Both clear the 1.4x GP floor on S&amp;P spend; extended pushes revenue iROAS to 1.55x. Adds weekly OLS regressions of business orders/revenue vs Search and PMAX spend. Backfill remains the dominant story.</div>
-      <div class="meta">
-        <span class="chan">Google Search · PMax</span>
-        <span class="updated-on">Updated 2026-04-27</span>
+      <div class="status-tile tile-pre">
+        <span class="k">In design</span>
+        <span class="v">1</span>
+        <span class="sub">Pre-study brief</span>
       </div>
-    </a>
-  </div>
-
-</div>
-
-<div class="group-label">Completed</div>
-<div class="grid">
-
-  <div class="card">
-    <a class="head" href="2026-05-02_webinar_study_report.html">
-      <span class="arrow">→</span>
-      <span class="tag completed">Completed</span>
-      <h3>Webinar Incrementality Study</h3>
-      <div class="desc">Backtesting for sales lift from webinars.</div>
-      <div class="meta">
-        <span class="chan">Webinars</span>
-        <span class="updated-on">Updated 2026-05-02</span>
+      <div class="status-tile tile-latest">
+        <span class="k">Latest read</span>
+        <span class="v">May 2</span>
+        <span class="sub">Webinar incrementality study</span>
       </div>
-    </a>
+    </div>
   </div>
+</section>
 
-  <div class="card">
-    <a class="head" href="demand-gen-holdout-20260306.html">
-      <span class="arrow">→</span>
-      <span class="tag completed">Completed</span>
-      <h3>Demand Gen Holdout</h3>
-      <div class="desc">Holdout test validating Google Demand Gen incrementality. Primary headline iROAS and cross-channel breakdown.</div>
-      <div class="meta">
-        <span class="chan">Google Demand Gen</span>
-        <span class="updated-on">Updated 2026-03-06</span>
+<div class="stripe"><span class="r"></span><span class="w"></span><span class="b"></span></div>
+
+<main>
+
+  <section class="group-section">
+    <div class="group-head">
+      <div class="num"><strong>01</strong> Pre-study</div>
+      <div>
+        <h2>Test designs awaiting greenlight.</h2>
+        <p class="lede">Viability briefs and pre-test design memos. Spend tradeoffs, detection timing, ROI expectations, and rollout plans.</p>
       </div>
-    </a>
-  </div>
-
-  <div class="card">
-    <a class="head" href="audiohook_holdout_20260306.html">
-      <span class="arrow">→</span>
-      <span class="tag completed">Completed</span>
-      <h3>AudioHook Holdout</h3>
-      <div class="desc">AudioHook (streaming audio) holdout test. Primary iROAS and proxy-signal read.</div>
-      <div class="meta">
-        <span class="chan">AudioHook</span>
-        <span class="updated-on">Updated 2026-03-06</span>
+    </div>
+    <div class="grid">
+      <div class="card pre">
+        <a class="head" href="brand_test_202605_viability.html">
+          <span class="arrow">→</span>
+          <span class="tag">Pre-study</span>
+          <h3>Brand 2026 viability pre-study</h3>
+          <div class="desc">Multi-channel brand video geo test design across Cox TV, YouTube, Facebook, and CTV. Executive-ready viability brief with spend tradeoffs, detection timing, ROI expectations, benchmarks, and rollout plan. Toggle across Matched Market / Synthetic / Whole Country models.</div>
+          <div class="meta">
+            <span class="chan">Cox · YouTube · Facebook · CTV</span>
+            <span>Updated 2026-04-23</span>
+          </div>
+        </a>
       </div>
-    </a>
+    </div>
+  </section>
+
+  <section class="group-section">
+    <div class="group-head">
+      <div class="num"><strong>02</strong> Active</div>
+      <div>
+        <h2>In-flight tests with weekly refreshes.</h2>
+        <p class="lede">Latest readouts from running geo incrementality tests. Headline iROAS, sub-network bias verdicts, cross-channel reads, and operational guidance.</p>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="card active">
+        <a class="head" href="demand_gen_heavyupdate-20260427.html">
+          <span class="arrow">→</span>
+          <span class="tag">Active</span>
+          <h3>Demand Gen heavy-up</h3>
+          <div class="desc">Latest read on the Google Demand Gen heavy-up test. Both windows still clear the 1.4x floor (clean 1.51x, full 1.42x) but buffer is thin. Sub-network bias verdict: YouTube majority is supported. Last 7 days confounded by FB API outage and Gmail mix shift.</div>
+          <div class="meta">
+            <span class="chan">Google Demand Gen</span>
+            <span>Updated 2026-04-27</span>
+          </div>
+        </a>
+        <details class="history">
+          <summary>Previous updates (1)</summary>
+          <ul>
+            <li><span class="date">2026-04-20</span><a href="demand_gen_heavyupdate-20260420.html">Marginal iROAS 1.46x — first run to clear floor</a></li>
+          </ul>
+        </details>
+      </div>
+
+      <div class="card active">
+        <a class="head" href="search_pmax_holdout_update-20260427.html">
+          <span class="arrow">→</span>
+          <span class="tag">Active</span>
+          <h3>Search / PMAX holdout</h3>
+          <div class="desc">Latest read on the Search &amp; PMax holdout. Two windows side by side (clean 3/14–4/19 and extended 3/14–4/26). Both clear the 1.4x GP floor on S&amp;P spend; extended pushes revenue iROAS to 1.55x. Adds weekly OLS regressions of business orders/revenue vs Search and PMAX spend. Backfill remains the dominant story.</div>
+          <div class="meta">
+            <span class="chan">Google Search · PMax</span>
+            <span>Updated 2026-04-27</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="group-section">
+    <div class="group-head">
+      <div class="num"><strong>03</strong> Completed</div>
+      <div>
+        <h2>Closed tests &amp; reference reads.</h2>
+        <p class="lede">Final readouts archived for reference. Methodology, data sources, and write-ups remain available.</p>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="card completed">
+        <a class="head" href="2026-05-02_webinar_study_report.html">
+          <span class="arrow">→</span>
+          <span class="tag">Completed</span>
+          <h3>Webinar incrementality study</h3>
+          <div class="desc">Backtesting for sales lift from webinars. Per-attendee 180-day GPM lift, dormant reactivation rates, and second-attendance multipliers. Recommended KPI framework and 12-month backtest.</div>
+          <div class="meta">
+            <span class="chan">Webinars</span>
+            <span>Updated 2026-05-02</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="card completed">
+        <a class="head" href="demand-gen-holdout-20260306.html">
+          <span class="arrow">→</span>
+          <span class="tag">Completed</span>
+          <h3>Demand Gen holdout</h3>
+          <div class="desc">Holdout test validating Google Demand Gen incrementality. Primary headline iROAS and cross-channel breakdown.</div>
+          <div class="meta">
+            <span class="chan">Google Demand Gen</span>
+            <span>Updated 2026-03-06</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="card completed">
+        <a class="head" href="audiohook_holdout_20260306.html">
+          <span class="arrow">→</span>
+          <span class="tag">Completed</span>
+          <h3>AudioHook holdout</h3>
+          <div class="desc">AudioHook (streaming audio) holdout test. Primary iROAS and proxy-signal read.</div>
+          <div class="meta">
+            <span class="chan">AudioHook</span>
+            <span>Updated 2026-03-06</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="stripe"><span class="r"></span><span class="w"></span><span class="b"></span></div>
+  <div class="footer-inner">
+    <div class="footer-mark">4Patriots</div>
+    <div class="footer-tag">Marketing analytics · Geo incrementality</div>
+    <p class="footer-mission">Champions of freedom and self-reliance. Internal measurement readouts — directional findings inform spend decisions; figures are gross-profit basis.</p>
   </div>
+  <div class="footer-bottom">
+    <div class="footer-bottom-inner">
+      <span>Maintained by the A-Team</span>
+      <span>Director of Advertising · Channel Strategy &amp; Innovation</span>
+    </div>
+  </div>
+</footer>
 
-</div>
-
-<div class="footnote">Maintained by the A-Team · Director of Advertising, Channel Strategy &amp; Innovation, 4Patriots</div>
-
-</div>
 </body>
 </html>
