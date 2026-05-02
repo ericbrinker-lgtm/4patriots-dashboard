@@ -1,12 +1,3 @@
-4WK-BOGO good
+I want to run a 2x2 test: brand video including COX vs control, and brand video not including COX vs control. Limiting factor on only doing the COX version was its relatively small national footprint.
 
-PANELS good, bad
-SSSP good, bad
-
-
-***100W good, bad (which lander?)
-72HR-B1G2 bad, bad
-ALP bad, bad
-BUD bad, bad
-Nanomesh bad, bad
-Tier 2 good, bad
+Suggested test design executive one-sheet http://bit.ly/4cOnUuc
