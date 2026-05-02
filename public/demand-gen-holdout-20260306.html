@@ -4,257 +4,205 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Demand Gen incrementality validation — 2026-03-06 readout</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
-  :root {
-    --navy: #13213C;
-    --navy-2: #1E3665;
-    --red: #A21E22;
-    --gold: #C8A646;
-    --green: #2E7D32;
-    --gray-50: #F7F8FA;
-    --gray-100: #EEF0F4;
-    --gray-200: #DCE0E8;
-    --gray-400: #8B92A3;
-    --gray-600: #525868;
-    --gray-900: #1A1E28;
-    --shadow: 0 1px 2px rgba(19,33,60,0.04), 0 4px 12px rgba(19,33,60,0.06);
-    --shadow-lg: 0 4px 8px rgba(19,33,60,0.06), 0 12px 32px rgba(19,33,60,0.08);
-    --radius: 12px;
-  }
-  * { box-sizing: border-box; }
-  html, body {
-    margin: 0; padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background: var(--gray-50);
-    color: var(--gray-900);
-    -webkit-font-smoothing: antialiased;
-  }
-  a { color: var(--navy-2); }
-  .wrap { max-width: 1280px; margin: 0 auto; padding: 32px 28px 80px; }
+  :root{--navy:#13213c;--navy-deep:#0d1729;--navy-2:#1a237e;--blue:#1a237e;--red:#b71c1c;--red-deep:#8a1414;--white:#ffffff;--paper:#f6f6f3;--paper-2:#ececea;--rule:#d6d6d2;--ink:#13213c;--ink-2:#2b3450;--muted:#6b7280;--good:#1e6b3a;--gold:#9e7f18;--gray-50:#f6f6f3;--gray-100:#ececea;--gray-200:#d6d6d2;--gray-400:#8b92a3;--gray-600:#6b7280;--gray-900:#13213c;--green:#1e6b3a;--headline:"Helvetica Neue","Helvetica","Arial",sans-serif;--body:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--mono:"IBM Plex Mono",ui-monospace,Menlo,monospace}
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--white);color:var(--ink);-webkit-font-smoothing:antialiased}
+  body{font-family:var(--body);font-size:15px;line-height:1.6}
+  a{color:var(--navy);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
+  a:hover{color:var(--red)}
+  strong,b{font-weight:600;color:var(--ink)}
 
-  header.top {
-    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
-    color: #fff;
-    padding: 36px 28px 44px;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-lg);
-    margin-bottom: 28px;
-  }
-  header.top .eyebrow {
-    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
-    color: var(--gold); font-weight: 600; margin-bottom: 8px;
-  }
-  header.top h1 { margin: 0 0 6px 0; font-size: 32px; font-weight: 700; letter-spacing: -0.01em; }
-  header.top .sub { color: rgba(255,255,255,0.78); font-size: 15px; max-width: 820px; }
-  header.top .meta-row {
-    margin-top: 20px; display: flex; gap: 24px; flex-wrap: wrap;
-    font-size: 13px; color: rgba(255,255,255,0.78);
-  }
-  header.top .meta-row b { color: #fff; font-weight: 600; }
+  .topbar{background:var(--navy);color:var(--white);border-bottom:4px solid var(--red)}
+  .topbar-inner{max-width:1280px;margin:0 auto;padding:16px 40px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+  .topbar .logo{height:40px;display:block}
+  .topbar .breadcrumbs{font-family:var(--mono);font-size:11px;letter-spacing:0.08em;color:rgba(255,255,255,0.7);text-transform:uppercase}
+  .topbar .breadcrumbs a{color:var(--white);text-decoration:none}
+  .topbar .breadcrumbs a:hover{color:#fff;text-decoration:underline}
+  .topbar .breadcrumbs .sep{margin:0 10px;opacity:0.4}
+  .topbar-left{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+  .back-button{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--white);text-decoration:none;padding:7px 14px;border:1px solid rgba(255,255,255,0.35);background:transparent;transition:background 0.15s,border-color 0.15s,color 0.15s;font-weight:600;line-height:1}
+  .back-button:hover{background:var(--red);border-color:var(--red);color:var(--white)}
+  .back-button .back-arrow{font-size:14px;line-height:1}
 
-  .layer-label {
-    display: inline-block;
-    font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
-    font-weight: 700; padding: 4px 10px; border-radius: 999px;
-    margin-bottom: 10px;
-  }
-  .layer-exec { background: rgba(162,30,34,0.08); color: var(--red); }
-  .layer-tac  { background: rgba(30,54,101,0.08); color: var(--navy-2); }
-  .layer-deep { background: rgba(138,138,138,0.14); color: var(--gray-600); }
+  .stripe{display:flex;height:4px}
+  .stripe span{flex:1}
+  .stripe .r{background:var(--red)}
+  .stripe .w{background:var(--white)}
+  .stripe .b{background:var(--navy)}
 
-  .kpi-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
-    margin-bottom: 28px;
-  }
-  @media (max-width: 900px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
-  .kpi {
-    background: #fff; border-radius: var(--radius); padding: 20px 22px;
-    box-shadow: var(--shadow); border: 1px solid var(--gray-100);
-    position: relative;
-  }
-  .kpi .label { font-size: 12px; color: var(--gray-600); font-weight: 500; letter-spacing: 0.02em; }
-  .kpi .val { font-size: 34px; font-weight: 700; color: var(--navy); line-height: 1.1; margin-top: 6px; letter-spacing: -0.02em; }
-  .kpi .delta { margin-top: 6px; font-size: 12px; color: var(--gray-600); }
-  .kpi .delta.up { color: var(--green); }
-  .kpi .delta.down { color: var(--red); }
-  .kpi.hero { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%); color: #fff; }
-  .kpi.hero .label { color: rgba(255,255,255,0.72); }
-  .kpi.hero .val { color: #fff; }
-  .kpi.hero .delta { color: rgba(255,255,255,0.82); }
-  .kpi .pass-badge {
-    display: inline-block; margin-top: 8px; padding: 2px 8px; border-radius: 4px;
-    font-size: 11px; font-weight: 600; letter-spacing: 0.02em;
-  }
-  .kpi .pass-badge.pass { background: rgba(46,125,50,0.14); color: var(--green); }
-  .kpi .pass-badge.fail { background: rgba(162,30,34,0.14); color: var(--red); }
-  .kpi .pass-badge.soft { background: rgba(200,166,70,0.18); color: #8a6a10; }
+  .hero{background:var(--navy);color:var(--white);padding:64px 0 76px;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;top:0;right:0;bottom:0;width:8px;background:linear-gradient(180deg,var(--red) 0%,var(--red) 50%,var(--white) 50%,var(--white) 100%)}
+  .hero-inner{max-width:1280px;margin:0 auto;padding:0 40px;display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:48px;align-items:end}
+  .hero .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .hero .eyebrow .badge{background:var(--red);color:var(--white);padding:4px 10px;letter-spacing:0.1em;font-weight:600}
+  .hero h1{font-family:var(--headline);font-weight:700;font-size:clamp(34px,4.4vw,56px);line-height:1.05;letter-spacing:-0.025em;margin:0;max-width:24ch;color:var(--white)}
+  .hero h1 .underline{display:inline-block;border-bottom:5px solid var(--red);padding-bottom:2px}
+  .hero .deck{font-family:var(--body);font-size:16px;line-height:1.55;color:rgba(255,255,255,0.85);margin-top:24px;max-width:64ch;font-weight:400}
+  .hero .deck strong{color:var(--white);font-weight:600}
+  .hero-meta{border:1px solid rgba(255,255,255,0.15);padding:22px;background:rgba(255,255,255,0.04)}
+  .hero-meta .field{font-size:12px;padding:9px 0;border-top:1px solid rgba(255,255,255,0.12)}
+  .hero-meta .field:first-child{border-top:none;padding-top:0}
+  .hero-meta .field:last-child{padding-bottom:0}
+  .hero-meta .field .k{font-family:var(--mono);text-transform:uppercase;letter-spacing:0.12em;font-size:10px;color:rgba(255,255,255,0.55);display:block;margin-bottom:3px}
+  .hero-meta .field .v{font-size:13px;color:var(--white);font-weight:500}
+  @media (max-width:900px){.hero-inner{grid-template-columns:1fr}}
 
-  .card {
-    background: #fff; border-radius: var(--radius); padding: 22px 24px;
-    box-shadow: var(--shadow); border: 1px solid var(--gray-100);
-    margin-bottom: 22px;
-  }
-  .card h2 {
-    margin: 0 0 4px 0; font-size: 20px; font-weight: 700; color: var(--navy);
-    letter-spacing: -0.01em;
-  }
-  .card h3 { margin: 28px 0 6px 0; font-size: 15px; font-weight: 600; color: var(--navy); }
-  .card .card-sub {
-    color: var(--gray-600); font-size: 13px; margin-bottom: 20px;
-    max-width: 820px; line-height: 1.5;
-  }
+  main{max-width:1280px;margin:0 auto;padding:0 40px 80px}
+  .section{padding:48px 0;border-top:1px solid var(--rule)}
+  .section:first-of-type{border-top:none;padding-top:40px}
 
-  .controls {
-    display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
-    margin-bottom: 16px;
-  }
-  .toggle-group { display: inline-flex; background: var(--gray-100); border-radius: 8px; padding: 3px; }
-  .toggle-group button {
-    background: transparent; border: none; padding: 7px 14px; font-size: 13px;
-    font-weight: 500; color: var(--gray-600); border-radius: 6px;
-    cursor: pointer; transition: all 0.15s;
-  }
-  .toggle-group button.active { background: #fff; color: var(--navy); box-shadow: 0 1px 2px rgba(19,33,60,0.08); font-weight: 600; }
-  .toggle-group button:hover:not(.active) { color: var(--navy); }
+  .layer-label{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;font-weight:600;padding:5px 10px;margin-bottom:14px;color:var(--white)}
+  .layer-exec{background:var(--red)}
+  .layer-tac{background:var(--navy)}
+  .layer-deep{background:var(--blue)}
 
-  .chart-box { position: relative; width: 100%; }
-  .chart-box.h300 { height: 300px; }
-  .chart-box.h360 { height: 360px; }
-  .chart-box.h420 { height: 420px; }
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
-  @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:24px 0 28px;border:1px solid var(--rule);background:var(--white)}
+  @media (max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:600px){.kpi-grid{grid-template-columns:1fr}}
+  .kpi{background:var(--white);padding:26px 24px 22px;display:flex;flex-direction:column;min-height:200px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);position:relative}
+  .kpi::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--navy)}
+  .kpi.hero::before{background:var(--red)}
+  .kpi .label{font-family:var(--mono);font-size:10px;color:var(--muted);font-weight:500;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:14px}
+  .kpi .val{font-family:var(--headline);font-size:38px;font-weight:700;color:var(--navy);line-height:1;letter-spacing:-0.025em;margin-top:0}
+  .kpi.hero .val{color:var(--red)}
+  .kpi .delta{margin-top:auto;padding-top:14px;font-size:12px;color:var(--ink-2);line-height:1.45}
+  .kpi.hero{background:var(--white)}
+  .kpi.hero .label{color:var(--muted)}
+  .kpi.hero .delta{color:var(--ink-2)}
+  .kpi .pass-badge{display:inline-block;margin-top:10px;padding:3px 8px;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;align-self:flex-start}
+  .kpi .pass-badge.pass{background:rgba(30,107,58,0.12);color:var(--good)}
+  .kpi .pass-badge.fail{background:rgba(183,28,28,0.10);color:var(--red)}
+  .kpi .pass-badge.warn{background:rgba(158,127,24,0.14);color:var(--gold)}
 
-  .scrubber { margin-top: 8px; }
-  .scrubber label { font-size: 12px; color: var(--gray-600); font-weight: 500; }
-  .scrubber input[type="range"] { width: 100%; margin-top: 8px; accent-color: var(--navy-2); }
-  .scrubber-readout {
-    margin-top: 14px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
-    background: var(--gray-50); border-radius: 8px; padding: 14px 16px;
-  }
-  .scrubber-readout .sr-item .l { font-size: 11px; color: var(--gray-600); letter-spacing: 0.04em; text-transform: uppercase; font-weight: 600; }
-  .scrubber-readout .sr-item .v { font-size: 20px; font-weight: 700; color: var(--navy); margin-top: 2px; letter-spacing: -0.01em; }
-  .scrubber-readout .sr-item .d { font-size: 11px; color: var(--gray-600); margin-top: 1px; }
+  .card{background:var(--white);border:1px solid var(--rule);padding:28px 28px 30px;margin:0 0 24px}
+  .card h2{margin:8px 0 4px;font-family:var(--headline);font-size:22px;font-weight:700;color:var(--navy);letter-spacing:-0.015em;line-height:1.15}
+  .card h3{margin:28px 0 8px;font-family:var(--headline);font-size:15px;font-weight:700;color:var(--navy);letter-spacing:-0.005em}
+  .card .card-sub{color:var(--ink-2);font-size:13.5px;margin:8px 0 22px;max-width:88ch;line-height:1.55}
+  .card code{font-family:var(--mono);font-size:12px;background:var(--paper);padding:1px 6px;border:1px solid var(--rule);color:var(--navy)}
 
-  details.math {
-    margin-top: 12px; background: var(--gray-50); border-radius: 8px;
-    border: 1px solid var(--gray-200); transition: background 0.15s;
-  }
-  details.math[open] { background: #fff; border-color: var(--gray-200); }
-  details.math summary {
-    padding: 12px 16px; cursor: pointer; font-size: 13px; font-weight: 600;
-    color: var(--navy-2); list-style: none;
-  }
-  details.math summary::-webkit-details-marker { display: none; }
-  details.math summary::before { content: "▸ "; color: var(--gray-400); transition: transform 0.2s; display: inline-block; }
-  details.math[open] summary::before { content: "▾ "; color: var(--navy-2); }
-  details.math .math-body {
-    padding: 4px 18px 18px; font-size: 13px; line-height: 1.65; color: var(--gray-900);
-  }
-  details.math .math-body code {
-    background: var(--gray-100); padding: 2px 6px; border-radius: 4px;
-    font-family: "SF Mono", Consolas, "Liberation Mono", monospace; font-size: 12.5px;
-  }
-  details.math .math-body table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12.5px; }
-  details.math .math-body th, details.math .math-body td { text-align: right; padding: 6px 10px; border-bottom: 1px solid var(--gray-200); }
-  details.math .math-body th:first-child, details.math .math-body td:first-child { text-align: left; }
-  details.math .math-body th { color: var(--gray-600); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+  .toggle-group{display:inline-flex;border:1px solid var(--rule);background:var(--white)}
+  .toggle-group button{background:transparent;border:none;padding:8px 14px;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;transition:color 0.15s,background 0.15s;border-right:1px solid var(--rule)}
+  .toggle-group button:last-child{border-right:none}
+  .toggle-group button.active{background:var(--navy);color:var(--white)}
+  .toggle-group button:hover:not(.active){color:var(--navy);background:var(--paper)}
 
-  table.dtable { width: 100%; border-collapse: collapse; font-size: 13px; }
-  table.dtable th, table.dtable td { padding: 9px 10px; text-align: right; border-bottom: 1px solid var(--gray-100); }
-  table.dtable th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--gray-600); font-weight: 600; background: var(--gray-50); }
-  table.dtable th:first-child, table.dtable td:first-child { text-align: left; }
-  table.dtable td.pos { color: var(--green); font-weight: 600; }
-  table.dtable td.neg { color: var(--red); font-weight: 600; }
-  table.dtable tbody tr:hover { background: var(--gray-50); }
-  table.dtable tr.total-row td { border-top: 2px solid var(--gray-200); font-weight: 700; color: var(--navy); }
+  .chart-box{position:relative;width:100%}
+  .chart-box.h300{height:300px}.chart-box.h360{height:360px}.chart-box.h420{height:420px}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+  @media (max-width:900px){.two-col{grid-template-columns:1fr}}
 
-  .tldr {
-    background: #fff; border-left: 4px solid var(--red);
-    border-radius: 4px 12px 12px 4px; padding: 20px 24px;
-    box-shadow: var(--shadow); margin-bottom: 28px;
-    font-size: 15.5px; line-height: 1.6; color: var(--gray-900);
-  }
-  .tldr b { color: var(--navy); }
-  .tldr .tldr-label { display: block; font-size: 11px; color: var(--red); font-weight: 700; letter-spacing: 0.12em; margin-bottom: 8px; }
+  .scrubber{margin-top:8px}
+  .scrubber label{font-family:var(--mono);font-size:11px;color:var(--muted);font-weight:500;letter-spacing:0.08em;text-transform:uppercase}
+  .scrubber input[type="range"]{width:100%;margin-top:10px;accent-color:var(--red)}
+  .scrubber-readout{margin-top:16px;display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--rule);background:var(--white)}
+  @media (max-width:700px){.scrubber-readout{grid-template-columns:repeat(2,1fr)}}
+  .scrubber-readout .sr-item{padding:14px 16px;border-right:1px solid var(--rule)}
+  .scrubber-readout .sr-item:last-child{border-right:none}
+  .scrubber-readout .sr-item .l{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;font-weight:600}
+  .scrubber-readout .sr-item .v{font-family:var(--headline);font-size:20px;font-weight:700;color:var(--navy);margin-top:2px;letter-spacing:-0.015em}
+  .scrubber-readout .sr-item .d{font-size:11px;color:var(--muted);margin-top:2px}
 
-  .comments-card {
-    background: #fff; border-left: 4px solid var(--gold);
-    border-radius: 4px 12px 12px 4px; padding: 20px 24px;
-    box-shadow: var(--shadow); margin-bottom: 28px;
-  }
-  .comments-card .comments-label {
-    display: block; font-size: 11px; color: var(--gold); font-weight: 700;
-    letter-spacing: 0.12em; margin-bottom: 8px; text-transform: uppercase;
-  }
-  .comments-card .comments-empty { color: var(--gray-400); font-style: italic; font-size: 15px; }
+  details.math{margin-top:16px;border-top:1px solid var(--rule);background:var(--white)}
+  details.math summary{padding:14px 0;cursor:pointer;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--navy);list-style:none;display:flex;align-items:center;gap:12px}
+  details.math summary::-webkit-details-marker{display:none}
+  details.math summary::before{content:"+";font-family:var(--mono);color:var(--red);width:14px;font-weight:700;font-size:14px;display:inline-block}
+  details.math[open] summary::before{content:"−"}
+  details.math .math-body{padding:6px 0 22px 26px;font-size:13.5px;line-height:1.65;color:var(--ink-2);max-width:78ch}
+  details.math .math-body code{font-family:var(--mono);background:var(--paper);padding:2px 6px;border:1px solid var(--rule);font-size:12.5px;color:var(--navy)}
+  details.math .math-body table{width:100%;border-collapse:collapse;margin-top:12px;font-size:12.5px}
+  details.math .math-body th,details.math .math-body td{text-align:right;padding:7px 10px;border-bottom:1px solid var(--rule)}
+  details.math .math-body th:first-child,details.math .math-body td:first-child{text-align:left}
+  details.math .math-body th{font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);background:var(--paper)}
 
-  .flag-list { margin: 12px 0 0 0; padding-left: 0; list-style: none; }
-  .flag-list li {
-    padding: 10px 14px; margin-bottom: 8px; border-radius: 8px;
-    font-size: 13px; line-height: 1.55;
-    background: var(--gray-50); border-left: 3px solid var(--gray-400);
-  }
-  .flag-list li.watch { border-left-color: var(--gold); background: rgba(200,166,70,0.08); }
-  .flag-list li.resolved { border-left-color: var(--green); background: rgba(46,125,50,0.06); }
-  .flag-list li.issue { border-left-color: var(--red); background: rgba(162,30,34,0.06); }
-  .flag-list li b { color: var(--navy); }
+  table.dtable{width:100%;border-collapse:collapse;font-size:13px;font-family:var(--body)}
+  table.dtable th,table.dtable td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--rule)}
+  table.dtable th{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);font-weight:600;background:var(--paper);border-bottom:1px solid var(--rule)}
+  table.dtable th:first-child,table.dtable td:first-child{text-align:left}
+  table.dtable td{color:var(--ink-2)}
+  table.dtable td.pos{color:var(--good);font-weight:600;font-family:var(--mono)}
+  table.dtable td.neg{color:var(--red);font-weight:600;font-family:var(--mono)}
+  table.dtable tbody tr:hover{background:var(--paper)}
 
-  .gauge-wrap { display: flex; gap: 22px; align-items: center; flex-wrap: wrap; }
-  .gauge-box { flex: 0 0 280px; }
+  .tldr{background:var(--paper);border-left:4px solid var(--red);padding:24px 28px;margin:0 0 28px;font-size:15px;line-height:1.65;color:var(--ink)}
+  .tldr b{color:var(--navy);font-weight:600}
+  .tldr .tldr-label{display:block;font-family:var(--mono);font-size:10px;color:var(--red);font-weight:600;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:10px}
 
-  footer.foot {
-    margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--gray-200);
-    font-size: 12px; color: var(--gray-600);
-    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
-  }
-  footer.foot a { color: var(--navy-2); text-decoration: none; }
-  footer.foot a:hover { text-decoration: underline; }
+  .comments-card{background:var(--paper);border-left:4px solid var(--navy);padding:24px 28px;margin:0 0 28px}
+  .comments-card .comments-label{display:block;font-family:var(--mono);font-size:10px;color:var(--navy);font-weight:600;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:10px}
 
-  .decision {
-    background: linear-gradient(135deg, rgba(46,125,50,0.06) 0%, rgba(46,125,50,0.02) 100%);
-    border: 1px solid rgba(46,125,50,0.22);
-    border-radius: 10px; padding: 16px 20px; margin-top: 14px;
-  }
-  .decision .head { font-size: 11px; color: var(--green); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
-  .decision .body { font-size: 15px; color: var(--gray-900); margin-top: 4px; line-height: 1.5; }
+  .flag-list{margin:12px 0 0;padding:0;list-style:none}
+  .flag-list li{padding:14px 18px;margin-bottom:10px;font-size:13px;line-height:1.55;background:var(--paper);border-left:3px solid var(--gray-400);color:var(--ink-2)}
+  .flag-list li.watch{border-left-color:var(--gold);background:rgba(158,127,24,0.06)}
+  .flag-list li.resolved{border-left-color:var(--good);background:rgba(30,107,58,0.05)}
+  .flag-list li.issue{border-left-color:var(--red);background:rgba(183,28,28,0.05)}
+  .flag-list li b{color:var(--navy)}
 
-  .hint { font-size: 12px; color: var(--gray-600); margin-top: 6px; }
+  .gauge-wrap{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+  .gauge-box{flex:0 0 280px}
 
-  .nav-bar {
-    background: var(--navy); padding: 10px 24px; display: flex; align-items: center; gap: 10px;
-  }
-  .nav-bar a {
-    color: rgba(255,255,255,0.85); text-decoration: none; font-size: 13px; font-weight: 600;
-    display: inline-flex; align-items: center; gap: 6px; transition: color 0.15s;
-  }
-  .nav-bar a:hover { color: #fff; }
-  .nav-bar .sep { color: rgba(255,255,255,0.3); font-size: 13px; }
-  .nav-bar .current { color: rgba(255,255,255,0.5); font-size: 13px; font-weight: 400; }
+  .decision{background:var(--paper);border-left:4px solid var(--good);padding:18px 22px;margin-top:14px}
+  .decision .head{font-family:var(--mono);font-size:10px;color:var(--good);font-weight:600;letter-spacing:0.16em;text-transform:uppercase}
+  .decision .body{font-size:14.5px;color:var(--ink);margin-top:6px;line-height:1.55}
+
+  .hint{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:8px;letter-spacing:0.04em}
+
+  footer.foot{background:var(--navy);color:rgba(255,255,255,0.7);padding:48px 0 0;margin-top:0}
+  footer.foot .stripe{margin-top:-48px;margin-bottom:48px}
+  .footer-inner{max-width:1280px;margin:0 auto;padding:0 40px}
+  .footer-mark{font-family:var(--headline);font-size:24px;color:var(--white);font-weight:700;letter-spacing:-0.02em;margin-bottom:6px}
+  .footer-tag{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.55);margin-bottom:12px}
+  .footer-mission{font-size:14px;color:rgba(255,255,255,0.7);max-width:48ch;line-height:1.5;margin-bottom:0}
+  .footer-sources{margin-top:24px;display:flex;flex-wrap:wrap;gap:16px;font-family:var(--mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase}
+  .footer-sources a{color:rgba(255,255,255,0.85);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.3)}
+  .footer-sources a:hover{color:#fff;border-bottom-color:#fff}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,0.12);margin-top:36px;padding:18px 0}
+  .footer-bottom-inner{max-width:1280px;margin:0 auto;padding:0 40px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-family:var(--mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.5)}
 </style>
 </head>
 <body>
 
-<nav class="nav-bar">
-  <a href="index.html">← All studies</a>
-  <span class="sep">|</span>
-  <span class="current">Demand Gen incrementality validation (Jan 10 – Mar 6, 2026)</span>
-</nav>
-
-<div class="wrap">
-
-  <header class="top">
-    <div class="eyebrow">Geo incrementality validation · Demand Gen at BAU</div>
-    <h1>DG is earning its keep — every $1 of DG last-click ROAS is worth ~$2.5 in true incremental GP</h1>
-    <div class="sub">This is a validation test, not a kill test. The question wasn't "should we stop DG?" — it was "what's DG's incrementality factor on top of its last-click ROAS?" We held DG dark in 25 matched DMAs for 50 days so the 25 BAU DMAs could serve as our "DG-on" benchmark. Jan 10 – Feb 28 test window, 6-day cooldown through Mar 6. Cross-channel pulls from GA4 starting Jan 24.</div>
-    <div class="meta-row">
-      <span><b>Test:</b> <span id="m-test">—</span></span>
-      <span><b>Test window:</b> <span id="m-tw">—</span></span>
-      <span><b>Cooldown:</b> <span id="m-cw">—</span></span>
-      <span><b>Pre-period:</b> <span id="m-pp">—</span></span>
-      <span><b>Analysis date:</b> <span id="m-ad">—</span></span>
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-left">
+      <a href="index.html"><img class="logo" src="assets/logo.jpg" alt="4Patriots"></a>
+      <a href="index.html" class="back-button"><span class="back-arrow">←</span> Back to dashboard</a>
     </div>
-  </header>
+    <nav class="breadcrumbs">
+      <a href="index.html">Studies</a><span class="sep">/</span>
+      <a href="index.html">Geo incrementality</a><span class="sep">/</span>
+      <span style="color:rgba(255,255,255,0.55);">Demand Gen holdout · 2026-03-06</span>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="eyebrow"><span class="badge">Completed</span> Geo incrementality validation · Demand Gen at BAU</div>
+      <h1>DG is <span class="underline">earning its keep</span> — every $1 of LC ROAS is worth ~$2.5 in true incremental GP.</h1>
+      <p class="deck">A validation test, not a kill test. The question wasn't "should we stop DG?" — it was "what's DG's incrementality factor on top of its last-click ROAS?" We held DG dark in 25 matched DMAs for 50 days so the 25 BAU DMAs could serve as our "DG-on" benchmark. Cross-channel pulls from GA4 starting Jan 24.</p>
+    </div>
+    <aside class="hero-meta">
+      <div class="field"><span class="k">Test</span><span class="v" id="m-test">—</span></div>
+      <div class="field"><span class="k">Test window</span><span class="v" id="m-tw">—</span></div>
+      <div class="field"><span class="k">Cooldown</span><span class="v" id="m-cw">—</span></div>
+      <div class="field"><span class="k">Pre-period</span><span class="v" id="m-pp">—</span></div>
+      <div class="field"><span class="k">Analysis date</span><span class="v" id="m-ad">—</span></div>
+    </aside>
+  </div>
+</section>
+
+<div class="stripe"><span class="r"></span><span class="w"></span><span class="b"></span></div>
+
+<main>
+
+  <section class="section">
 
   <!-- ============ LAYER 1: EXECUTIVE ============ -->
 
@@ -268,7 +216,7 @@
   document.querySelector('#eric-comments .comments-frame').addEventListener('load', function(){
     try {
       var b = this.contentDocument.body;
-      b.style.cssText = 'margin:0;padding:0;font:15px/1.7 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;color:#1A1E28;white-space:pre-wrap;word-wrap:break-word;';
+      b.style.cssText = 'margin:0;padding:0;font:15px/1.65 "IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#13213c;white-space:pre-wrap;word-wrap:break-word;';
       var resize = function(frame, body) {
         frame.style.height = 'auto';
         frame.style.height = Math.max(24, body.scrollHeight) + 'px';
@@ -479,28 +427,44 @@
       <div class="head">Recommended</div>
       <div class="body"><b>Keep DG running at BAU.</b> DG is validated as incremental — it cleared the 1.4x GP floor on the Orders headline (1.51x, 94% confidence), with the Revenue model and Synthetic Control corroborating. The cross-channel halo (Facebook, MKT, Search, Unknown, PMAX) is the bigger story than DG's direct last-click line — and it's what makes the 2.51x incrementality factor possible.</div>
     </div>
-    <div class="decision" style="background: linear-gradient(135deg, rgba(200,166,70,0.08) 0%, rgba(200,166,70,0.02) 100%); border-color: rgba(200,166,70,0.32);">
-      <div class="head" style="color: #9e7f18;">Watch</div>
-      <div class="body">DG LC ROAS (GA4). Warning threshold: <b id="watch-threshold">0.56x</b> <span id="watch-denom-note" style="color:#666;font-weight:500;">(from DG-only iROAS)</span>. If weekly LC ROAS drops below this, true iROAS is approaching the 1.4x floor — pause to reassess or schedule a fresh geo read. Current BAU LC ROAS (control cell): <b>0.60x</b> — close to the threshold, so monitor tightly.</div>
+    <div class="decision" style="border-left-color:var(--gold);">
+      <div class="head" style="color:var(--gold);">Watch</div>
+      <div class="body">DG LC ROAS (GA4). Warning threshold: <b id="watch-threshold">0.56x</b> <span id="watch-denom-note" style="color:var(--muted);font-weight:500;">(from DG-only iROAS)</span>. If weekly LC ROAS drops below this, true iROAS is approaching the 1.4x floor — pause to reassess or schedule a fresh geo read. Current BAU LC ROAS (control cell): <b>0.60x</b> — close to the threshold, so monitor tightly.</div>
     </div>
-    <div class="decision" style="background: linear-gradient(135deg, rgba(30,54,101,0.06) 0%, rgba(30,54,101,0.02) 100%); border-color: rgba(30,54,101,0.22);">
-      <div class="head" style="color: var(--navy-2);">Follow-up test</div>
+    <div class="decision" style="border-left-color:var(--blue);">
+      <div class="head" style="color:var(--blue);">Follow-up test</div>
       <div class="body">Re-validate DG in 1–2 quarters, or sooner if creative/placement mix shifts meaningfully. A <b>partial-channel holdout</b> (e.g., Gmail-only or Discover-only dark) could separate which placements carry the incrementality factor versus which are auction-side noise — sharpening where to lean in harder.</div>
     </div>
-    <div class="decision" style="background: linear-gradient(135deg, rgba(19,33,60,0.06) 0%, rgba(19,33,60,0.02) 100%); border-color: rgba(19,33,60,0.22);">
-      <div class="head" style="color: var(--navy);">Data hygiene ask</div>
+    <div class="decision" style="border-left-color:var(--navy);">
+      <div class="head" style="color:var(--navy);">Data hygiene ask</div>
       <div class="body">Extend the historical window of <code>sales_by_dma.csv</code> so future pre-periods can cover the full 90 days. This run's 41-day pre-period forced us to work around a higher-MAPE match.</div>
     </div>
   </div>
 
-  <footer class="foot">
-    <div>
-      Source: <code>sales_by_dma.csv</code> · <code>sales_by_dma_by_channel_ga4.csv</code> (GA4 primary) · <code>aggregate_spend_by_dma.csv</code>
-    </div>
-    <div>Analysis date: 2026-04-22 · 25 treatment DMAs · 25 control DMAs · SF 1.0199</div>
-  </footer>
+  </section>
 
-</div>
+</main>
+
+<footer class="foot">
+  <div class="stripe"><span class="r"></span><span class="w"></span><span class="b"></span></div>
+  <div class="footer-inner">
+    <div class="footer-mark">4Patriots</div>
+    <div class="footer-tag">Marketing analytics · Geo incrementality</div>
+    <p class="footer-mission">Champions of freedom and self-reliance. Internal measurement readout — directional findings inform spend decisions; figures are gross-profit basis.</p>
+    <div class="footer-sources">
+      <a href="#"><code style="background:transparent;border:none;padding:0;color:rgba(255,255,255,0.85);">sales_by_dma.csv</code></a>
+      <a href="#"><code style="background:transparent;border:none;padding:0;color:rgba(255,255,255,0.85);">sales_by_dma_by_channel_ga4.csv</code></a>
+      <a href="#"><code style="background:transparent;border:none;padding:0;color:rgba(255,255,255,0.85);">aggregate_spend_by_dma.csv</code></a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-bottom-inner">
+      <span>Analysis date · 2026-04-22</span>
+      <span>25 treatment / 25 control DMAs</span>
+      <span>SF 1.0199</span>
+    </div>
+  </div>
+</footer>
 
 <script>
 /* ============================================================
@@ -512,22 +476,25 @@ const DATA = {"meta": {"test_name": "Demand Gen holdout", "channel": "Google Dem
    Palette + Chart.js defaults
    ============================================================ */
 const P = {
-  navy: '#13213C', navy2: '#1E3665', red: '#A21E22',
-  gold: '#C8A646', green: '#2E7D32', gray: '#8B92A3',
-  gray100: '#EEF0F4', gray200: '#DCE0E8'
+  navy: '#13213c', navy2: '#1a237e', red: '#b71c1c',
+  gold: '#9e7f18', green: '#1e6b3a', gray: '#6b7280',
+  gray100: '#ececea', gray200: '#d6d6d2'
 };
 
-Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+Chart.defaults.font.family = '"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
 Chart.defaults.font.size = 12;
-Chart.defaults.color = '#525868';
+Chart.defaults.color = '#6b7280';
 Chart.defaults.plugins.legend.position = 'bottom';
 Chart.defaults.plugins.legend.labels.usePointStyle = true;
 Chart.defaults.plugins.legend.labels.padding = 14;
-Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(19,33,60,0.95)';
-Chart.defaults.plugins.tooltip.padding = 10;
-Chart.defaults.plugins.tooltip.titleFont = { weight: '600', size: 12 };
-Chart.defaults.plugins.tooltip.bodyFont = { size: 12 };
+Chart.defaults.plugins.legend.labels.font = {family: '"IBM Plex Mono", ui-monospace, Menlo, monospace', size: 11};
+Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(19,33,60,0.96)';
+Chart.defaults.plugins.tooltip.padding = 12;
+Chart.defaults.plugins.tooltip.titleFont = {family: '"IBM Plex Sans", sans-serif', weight: '600', size: 12};
+Chart.defaults.plugins.tooltip.bodyFont = {family: '"IBM Plex Mono", ui-monospace, monospace', size: 11};
 Chart.defaults.plugins.tooltip.boxPadding = 4;
+Chart.defaults.scale.ticks = Chart.defaults.scale.ticks || {};
+Chart.defaults.scale.ticks.font = {family: '"IBM Plex Mono", ui-monospace, Menlo, monospace', size: 11};
 
 /* ============================================================
    Helpers
